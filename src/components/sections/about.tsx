@@ -2,7 +2,10 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export const About = () => {
   return (
-    <section id="about" className="py-20 px-4">
+    <section
+      id="about"
+      className="flex flex-col justify-center items-center py-20 px-4 mx-auto"
+    >
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-4">
@@ -48,7 +51,7 @@ export const About = () => {
             </div>
           </div>
 
-          <Card className="bg-card border-border shadow-lg">
+          <Card className="flex bg-card border-border shadow-lg">
             <CardContent className="p-8">
               <div className="space-y-6">
                 <div>
