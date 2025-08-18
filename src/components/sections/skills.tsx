@@ -96,7 +96,7 @@ export const Skills = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-7 items-center">
+        <div className="grid sm:grid-cols-2 gap-7 items-center">
           <div className="h-96">
             <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
               <Suspense fallback={null}>
@@ -116,7 +116,7 @@ export const Skills = () => {
                 onMouseLeave={() => setActiveSkill("")}
               >
                 <CardContent className="p-4">
-                  <div className="flex justify-between items-center mb-2">
+                  <div className="flex flex-col items-start justify-between mb-2">
                     <h3 className="font-subheading text-lg text-card-foreground">
                       {skill.name}
                     </h3>
