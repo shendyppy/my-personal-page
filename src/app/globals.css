@@ -3,8 +3,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@plugin "daisyui";
-
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -125,7 +123,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    @apply overflow-x-hidden
+    @apply overflow-x-hidden;
   }
 }
 
@@ -142,4 +140,39 @@
 .font-subheading {
   font-family: "Outfit", sans-serif;
   font-weight: 600;
+}
+
+@keyframes firework {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(3);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.animate-firework {
+  animation: firework 2s ease-out infinite;
+}
+
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-in forwards;
+  }
 }
