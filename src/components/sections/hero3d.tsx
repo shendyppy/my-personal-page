@@ -91,6 +91,7 @@ export const Hero3D = () => {
             size="lg"
             className="bg-primary hover:bg-primary/70 cursor-pointer"
             onClick={() => scrollToSection("projects")}
+            aria-label="View My Work"
           >
             View My Work
           </Button>
@@ -99,6 +100,7 @@ export const Hero3D = () => {
             className="border-secondary"
             size="lg"
             asChild
+            aria-label="Download CV"
           >
             <Link
               href="/assets/CV_Shendy Putra Perdana Yohansah_05 Aug 2025.pdf"
@@ -115,12 +117,18 @@ export const Hero3D = () => {
             className="border-secondary"
             size="sm"
             asChild
+            aria-label="Link to My GitHub"
           >
             <Link href="https://github.com/shendyppy" target="_blank">
               <Github className="h-5 w-5" />
             </Link>
           </Button>
-          <Button variant="outline" className="border-secondary" size="sm">
+          <Button
+            variant="outline"
+            className="border-secondary"
+            size="sm"
+            aria-label="Link to My LinkedIn"
+          >
             <Link href="https://www.linkedin.com/in/shendyppy/" target="_blank">
               <Linkedin className="h-5 w-5" />
             </Link>
@@ -130,6 +138,7 @@ export const Hero3D = () => {
             className="border-secondary cursor-pointer"
             size="sm"
             onClick={() => scrollToSection("contact")}
+            aria-label="Email Me!"
           >
             <Mail className="h-5 w-5" />
           </Button>

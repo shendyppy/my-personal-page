@@ -1,138 +1,290 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text, Float } from "@react-three/drei";
-import { Suspense, useState } from "react";
+import { OrbitControls, Float, useTexture } from "@react-three/drei";
+import { Suspense, useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const skills = [
-  { name: "TypeScript", level: 90, category: "Frontend" },
-  { name: "React", level: 95, category: "Frontend" },
-  { name: "Three.js", level: 80, category: "Frontend" },
-  { name: "Node.js", level: 85, category: "Backend" },
-  { name: "Python", level: 75, category: "Backend" },
-  { name: "PostgreSQL", level: 80, category: "Database" },
+  {
+    name: "TypeScript",
+    level: 90,
+    category: "Frontend",
+    logo: "assets/img/typescript.png",
+  },
+  {
+    name: "JavaScript",
+    level: 95,
+    category: "Frontend",
+    logo: "assets/img/javascript.png",
+  },
+  {
+    name: "Vue.js",
+    level: 50,
+    category: "Frontend",
+    logo: "assets/img/vue.png",
+  },
+  {
+    name: "React.js",
+    level: 95,
+    category: "Frontend",
+    logo: "assets/img/react.png",
+  },
+  {
+    name: "AXIOS",
+    level: 90,
+    category: "Frontend",
+    logo: "assets/img/axios.png",
+  },
+  {
+    name: "Redux",
+    level: 80,
+    category: "Frontend",
+    logo: "assets/img/redux.png",
+  },
+  {
+    name: "Jest",
+    level: 70,
+    category: "Frontend",
+    logo: "assets/img/jest.png",
+  },
+  {
+    name: "Python",
+    level: 40,
+    category: "Backend",
+    logo: "assets/img/python.png",
+  },
+  {
+    name: "Node.js",
+    level: 60,
+    category: "Backend",
+    logo: "assets/img/nodejs.png",
+  },
+  {
+    name: "Sequelize",
+    level: 50,
+    category: "Backend",
+    logo: "assets/img/sequelize.png",
+  },
+  {
+    name: "Github Actions",
+    level: 60,
+    category: "DevOps",
+    logo: "assets/img/github-actions.png",
+  },
+  { name: "AWS", level: 50, category: "DevOps", logo: "assets/img/aws.png" },
+  {
+    name: "cPanel",
+    level: 50,
+    category: "DevOps",
+    logo: "assets/img/cPanel.png",
+  },
+  {
+    name: "Firebase",
+    level: 75,
+    category: "DevOps",
+    logo: "assets/img/firebase.png",
+  },
+  {
+    name: "PostgreSQL",
+    level: 60,
+    category: "Database",
+    logo: "assets/img/postgresql.png",
+  },
 ];
 
-const SkillSphere = ({
+// 🟦 Cube with glowing effect & PNG logo
+const SkillCube = ({
   position,
   skill,
   isActive,
+  setActiveSkill,
 }: {
   position: [number, number, number];
   skill: (typeof skills)[0];
   isActive: boolean;
+  setActiveSkill: (name: string) => void;
 }) => {
+  const texture = useTexture(skill.logo);
+
   return (
-    <Float speed={0.1} rotationIntensity={0.1} floatIntensity={1}>
-      <mesh position={position} scale={isActive ? 3 : 2}>
-        <sphereGeometry args={[0.3, 32, 32]} />
+    <Float
+      speed={isActive ? 2 : 1}
+      rotationIntensity={isActive ? 2 : 0.6}
+      floatIntensity={1.2}
+    >
+      <mesh
+        position={position}
+        scale={isActive ? 1.5 : 1}
+        onPointerEnter={() => setActiveSkill(skill.name)}
+        onPointerLeave={() => setActiveSkill("")}
+        onClick={() => setActiveSkill(skill.name)}
+      >
+        <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial
-          color={isActive ? "#A5B68D" : "#A1D6B2"}
+          map={texture}
           transparent
-          opacity={0.8}
+          roughness={0.25}
+          metalness={0.4}
+          emissive={isActive ? "#00ffaa" : "#222222"}
+          emissiveIntensity={isActive ? 0.8 : 0.2}
         />
-        <Text
-          position={[0, 0, 0.35]}
-          fontSize={0.15}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-        >
-          {skill.name}
-        </Text>
       </mesh>
     </Float>
   );
 };
 
-const Skills3D = ({ activeSkill }: { activeSkill: string }) => {
+// 🌐 3D Scene → now uses filteredSkills
+const Skills3D = ({
+  activeSkill,
+  setActiveSkill,
+  filteredSkills = skills,
+}: {
+  activeSkill: string;
+  setActiveSkill: (name: string) => void;
+  filteredSkills: typeof skills;
+}) => {
   return (
     <>
-      <ambientLight intensity={0.6} />
-      <pointLight position={[10, 10, 10]} />
+      {/* Stronger lights for glow */}
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[5, 5, 5]} intensity={1.2} />
+      <pointLight position={[-5, -5, 5]} intensity={0.6} />
 
-      {skills.map((skill, index) => {
-        const angle = (index / skills.length) * Math.PI * 2;
-        const radius = 2;
+      {filteredSkills.map((skill, index) => {
+        const angle = (index / filteredSkills.length) * Math.PI * 2;
+        const radius = 3.5;
+
         const position: [number, number, number] = [
           Math.cos(angle) * radius,
           Math.sin(angle) * radius * 0.5,
-          Math.sin(angle) * radius * 0.3,
+          Math.sin(angle) * radius * 0.4,
         ];
 
         return (
-          <SkillSphere
+          <SkillCube
             key={skill.name}
             position={position}
             skill={skill}
             isActive={activeSkill === skill.name}
+            setActiveSkill={setActiveSkill}
           />
         );
       })}
 
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        autoRotate
-        autoRotateSpeed={1}
-      />
+      <OrbitControls autoRotate autoRotateSpeed={0.6} enableZoom={false} />
     </>
   );
 };
 
+// 🎨 Category Colors
+const categoryColors: Record<string, string> = {
+  Frontend: "bg-blue-100 border-blue-400",
+  Backend: "bg-green-100 border-green-400",
+  DevOps: "bg-yellow-100 border-yellow-400",
+  Database: "bg-purple-100 border-purple-400",
+  All: "bg-gray-100 border-gray-400",
+};
+
+// 🧩 Main Skills Section
 export const Skills = () => {
   const [activeSkill, setActiveSkill] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const filteredSkills = useMemo(() => {
+    return activeCategory === "All"
+      ? skills
+      : skills.filter((s) => s.category === activeCategory);
+  }, [activeCategory]);
+
+  const getLevelLabel = (level: number) => {
+    if (level >= 75) return "Proficient";
+    if (level >= 50) return "Intermediate";
+    return "Needs Improvement";
+  };
 
   return (
-    <section id="skills" className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-4">
+    <section
+      id="skills"
+      className="py-24 xl:py-55 px-6 relative overflow-hidden"
+    >
+      {/* Header */}
+      <div className="relative text-center mb-16">
+        <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-4">
+          <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
             Skills & Technologies
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Interactive 3D visualization of my technical expertise
-          </p>
+          </span>
+        </h2>
+        <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+          Explore my <span className="text-accent font-semibold">3D orbit</span>{" "}
+          of skills and browse through categorized cards
+        </p>
+        <div className="mt-3 w-24 h-1 bg-gradient-to-r from-accent to-primary mx-auto rounded-full" />
+      </div>
+
+      {/* Flex Layout */}
+      <div className="flex flex-col lg:flex-row gap-10 items-start">
+        {/* Left: 3D Orbit */}
+        <div className="h-[28rem] w-full lg:w-1/2">
+          <Canvas camera={{ position: [0, 0, 8], fov: 70 }}>
+            <Suspense fallback={null}>
+              <Skills3D
+                activeSkill={activeSkill}
+                setActiveSkill={setActiveSkill}
+                filteredSkills={filteredSkills}
+              />
+            </Suspense>
+          </Canvas>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-7 items-center">
-          <div className="h-96">
-            <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-              <Suspense fallback={null}>
-                <Skills3D activeSkill={activeSkill} />
-              </Suspense>
-            </Canvas>
+        {/* Right: Filters + Cards */}
+        <div className="flex flex-col gap-6 w-full lg:w-1/2">
+          {/* Category Filter */}
+          <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+            {["All", "Frontend", "Backend", "DevOps", "Database"].map((cat) => (
+              <div
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition 
+              ${
+                activeCategory === cat
+                  ? "bg-accent text-white border-accent hover:bg-border/50 hover:text-accent"
+                  : "bg-border hover:bg-accent/50"
+              }`}
+              >
+                {cat}
+              </div>
+            ))}
           </div>
 
-          <div className="grid grid-cols-2 gap-x-2 gap-y-2">
-            {skills.map((skill) => (
+          {/* Skill Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredSkills.map((skill, i) => (
               <Card
                 key={skill.name}
-                className={`col-span-1 cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                  activeSkill === skill.name ? "ring-2 ring-accent" : ""
-                }`}
+                className={`cursor-pointer border ${
+                  categoryColors[skill.category]
+                } transform transition-all duration-500 ease-in-out
+              hover:scale-105 hover:shadow-lg animate-fade-in-up`}
+                style={{ animationDelay: `${i * 100}ms` }}
                 onMouseEnter={() => setActiveSkill(skill.name)}
                 onMouseLeave={() => setActiveSkill("")}
               >
                 <CardContent className="p-4">
-                  <div className="flex flex-col items-start justify-between mb-2">
-                    <h3 className="font-subheading text-lg text-card-foreground">
+                  <div className="flex items-center gap-3 mb-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={skill.logo}
+                      alt={skill.name}
+                      className="w-7 h-7"
+                    />
+                    <h3 className="font-subheading text-lg truncate">
                       {skill.name}
                     </h3>
-                    <span className="text-sm text-accent">
-                      {skill.category}
-                    </span>
                   </div>
-                  <div className="w-full bg-border rounded-full h-2">
-                    <div
-                      className="bg-accent h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${skill.level}%` }}
-                    />
-                  </div>
-                  <div className="text-right text-sm text-muted-foreground mt-1">
-                    {skill.level}%
-                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {getLevelLabel(skill.level)}
+                  </p>
                 </CardContent>
               </Card>
             ))}
