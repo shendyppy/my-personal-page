@@ -56,75 +56,75 @@ export const About = () => {
 
   const milestones = [
     {
-      icon: <Briefcase className="w-5 h-5 text-secondary" />,
+      icon: <Briefcase className="w-5 h-5 text-orange-600 -rotate-45" />,
       iconWrapper:
-        "rounded-full bg-primary/40 border-2 border-primary shadow-md",
+        "rounded-full bg-orange-200/40 border-2 border-orange-500 shadow-md rotate-45",
       title: "Experience",
       description:
         "3+ years building modern web apps and solving real-world problems.",
       tags: [
         {
           label: "React / Vite.js",
-          bg: "bg-primary/30",
-          text: "text-secondary",
+          bg: "bg-orange-200/80",
+          text: "text-orange-600",
         },
-        { label: "Next.js", bg: "bg-primary/30", text: "text-secondary" },
-        { label: "Vue.js", bg: "bg-primary/30", text: "text-secondary" },
-        { label: "TypeScript", bg: "bg-primary/30", text: "text-secondary" },
-        { label: "JavaScript", bg: "bg-primary/30", text: "text-secondary" },
-        { label: "Jest", bg: "bg-primary/30", text: "text-secondary" },
+        { label: "Next.js", bg: "bg-orange-200/80", text: "text-orange-600" },
+        { label: "Vue.js", bg: "bg-orange-200/80", text: "text-orange-600" },
+        { label: "TypeScript", bg: "bg-orange-200/80", text: "text-orange-600" },
+        { label: "JavaScript", bg: "bg-orange-200/80", text: "text-orange-600" },
+        { label: "Jest", bg: "bg-orange-200/80", text: "text-orange-600" },
         {
           label: "Various UI Frameworks",
-          bg: "bg-primary/30",
-          text: "text-secondary",
+          bg: "bg-orange-200/80",
+          text: "text-orange-600",
         },
         {
           label: "Various CSS Frameworks",
-          bg: "bg-primary/30",
-          text: "text-secondary",
+          bg: "bg-orange-200/80",
+          text: "text-orange-600",
         },
       ],
     },
     {
       icon: <Palette className="w-5 h-5 text-pink-500 -rotate-45" />,
       iconWrapper:
-        "rounded-lg bg-pink-200/30 border-2 border-pink-400 shadow-md rotate-45",
+        "rounded-lg bg-red-200/30 border-2 border-pink-400 shadow-md rotate-45",
       title: "What I Love",
       description:
         "Curious about where design, interactivity, and playfulness meet.",
       tags: [
-        { label: "UI/UX", bg: "bg-pink-100/40", text: "text-pink-600" },
-        { label: "3D Web", bg: "bg-pink-100/40", text: "text-pink-600" },
-        { label: "Animations", bg: "bg-pink-100/40", text: "text-pink-600" },
+        { label: "UI/UX", bg: "bg-red-400/40", text: "text-pink-600" },
+        { label: "3D Web", bg: "bg-red-400/40", text: "text-pink-600" },
+        { label: "Animations", bg: "bg-red-400/40", text: "text-pink-600" },
       ],
     },
     {
-      icon: <NotebookPen className="w-5 h-5 text-blue-500 -rotate-45" />,
+      icon: <NotebookPen className="w-5 h-5 text-blue-500" />,
       iconWrapper:
-        "rounded-lg bg-blue-300/30 border-2 border-blue-400 shadow-md rotate-45",
+        "rounded-lg bg-blue-300/30 border-2 border-blue-400 shadow-md",
       title: "Growing Skills",
       description:
         "Exploring backend, DevOps, and AI to connect design with infrastructure.",
       tags: [
-        { label: "Node.js", bg: "bg-blue-100/40", text: "text-blue-600" },
-        { label: "Nest.js", bg: "bg-blue-100/40", text: "text-blue-600" },
-        { label: "CI/CD", bg: "bg-blue-100/40", text: "text-blue-600" },
-        { label: "AI", bg: "bg-blue-100/40", text: "text-blue-600" },
+        { label: "Node.js", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "Nest.js", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "CI/CD", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "AI", bg: "bg-blue-300/40", text: "text-blue-600" },
       ],
     },
     {
-      icon: <Globe className="w-5 h-5 text-green-600" />,
+      icon: <Globe className="w-5 h-5 text-teal-600" />,
       iconWrapper:
-        "rounded-full bg-green-200/30 border-2 border-green-500 shadow-md",
+        "rounded-full bg-teal-200/30 border-2 border-teal-500 shadow-md",
       title: "Location",
       description:
         "Based in Indonesia 🌏 — always open to remote collaboration.",
       tags: [
-        { label: "Indonesia", bg: "bg-green-100/40", text: "text-green-700" },
+        { label: "Indonesia", bg: "bg-teal-300/40", text: "text-teal-700" },
         {
           label: "Remote-friendly",
-          bg: "bg-green-100/40",
-          text: "text-green-700",
+          bg: "bg-teal-300/40",
+          text: "text-teal-700",
         },
       ],
     },
@@ -203,6 +203,7 @@ export const About = () => {
               onClick={handleShuffle}
               className="flex items-center gap-2"
               variant="outline"
+              aria-label="Shuffle Traits"
             >
               <Shuffle className="w-4 h-4" />
             </Button>
