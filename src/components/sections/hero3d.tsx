@@ -1,11 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text3D, Environment, Float } from "@react-three/drei";
-import { Suspense } from "react";
-import { Button } from "@/components/ui/button";
 import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import TypingText from "@/hooks/useTypingEffect";
 
 const FloatingCube = ({
   position,
@@ -78,13 +80,13 @@ export const Hero3D = () => {
         <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl text-foreground mb-6">
           <span className="text-accent">Shendy&apos;s here!</span>
         </h1>
-        <p className="text-md md:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto line-clamp-6 italic underline">
-          &quot;Front-End Developer with a knack for crafting clean UIs and
+        <TypingText
+          text={`Front-End Developer with a knack for crafting clean UIs and
           playful interactions. I’m working my way toward Full-Stack reliability
           — curious about LLMs, fascinated by 3D elements, and putting in the
           reps to become just as comfortable building the back end as I am
-          polishing the front.&quot;
-        </p>
+          polishing the front.`}
+        />
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button
