@@ -29,7 +29,11 @@ import { Button } from "../ui/button";
 export const About = () => {
   const initialTraits = [
     { label: "Curious Mind", type: "general", icon: Lightbulb },
-    { label: "Problem Solver (learning)", type: "general", icon: Workflow },
+    {
+      label: "Problem Solver (still eager to learn)",
+      type: "general",
+      icon: Workflow,
+    },
     { label: "Always Growing", type: "general", icon: Brain },
 
     { label: "Exploring Front-End Craft", type: "frontend", icon: Layout },
@@ -70,8 +74,16 @@ export const About = () => {
         },
         { label: "Next.js", bg: "bg-orange-200/80", text: "text-orange-600" },
         { label: "Vue.js", bg: "bg-orange-200/80", text: "text-orange-600" },
-        { label: "TypeScript", bg: "bg-orange-200/80", text: "text-orange-600" },
-        { label: "JavaScript", bg: "bg-orange-200/80", text: "text-orange-600" },
+        {
+          label: "TypeScript",
+          bg: "bg-orange-200/80",
+          text: "text-orange-600",
+        },
+        {
+          label: "JavaScript",
+          bg: "bg-orange-200/80",
+          text: "text-orange-600",
+        },
         { label: "Jest", bg: "bg-orange-200/80", text: "text-orange-600" },
         {
           label: "Various UI Frameworks",
@@ -108,8 +120,19 @@ export const About = () => {
       tags: [
         { label: "Node.js", bg: "bg-blue-300/40", text: "text-blue-600" },
         { label: "Nest.js", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "Express", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "MongoDB", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "Sequelize", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "PostgreSQL", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "AWS", bg: "bg-blue-300/40", text: "text-blue-600" },
+        {
+          label: "Github Actions",
+          bg: "bg-blue-300/40",
+          text: "text-blue-600",
+        },
         { label: "CI/CD", bg: "bg-blue-300/40", text: "text-blue-600" },
         { label: "AI", bg: "bg-blue-300/40", text: "text-blue-600" },
+        { label: "Python", bg: "bg-blue-300/40", text: "text-blue-600" },
       ],
     },
     {
@@ -120,9 +143,18 @@ export const About = () => {
       description:
         "Based in Indonesia 🌏 — always open to remote collaboration.",
       tags: [
-        { label: "Indonesia", bg: "bg-teal-300/40", text: "text-teal-700" },
+        {
+          label: "Banten, Tangerang Selatan",
+          bg: "bg-teal-300/40",
+          text: "text-teal-700",
+        },
         {
           label: "Remote-friendly",
+          bg: "bg-teal-300/40",
+          text: "text-teal-700",
+        },
+        {
+          label: "Willing-to-relocate",
           bg: "bg-teal-300/40",
           text: "text-teal-700",
         },
@@ -160,7 +192,7 @@ export const About = () => {
   return (
     <section
       id="about"
-      className="relative flex flex-col justify-center items-center py-24 px-6 mx-auto"
+      className="relative max-w-6xl flex flex-col justify-center items-center xl:h-screen py-16 px-6 mx-auto"
     >
       {/* Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -179,13 +211,18 @@ export const About = () => {
             My Journey So Far 🚀
           </h3>
           <p className="text-muted-foreground mb-6 leading-relaxed">
-            I started out as a civil engineer, but my curiosity pulled me into
-            tech. Growing up as a gamer (and still one today), I was always
-            fascinated by how those worlds were built. The moment I realized a
-            few lines of code could bring something interactive to life was
-            game-changing — and since then, I’ve been all-in on front-end craft,
+            I began my career as a civil engineer, but curiosity soon pulled me
+            into tech{" "}
+            <span className="italic underline">
+              (during the pandemic I challenged myself to switch paths by
+              joining a coding bootcamp)
+            </span>
+            . Growing up as a gamer — and still one today — I was always
+            fascinated by how those worlds were built. Realizing that a few
+            lines of code could bring something interactive to life was
+            game-changing. Since then, I’ve been all-in on front-end craft:
             experimenting with 3D on the web, and polishing interfaces that feel
-            playful yet reliable.
+            playful and intuitive.
           </p>
           <p className="text-muted-foreground mb-6 leading-relaxed">
             Recently, I’ve been revisiting the backend, DevOps, and even dipping
@@ -201,7 +238,7 @@ export const About = () => {
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
             <Button
               onClick={handleShuffle}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-red-500 hover:bg-orange-300 text-white"
               variant="outline"
               aria-label="Shuffle Traits"
             >

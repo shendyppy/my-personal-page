@@ -191,3 +191,14 @@
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease forwards;
 }
+
+.animate-slide-up {
+  @apply transition-all duration-500 ease-out;
+  transform: translateY(20px);
+  opacity: 0;
+}
+.animate-slide-up[open],
+.animate-slide-up.show {
+  transform: translateY(0);
+  opacity: 1;
+}

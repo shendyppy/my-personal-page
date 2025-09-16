@@ -74,7 +74,7 @@ export const Hero3D = () => {
         </Canvas>
       </div>
 
-      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-4xl mx-auto mt-auto sm:py-10">
+      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto mt-auto sm:py-10">
         <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl text-foreground mb-6">
           <span className="text-accent">Shendy&apos;s here!</span>
         </h1>
