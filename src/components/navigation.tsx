@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import {
+  Box,
+  BriefcaseBusiness,
+  FlaskConical,
+  HatGlasses,
+  Menu,
+  X,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -11,7 +18,7 @@ export function Navigation() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["hero", "about", "skills", "projects", "contact"];
+      const sections = ["hero", "about", "skills", "professional"];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -47,11 +54,13 @@ export function Navigation() {
   };
 
   const navItems = [
-    { id: "hero", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "skills", label: "Skills" },
-    { id: "projects", label: "Projects" },
-    { id: "contact", label: "Contact" },
+    { id: "hero", label: <Box className="inline mb-1" /> },
+    { id: "about", label: <HatGlasses className="inline mb-1" /> },
+    { id: "skills", label: <FlaskConical className="inline mb-1" /> },
+    {
+      id: "professional",
+      label: <BriefcaseBusiness className="inline mb-1" />,
+    },
   ];
 
   return (
