@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 import {
   Code,
   Layout,
@@ -26,8 +25,11 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useThemeContext } from "@/app/providers/ThemeProvider";
 
 export const About = () => {
+  const { theme } = useThemeContext();
+
   const initialTraits = [
     { label: "Curious Mind", type: "general", icon: Lightbulb },
     {
@@ -59,107 +61,95 @@ export const About = () => {
     { label: "Database Want to Learn", type: "learning", icon: NotepadText },
   ];
 
-  const milestones = [
+  const descriptions = [
     {
-      icon: <Briefcase className="w-5 h-5 text-orange-600 -rotate-45" />,
-      iconWrapper:
-        "rounded-full bg-orange-200/40 border-2 border-orange-500 shadow-md rotate-45",
+      icon: <Briefcase className="w-5 h-5 -rotate-45" />,
+      iconWrapper: `rounded-full border-2 shadow-md rotate-45 ${
+        theme === "dark"
+          ? "bg-orange-500/20 border-orange-400"
+          : "bg-orange-200/40 border-orange-500"
+      }`,
       title: "Experience",
       description:
         "3+ years building modern web apps and solving real-world problems.",
       tags: [
-        {
-          label: "React / Vite.js",
-          bg: "bg-orange-200/80",
-          text: "text-orange-600",
-        },
-        { label: "Next.js", bg: "bg-orange-200/80", text: "text-orange-600" },
-        { label: "Vue.js", bg: "bg-orange-200/80", text: "text-orange-600" },
-        {
-          label: "TypeScript",
-          bg: "bg-orange-200/80",
-          text: "text-orange-600",
-        },
-        {
-          label: "JavaScript",
-          bg: "bg-orange-200/80",
-          text: "text-orange-600",
-        },
-        { label: "Jest", bg: "bg-orange-200/80", text: "text-orange-600" },
-        {
-          label: "Various UI Frameworks",
-          bg: "bg-orange-200/80",
-          text: "text-orange-600",
-        },
-        {
-          label: "Various CSS Frameworks",
-          bg: "bg-orange-200/80",
-          text: "text-orange-600",
-        },
-      ],
+        "React / Vite.js",
+        "Next.js",
+        "Vue.js",
+        "TypeScript",
+        "JavaScript",
+        "Jest",
+        "Various UI Frameworks",
+        "Various CSS Frameworks",
+      ].map((label) => ({
+        label,
+        bg: theme === "dark" ? "bg-orange-500/20" : "bg-orange-200/80",
+        text: theme === "dark" ? "text-orange-300" : "text-orange-600",
+      })),
     },
     {
-      icon: <Palette className="w-5 h-5 text-pink-500 -rotate-45" />,
-      iconWrapper:
-        "rounded-lg bg-red-200/30 border-2 border-pink-400 shadow-md rotate-45",
+      icon: <Palette className="w-5 h-5" />,
+      iconWrapper: `rounded-lg border-2 shadow-md ${
+        theme === "dark"
+          ? "bg-pink-500/20 border-pink-400"
+          : "bg-red-200/30 border-pink-400"
+      }`,
       title: "What I Love",
       description:
         "Curious about where design, interactivity, and playfulness meet.",
-      tags: [
-        { label: "UI/UX", bg: "bg-red-400/40", text: "text-pink-600" },
-        { label: "3D Web", bg: "bg-red-400/40", text: "text-pink-600" },
-        { label: "Animations", bg: "bg-red-400/40", text: "text-pink-600" },
-      ],
+      tags: ["UI/UX", "3D Web", "Animations"].map((label) => ({
+        label,
+        bg: theme === "dark" ? "bg-pink-500/20" : "bg-red-400/40",
+        text: theme === "dark" ? "text-pink-300" : "text-pink-600",
+      })),
     },
     {
-      icon: <NotebookPen className="w-5 h-5 text-blue-500" />,
-      iconWrapper:
-        "rounded-lg bg-blue-300/30 border-2 border-blue-400 shadow-md",
+      icon: <NotebookPen className="w-5 h-5" />,
+      iconWrapper: `rounded-lg border-2 shadow-md ${
+        theme === "dark"
+          ? "bg-blue-500/20 border-blue-400"
+          : "bg-blue-300/30 border-blue-400"
+      }`,
       title: "Growing Skills",
       description:
         "Exploring backend, DevOps, and AI to connect design with infrastructure.",
       tags: [
-        { label: "Node.js", bg: "bg-blue-300/40", text: "text-blue-600" },
-        { label: "Nest.js", bg: "bg-blue-300/40", text: "text-blue-600" },
-        { label: "Express", bg: "bg-blue-300/40", text: "text-blue-600" },
-        { label: "MongoDB", bg: "bg-blue-300/40", text: "text-blue-600" },
-        { label: "Sequelize", bg: "bg-blue-300/40", text: "text-blue-600" },
-        { label: "PostgreSQL", bg: "bg-blue-300/40", text: "text-blue-600" },
-        { label: "AWS", bg: "bg-blue-300/40", text: "text-blue-600" },
-        {
-          label: "Github Actions",
-          bg: "bg-blue-300/40",
-          text: "text-blue-600",
-        },
-        { label: "CI/CD", bg: "bg-blue-300/40", text: "text-blue-600" },
-        { label: "AI", bg: "bg-blue-300/40", text: "text-blue-600" },
-        { label: "Python", bg: "bg-blue-300/40", text: "text-blue-600" },
-      ],
+        "Node.js",
+        "Nest.js",
+        "Express",
+        "MongoDB",
+        "Sequelize",
+        "PostgreSQL",
+        "AWS",
+        "Github Actions",
+        "CI/CD",
+        "AI",
+        "Python",
+      ].map((label) => ({
+        label,
+        bg: theme === "dark" ? "bg-blue-500/20" : "bg-blue-300/40",
+        text: theme === "dark" ? "text-blue-300" : "text-blue-600",
+      })),
     },
     {
-      icon: <Globe className="w-5 h-5 text-teal-600" />,
-      iconWrapper:
-        "rounded-full bg-teal-200/30 border-2 border-teal-500 shadow-md",
+      icon: <Globe className="w-5 h-5" />,
+      iconWrapper: `rounded-full border-2 shadow-md ${
+        theme === "dark"
+          ? "bg-teal-500/20 border-teal-500"
+          : "bg-teal-200/30 border-teal-500"
+      }`,
       title: "Location",
       description:
         "Based in Indonesia 🌏 — always open to remote collaboration.",
       tags: [
-        {
-          label: "Banten, Tangerang Selatan",
-          bg: "bg-teal-300/40",
-          text: "text-teal-700",
-        },
-        {
-          label: "Remote-friendly",
-          bg: "bg-teal-300/40",
-          text: "text-teal-700",
-        },
-        {
-          label: "Willing-to-relocate",
-          bg: "bg-teal-300/40",
-          text: "text-teal-700",
-        },
-      ],
+        "Banten, Tangerang Selatan",
+        "Remote-friendly",
+        "Willing-to-relocate",
+      ].map((label) => ({
+        label,
+        bg: theme === "dark" ? "bg-teal-500/20" : "bg-teal-300/40",
+        text: theme === "dark" ? "text-teal-300" : "text-teal-700",
+      })),
     },
   ];
 
@@ -175,19 +165,32 @@ export const About = () => {
     setShuffleKey((k) => k + 1);
   };
 
-  const getColors = (type: string) => {
-    switch (type) {
-      case "frontend":
-        return "bg-yellow-100 hover:bg-yellow-200 text-yellow-800";
-      case "three":
-        return "bg-blue-100 hover:bg-blue-200 text-blue-800";
-      case "backend":
-        return "bg-green-100 hover:bg-green-200 text-green-800";
-      case "learning":
-        return "bg-red-100 hover:bg-red-200 text-red-800";
-      default:
-        return "bg-gray-100 hover:bg-gray-200 text-gray-800";
-    }
+  const colorKeys: Record<string, { light: string; dark: string }> = {
+    frontend: {
+      light:
+        "bg-yellow-200 hover:bg-yellow-300 text-yellow-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-300 shadow-yellow-500/30 hover:shadow-yellow-400/50 hover:scale-105 transition-all",
+    },
+    backend: {
+      light:
+        "bg-green-200 hover:bg-green-300 text-green-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-green-500/20 hover:bg-green-500/40 text-green-300 shadow-green-500/30 hover:shadow-green-400/50 hover:scale-105 transition-all",
+    },
+    three: {
+      light:
+        "bg-purple-200 hover:bg-purple-300 text-purple-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 shadow-purple-500/30 hover:shadow-purple-400/50 hover:scale-105 transition-all",
+    },
+    learning: {
+      light:
+        "bg-pink-200 hover:bg-pink-300 text-pink-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-pink-500/20 hover:bg-pink-500/40 text-pink-300 shadow-pink-500/30 hover:shadow-pink-400/50 hover:scale-105 transition-all",
+    },
+    general: {
+      light:
+        "bg-blue-200 hover:bg-blue-300 text-blue-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 shadow-blue-500/30 hover:shadow-blue-400/50 hover:scale-105 transition-all",
+    },
   };
 
   return (
@@ -197,16 +200,13 @@ export const About = () => {
     >
       {/* Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Firework 1 */}
         <div className="absolute top-1/4 left-1/3 w-10 h-10 rounded-full bg-[#6366f1]/40 animate-firework" />
-        {/* Firework 2 */}
         <div className="absolute top-2/3 left-2/3 w-12 h-12 rounded-full bg-[#f472b6]/70 animate-firework delay-300" />
-        {/* Firework 3 */}
         <div className="absolute top-1/2 left-1/5 w-8 h-8 rounded-full bg-[#f97316]/70 animate-firework delay-500" />
       </div>
 
       <div className="flex flex-col lg:flex-row gap-12 items-start">
-        {/* Left Column: Story + Traits */}
+        {/* Left Column */}
         <div className="flex-1">
           <h3 className="font-subheading text-2xl md:text-3xl text-foreground mb-6">
             My Journey So Far 🚀
@@ -234,13 +234,18 @@ export const About = () => {
             UI up front.
           </p>
 
-          {/* Traits + Shuffle */}
-
+          {/* Shuffle button + traits */}
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
             <Button
               onClick={handleShuffle}
-              className="flex items-center gap-2 bg-red-500 hover:bg-orange-300 text-white"
-              variant="outline"
+              className={`flex items-center gap-2 text-white cursor-pointer 
+    transition-all duration-500 ease-in-out 
+    hover:scale-105 active:scale-95 shadow-md
+    ${
+      theme === "light"
+        ? "bg-emerald-400 hover:bg-emerald-600"
+        : "bg-emerald-800 hover:bg-emerald-600"
+    }`}
               aria-label="Shuffle Traits"
             >
               <Shuffle className="w-4 h-4" />
@@ -251,15 +256,14 @@ export const About = () => {
             >
               {traits.map((trait) => {
                 const Icon = trait.icon;
+                const traitColors =
+                  colorKeys[trait.type][theme === "dark" ? "dark" : "light"];
                 return (
                   <span
                     key={trait.label}
-                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium transform transition-all duration-500 ease-in-out opacity-0 animate-fadeIn ${getColors(
-                      trait.type
-                    )}`}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium animate-fadeIn ${traitColors}`}
                   >
-                    <Icon className="w-4 h-4" />
-                    {trait.label}
+                    <Icon className="w-4 h-4" /> {trait.label}
                   </span>
                 );
               })}
@@ -267,36 +271,33 @@ export const About = () => {
           </div>
         </div>
 
-        {/* Right Column: Milestones */}
-        <div className="flex-1 w-full">
+        {/* Right Column */}
+        <div className="flex-1 w-full transition-all duration-500">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
-            {milestones.map((milestone, idx) => (
+            {descriptions.map((description, idx) => (
               <div key={idx} className="text-center">
                 {/* Icon */}
                 <div
-                  className={`mx-auto flex h-10 w-10 items-center justify-center relative z-10 ${milestone.iconWrapper}`}
+                  className={`mx-auto flex h-10 w-10 items-center justify-center relative z-10 ${description.iconWrapper}`}
                 >
-                  {milestone.icon}
+                  {description.icon}
                 </div>
 
-                {/* Title */}
                 <h4 className="font-subheading text-lg text-card-foreground mt-4 mb-2">
-                  {milestone.title}
+                  {description.title}
                 </h4>
 
-                {/* Description */}
-                {milestone.description && (
+                {description.description && (
                   <p className="text-muted-foreground mb-2 text-sm md:text-base">
-                    {milestone.description}
+                    {description.description}
                   </p>
                 )}
 
-                {/* Tags */}
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {milestone.tags.map((tag, i) => (
+                  {description.tags.map((tag, i) => (
                     <span
                       key={i}
-                      className={`px-2 py-1 rounded-md text-sm font-medium ${tag.bg} ${tag.text}`}
+                      className={`px-2 py-1 rounded-md text-sm font-medium transition-all duration-500 ${tag.bg} ${tag.text}`}
                     >
                       {tag.label}
                     </span>

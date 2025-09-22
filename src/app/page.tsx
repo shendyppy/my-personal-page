@@ -6,7 +6,6 @@ import { LoaderPinwheel } from "lucide-react";
 import { Navigation } from "@/components/navigation";
 import { About } from "@/components/sections/about";
 import { Hero3D } from "@/components/sections/hero3d";
-import { Professional } from "@/components/sections/professional";
 import { Skills } from "@/components/sections/skills";
 
 const Home = () => {
@@ -32,7 +31,6 @@ const Home = () => {
           <Hero3D />
           <About />
           <Skills />
-          <Professional />
         </main>
       )}
     </div>
