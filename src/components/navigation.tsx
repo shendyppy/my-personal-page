@@ -59,14 +59,14 @@ export function Navigation() {
 
   const navItems = [
     { id: "hero", label: <Box className="!size-8 p-1 inline my-1" /> },
+    {
+      id: "professional",
+      label: <BriefcaseBusiness className="!size-8 p-1 inline my-1" />,
+    },
     { id: "about", label: <HatGlasses className="!size-8 p-1 inline my-1" /> },
     {
       id: "skills",
       label: <FlaskConical className="!size-8 p-1 inline my-1" />,
-    },
-    {
-      id: "professional",
-      label: <BriefcaseBusiness className="!size-8 p-1 inline my-1" />,
     },
   ];
 

@@ -210,17 +210,17 @@ export const Skills = () => {
   return (
     <section
       id="skills"
-      className="max-w-6xl xl:h-screen px-4 md:px-6 relative overflow-hidden space-y-8 !mx-auto"
+      className="max-w-6xl xl:h-screen px-4 md:px-6 py-2 relative overflow-hidden space-y-8 !mx-auto"
     >
       {/* Header */}
       <div className="relative text-center">
         <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-4">
           <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-            Skills & Technologies{" "}
+            Experiments{" "}
           </span>
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
-          Explore my <span className="text-accent font-semibold">3D orbit</span>{" "}
+          Explore <span className="text-accent font-semibold">3D orbit</span>{" "}
           of skills and browse through categorized cards{" "}
         </p>
         <div className="mt-3 w-24 h-1 bg-gradient-to-r from-accent to-primary mx-auto rounded-full" />

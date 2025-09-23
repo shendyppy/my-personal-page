@@ -1,311 +1,379 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
+
 import {
-  Code,
-  Layout,
-  Layers3,
-  Cpu,
-  Workflow,
-  Gamepad2,
-  Lightbulb,
-  Brain,
-  Sparkles,
-  Bot,
-  Frame,
-  Wand,
-  Shuffle,
-  Briefcase,
-  Palette,
-  Globe,
-  NotebookPen,
-  BookText,
-  Library,
-  NotepadText,
+  Mail,
+  Linkedin,
+  Github,
+  Instagram,
+  Twitter,
+  ChevronDown,
+  ArrowBigRight,
 } from "lucide-react";
 
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useThemeContext } from "@/app/providers/ThemeProvider";
+import { scrollToSection } from "@/lib/utils";
 
 export const About = () => {
-  const { theme } = useThemeContext();
+  const [expandedExperience, setExpandedExperience] = useState<number | null>(
+    null
+  );
 
-  const initialTraits = [
-    { label: "Curious Mind", type: "general", icon: Lightbulb },
+  const items = [
     {
-      label: "Problem Solver (still eager to learn)",
-      type: "general",
-      icon: Workflow,
-    },
-    { label: "Always Growing", type: "general", icon: Brain },
-
-    { label: "Exploring Front-End Craft", type: "frontend", icon: Layout },
-    { label: "UI/UX Enthusiast", type: "frontend", icon: Frame },
-    { label: "Playful Experiments", type: "frontend", icon: Sparkles },
-    { label: "Test Driven Development", type: "frontend", icon: Sparkles },
-
-    { label: "Learning 3D & Graphics", type: "three", icon: Layers3 },
-    { label: "Trying Out Animations", type: "three", icon: Gamepad2 },
-    { label: "Polishing Interfaces", type: "three", icon: Wand },
-
-    { label: "Backend Beginner", type: "backend", icon: Code },
-    { label: "REST API Craft", type: "backend", icon: Cpu },
-    { label: "Docker Self Test Endpoint", type: "backend", icon: Bot },
-
-    {
-      label: "DevOps Love at The First Deployment",
-      type: "learning",
-      icon: BookText,
-    },
-    { label: "AI Engineer Wanna Be", type: "learning", icon: Library },
-    { label: "Database Want to Learn", type: "learning", icon: NotepadText },
-  ];
-
-  const descriptions = [
-    {
-      icon: <Briefcase className="w-5 h-5 -rotate-45" />,
-      iconWrapper: `rounded-full border-2 shadow-md rotate-45 ${
-        theme === "dark"
-          ? "bg-orange-500/20 border-orange-400"
-          : "bg-orange-200/40 border-orange-500"
-      }`,
-      title: "Experience",
-      description:
-        "3+ years building modern web apps and solving real-world problems.",
-      tags: [
-        "React / Vite.js",
-        "Next.js",
-        "Vue.js",
-        "TypeScript",
-        "JavaScript",
-        "Jest",
-        "Various UI Frameworks",
-        "Various CSS Frameworks",
-      ].map((label) => ({
-        label,
-        bg: theme === "dark" ? "bg-orange-500/20" : "bg-orange-200/80",
-        text: theme === "dark" ? "text-orange-300" : "text-orange-600",
-      })),
+      href: "https://github.com/shendyppy",
+      icon: <Github className="size-6" />,
+      label: "GitHub",
     },
     {
-      icon: <Palette className="w-5 h-5" />,
-      iconWrapper: `rounded-lg border-2 shadow-md ${
-        theme === "dark"
-          ? "bg-pink-500/20 border-pink-400"
-          : "bg-red-200/30 border-pink-400"
-      }`,
-      title: "What I Love",
-      description:
-        "Curious about where design, interactivity, and playfulness meet.",
-      tags: ["UI/UX", "3D Web", "Animations"].map((label) => ({
-        label,
-        bg: theme === "dark" ? "bg-pink-500/20" : "bg-red-400/40",
-        text: theme === "dark" ? "text-pink-300" : "text-pink-600",
-      })),
+      href: "https://www.linkedin.com/in/shendyppy/",
+      icon: <Linkedin className="size-6" />,
+      label: "LinkedIn",
     },
     {
-      icon: <NotebookPen className="w-5 h-5" />,
-      iconWrapper: `rounded-lg border-2 shadow-md ${
-        theme === "dark"
-          ? "bg-blue-500/20 border-blue-400"
-          : "bg-blue-300/30 border-blue-400"
-      }`,
-      title: "Growing Skills",
-      description:
-        "Exploring backend, DevOps, and AI to connect design with infrastructure.",
-      tags: [
-        "Node.js",
-        "Nest.js",
-        "Express",
-        "MongoDB",
-        "Sequelize",
-        "PostgreSQL",
-        "AWS",
-        "Github Actions",
-        "CI/CD",
-        "AI",
-        "Python",
-      ].map((label) => ({
-        label,
-        bg: theme === "dark" ? "bg-blue-500/20" : "bg-blue-300/40",
-        text: theme === "dark" ? "text-blue-300" : "text-blue-600",
-      })),
+      href: "https://www.instagram.com/shendyppy/",
+      icon: <Instagram className="size-6" />,
+      label: "Instagram",
     },
     {
-      icon: <Globe className="w-5 h-5" />,
-      iconWrapper: `rounded-full border-2 shadow-md ${
-        theme === "dark"
-          ? "bg-teal-500/20 border-teal-500"
-          : "bg-teal-200/30 border-teal-500"
-      }`,
-      title: "Location",
-      description:
-        "Based in Indonesia 🌏 — always open to remote collaboration.",
-      tags: [
-        "Banten, Tangerang Selatan",
-        "Remote-friendly",
-        "Willing-to-relocate",
-      ].map((label) => ({
-        label,
-        bg: theme === "dark" ? "bg-teal-500/20" : "bg-teal-300/40",
-        text: theme === "dark" ? "text-teal-300" : "text-teal-700",
-      })),
+      href: "https://www.twitter.com/shendyppy/",
+      icon: <Twitter className="size-6" />,
+      label: "Twitter",
+    },
+    {
+      href: "mailto:shendyppy@gmail.com?subject=Hello Shendy&body=I%20saw%20your%20portfolio!",
+      icon: <Mail className="size-6" />,
+      label: "Email",
     },
   ];
 
-  const [traits, setTraits] = useState(initialTraits);
-  const [shuffleKey, setShuffleKey] = useState(0);
+  const techStacks = [
+    { name: "React", src: "/assets/img/react.png" },
+    { name: "TypeScript", src: "/assets/img/typescript.png" },
+    { name: "JavaScript", src: "/assets/img/javascript.png" },
+    { name: "Redux", src: "/assets/img/redux.png" },
+    { name: "Axios", src: "/assets/img/axios.png" },
+  ];
 
-  const shuffleArray = (array: typeof traits) => {
-    return [...array].sort(() => Math.random() - 0.5);
-  };
+  const experiences = [
+    {
+      id: 1,
+      title: "Front End Developer",
+      company: "PT. Daya Dimensi Indonesia (DDI)",
+      logo: "/assets/img/ddi-logo.webp",
+      location: "Jakarta, Indonesia - Remote",
+      period: "February 2022 - Present",
+      current: true,
+      description:
+        "Human resources consultant specializing in learning management systems and assessment platforms.",
+      responsibilities: [
+        "Drove product iteration cycles by participating in planning and quality reviews, ensuring timely delivery of high-impact features.",
+        "Enhanced learning management systems with focus on usability, scalability, and performance.",
+        "Built and delivered 80+ features including face recognition, video conferencing, dynamic organizational charts, and real-time communication.",
+        "Led end-to-end development of multiple applications across diverse business domains.",
+      ],
+      projects: [
+        "EnGauge – Assessment Platform (Released, internal use)",
+        "Learning Hub – Learning Platform (Released, internal use)",
+        "TPOP (Talent Potential Predictors) – (Released, internal use)",
+        "DASH SaaS – SaaS assessment platform with video conferencing (Released, internal use)",
+        "WISH – Career discovery platform (Released, education.acelents.com)",
+        "ACELENTS – SaaS platform for assessment and recruitment (In development)",
+        "PortrAI – AI-driven assessment platform (In development)",
+      ],
+      techStack:
+        "React.js, Redux, Axios, Ant Design, Firebase, Vite.js, TypeScript",
+    },
+    {
+      id: 2,
+      title: "Front End Developer",
+      company: "PT. Mahardika Solusi Teknologi (IDE Asia)",
+      logo: "/assets/img/ide-logo.webp",
+      location: "Jakarta, Indonesia - Remote",
+      period: "October 2021 - May 2022, September 2024 - August 2025",
+      current: false,
+      description:
+        "Technology consultant working on banking integration features and cross-border payment solutions.",
+      responsibilities: [
+        "Contributed to BI-FAST, one of Indonesia's largest banking integration features for interbank transactions.",
+        "Implemented Vietnam eTax Payment, a regional cross-border banking initiative.",
+        "Delivered 20+ production-ready features enhancing customer experience in banking applications.",
+        "Collaborated with Big 4 global consulting firm on retail/consumer banking platform.",
+        "Built responsive, accessible, and user-friendly banking service interfaces.",
+      ],
+      projects: [
+        "Banking Platform (BI-FAST & VN eTax features, Released, internal use)",
+      ],
+      techStack: "React.js, Redux, Axios, Material UI, Jenkins, Sonar",
+    },
+  ];
 
-  const handleShuffle = () => {
-    setTraits(shuffleArray(traits));
-    setShuffleKey((k) => k + 1);
-  };
-
-  const colorKeys: Record<string, { light: string; dark: string }> = {
-    frontend: {
-      light:
-        "bg-yellow-200 hover:bg-yellow-300 text-yellow-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-300 shadow-yellow-500/30 hover:shadow-yellow-400/50 hover:scale-105 transition-all",
-    },
-    backend: {
-      light:
-        "bg-green-200 hover:bg-green-300 text-green-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-green-500/20 hover:bg-green-500/40 text-green-300 shadow-green-500/30 hover:shadow-green-400/50 hover:scale-105 transition-all",
-    },
-    three: {
-      light:
-        "bg-purple-200 hover:bg-purple-300 text-purple-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 shadow-purple-500/30 hover:shadow-purple-400/50 hover:scale-105 transition-all",
-    },
-    learning: {
-      light:
-        "bg-pink-200 hover:bg-pink-300 text-pink-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-pink-500/20 hover:bg-pink-500/40 text-pink-300 shadow-pink-500/30 hover:shadow-pink-400/50 hover:scale-105 transition-all",
-    },
-    general: {
-      light:
-        "bg-blue-200 hover:bg-blue-300 text-blue-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 shadow-blue-500/30 hover:shadow-blue-400/50 hover:scale-105 transition-all",
-    },
+  const toggleExperience = (id: number | null) => {
+    setExpandedExperience(expandedExperience === id ? null : id);
   };
 
   return (
     <section
       id="about"
-      className="relative max-w-6xl flex flex-col justify-center items-center xl:h-screen py-16 px-6 mx-auto"
+      className="w-full flex flex-col justify-center items-center xl:h-screen py-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 mx-auto rounded-[40px] md:rounded-[80px] shadow-2xl bg-accent"
     >
-      {/* Blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/3 w-10 h-10 rounded-full bg-[#6366f1]/40 animate-firework" />
-        <div className="absolute top-2/3 left-2/3 w-12 h-12 rounded-full bg-[#f472b6]/70 animate-firework delay-300" />
-        <div className="absolute top-1/2 left-1/5 w-8 h-8 rounded-full bg-[#f97316]/70 animate-firework delay-500" />
-      </div>
+      <div className="max-w-6xl w-full flex flex-col gap-8 md:gap-12">
+        {/* Top row: text, photo, socials */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
+          {/* Text block */}
+          <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl transition-all duration-500 hover:rotate-2 hover:scale-105 hover:shadow-xl">
+            <h2 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
+              <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                Professional Dreamer
+              </span>
+            </h2>
+            <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
+              I began my career as a civil engineer, but curiosity soon pulled
+              me into tech{" "}
+              <span className="italic underline">
+                (during the pandemic I challenged myself to switch paths by
+                joining a coding bootcamp)
+              </span>
+              . Growing up as a gamer — and still one today — I was always
+              fascinated by how those worlds were built. Realizing that a few
+              lines of code could bring something interactive to life was
+              game-changing. Since then, I&apos;ve been all-in on front-end
+              craft: experimenting with 3D on the web, and polishing interfaces
+              that feel playful and intuitive.
+            </p>
+          </Card>
 
-      <div className="flex flex-col lg:flex-row gap-12 items-start">
-        {/* Left Column */}
-        <div className="flex-1">
-          <h3 className="font-subheading text-2xl md:text-3xl text-foreground mb-6">
-            My Journey So Far 🚀
-          </h3>
-          <p className="text-muted-foreground mb-6 leading-relaxed">
-            I began my career as a civil engineer, but curiosity soon pulled me
-            into tech{" "}
-            <span className="italic underline">
-              (during the pandemic I challenged myself to switch paths by
-              joining a coding bootcamp)
-            </span>
-            . Growing up as a gamer — and still one today — I was always
-            fascinated by how those worlds were built. Realizing that a few
-            lines of code could bring something interactive to life was
-            game-changing. Since then, I’ve been all-in on front-end craft:
-            experimenting with 3D on the web, and polishing interfaces that feel
-            playful and intuitive.
-          </p>
-          <p className="text-muted-foreground mb-6 leading-relaxed">
-            Recently, I’ve been revisiting the backend, DevOps, and even dipping
-            my toes into LLMs — learning my way through Node.js, Nest.js, ORMs,
-            Python, and the world of CI/CD and deployment. I’m still early on
-            this path, but my aim is clear: to eventually feel just as
-            comfortable building systems behind the scenes as I do shaping the
-            UI up front.
-          </p>
+          {/* Photo */}
+          <div className="lg:col-span-2 transition-all duration-500 hover:-rotate-2 hover:scale-105 hover:shadow-xl">
+            <Image
+              src="/assets/Shendy.webp"
+              width={1000}
+              height={1000}
+              alt="Photos of Me"
+              className="w-full h-auto rounded-xl object-cover"
+              priority
+            />
+          </div>
 
-          {/* Shuffle button + traits */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-            <Button
-              onClick={handleShuffle}
-              className={`flex items-center gap-2 text-white cursor-pointer 
-    transition-all duration-500 ease-in-out 
-    hover:scale-105 active:scale-95 shadow-md
-    ${
-      theme === "light"
-        ? "bg-emerald-400 hover:bg-emerald-600"
-        : "bg-emerald-800 hover:bg-emerald-600"
-    }`}
-              aria-label="Shuffle Traits"
-            >
-              <Shuffle className="w-4 h-4" />
-            </Button>
-            <div
-              key={shuffleKey}
-              className="flex flex-wrap gap-2 transition-all duration-500"
-            >
-              {traits.map((trait) => {
-                const Icon = trait.icon;
-                const traitColors =
-                  colorKeys[trait.type][theme === "dark" ? "dark" : "light"];
-                return (
-                  <span
-                    key={trait.label}
-                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium animate-fadeIn ${traitColors}`}
-                  >
-                    <Icon className="w-4 h-4" /> {trait.label}
-                  </span>
-                );
-              })}
-            </div>
+          {/* Social buttons */}
+          <div className="grid grid-cols-5 md:grid-cols-3 lg:grid-cols-1 xl:grid-cols-2 gap-2 md:gap-3 justify-items-center lg:col-span-1">
+            {items.map((item, i) => (
+              <Button
+                key={i}
+                variant="outline"
+                asChild
+                aria-label={`Link to my ${item.label}`}
+                className="size-14 md:size-16 rounded-lg transition-all duration-300 transform hover:scale-110 hover:shadow-lg flex items-center justify-center"
+              >
+                <Link href={item.href} target="_blank">
+                  {item.icon}
+                </Link>
+              </Button>
+            ))}
           </div>
         </div>
 
-        {/* Right Column */}
-        <div className="flex-1 w-full transition-all duration-500">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
-            {descriptions.map((description, idx) => (
-              <div key={idx} className="text-center">
-                {/* Icon */}
-                <div
-                  className={`mx-auto flex h-10 w-10 items-center justify-center relative z-10 ${description.iconWrapper}`}
-                >
-                  {description.icon}
-                </div>
+        {/* Bottom row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
+          {/* CV Card */}
+          <Card className="col-span-2 sm:col-span-1 lg:col-span-2 p-4 md:p-6 flex flex-col items-center justify-center gap-4 transition-all duration-500 hover:shadow-xl">
+            <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-2 md:mb-4">
+              <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                Curriculum Vitae
+              </span>
+            </h4>
 
-                <h4 className="font-subheading text-lg text-card-foreground mt-4 mb-2">
-                  {description.title}
-                </h4>
-
-                {description.description && (
-                  <p className="text-muted-foreground mb-2 text-sm md:text-base">
-                    {description.description}
-                  </p>
-                )}
-
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {description.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className={`px-2 py-1 rounded-md text-sm font-medium transition-all duration-500 ${tag.bg} ${tag.text}`}
-                    >
-                      {tag.label}
-                    </span>
-                  ))}
-                </div>
+            {/* CV Preview with hover scroll effect */}
+            <div className="w-full h-[150px] md:h-[200px] overflow-hidden rounded-lg shadow-md relative">
+              <div className="absolute inset-0 transition-transform duration-[2500ms] ease-in-out hover:-translate-y-[65%]">
+                <Image
+                  src="/assets/Screenshot_CV.png"
+                  alt="CV Preview"
+                  width={300}
+                  height={1000}
+                  className="w-full h-auto object-contain"
+                />
               </div>
-            ))}
-          </div>
+            </div>
+
+            {/* Download button with hover animation */}
+            <Button
+              asChild
+              className="px-6 md:px-8 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:bg-primary/90 active:scale-95"
+            >
+              <Link
+                href="/assets/CV_Shendy Putra Perdana Yohansah_19 Sep 2025.pdf"
+                target="_blank"
+                download
+                className="flex items-center gap-2"
+              >
+                Download
+              </Link>
+            </Button>
+          </Card>
+
+          {/* Tech Stacks Card */}
+          <Card className="col-span-2 sm:col-span-1 lg:col-span-2 p-4 md:p-6 transition-all duration-500 hover:scale-105 hover:shadow-xl">
+            <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
+              <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                Tech Stacks
+              </span>
+            </h4>
+            <div className="flex flex-wrap gap-2 md:gap-3">
+              {techStacks.map((tech, index) => (
+                <div
+                  key={index}
+                  className="group relative bg-background/50 backdrop-blur-sm rounded-lg p-2 md:p-3 transition-all duration-300 hover:scale-110 hover:rotate-12 hover:shadow-lg border border-border/50"
+                >
+                  <Image
+                    src={tech.src}
+                    width={32}
+                    height={32}
+                    alt={tech.name}
+                    className="md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                    {tech.name}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end relative">
+              <Button
+                className="mt-4 md:mt-6 cursor-pointer animate-moveRight text-"
+                variant="link"
+                onClick={() => scrollToSection("skills")}
+              >
+                Explore more <ArrowBigRight />
+              </Button>
+            </div>
+          </Card>
+
+          {/* Experiences Card */}
+          <Card className="col-span-2 p-4 md:p-6 transition-all duration-500 hover:shadow-xl">
+            <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
+              <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                Experiences
+              </span>
+            </h4>
+            <div className="space-y-3 md:space-y-4 max-h-[400px] overflow-y-auto px-1">
+              {experiences.map((exp) => (
+                <div
+                  key={exp.id}
+                  className="border border-border/50 rounded-lg overflow-hidden"
+                >
+                  <button
+                    onClick={() => toggleExperience(exp.id)}
+                    className={`w-full p-3 md:p-4 text-left transition-all duration-300 hover:bg-accent/20 ${
+                      exp.current ? "bg-primary/10" : "bg-background/50"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        {/* Company Logo */}
+                        <div className="flex-shrink-0">
+                          <Image
+                            src={exp.logo}
+                            width={40}
+                            height={40}
+                            alt={`${exp.company} logo`}
+                            className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover bg-white/10 p-1"
+                          />
+                        </div>
+
+                        {/* Company Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h5 className="font-semibold text-sm md:text-base text-foreground truncate">
+                              {exp.title}
+                            </h5>
+                            {exp.current && (
+                              <span className="text-xs bg-green-500/20 text-green-700 px-2 py-1 rounded-full whitespace-nowrap">
+                                Current
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs md:text-sm text-muted-foreground truncate">
+                            {exp.company}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {exp.period}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="ml-2">
+                        <ChevronDown
+                          className={`size-4 md:size-5 transition-transform duration-300 ${
+                            expandedExperience === exp.id
+                              ? "rotate-180"
+                              : "rotate-0"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  </button>
+
+                  {expandedExperience === exp.id && (
+                    <div className="p-3 md:p-4 border-t border-border/50 bg-background/30 animate-in slide-in-from-top-2 duration-300">
+                      <p className="text-xs md:text-sm text-muted-foreground mb-3 leading-relaxed">
+                        {exp.description}
+                      </p>
+
+                      <div className="space-y-2 md:space-y-3">
+                        <div>
+                          <h6 className="font-medium text-xs md:text-sm text-foreground mb-1 md:mb-2">
+                            Key Responsibilities:
+                          </h6>
+                          <ul className="space-y-1 text-xs text-muted-foreground">
+                            {exp.responsibilities.map((resp, idx) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="text-primary mt-1">•</span>
+                                <span className="leading-relaxed">{resp}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {exp.projects && (
+                          <div>
+                            <h6 className="font-medium text-xs md:text-sm text-foreground mb-1 md:mb-2">
+                              Key Projects:
+                            </h6>
+                            <ul className="space-y-1 text-xs text-muted-foreground">
+                              {exp.projects.map((project, idx) => (
+                                <li
+                                  key={idx}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="text-accent mt-1">•</span>
+                                  <span className="leading-relaxed">
+                                    {project}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <div>
+                          <h6 className="font-medium text-xs md:text-sm text-foreground mb-1">
+                            Tech Stack:
+                          </h6>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            {exp.techStack}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Card>
         </div>
       </div>
     </section>

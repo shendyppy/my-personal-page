@@ -1,15 +1,66 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
+import {
+  ArrowDown,
+  Shuffle,
+  Code,
+  Layout,
+  Layers3,
+  Cpu,
+  Workflow,
+  Gamepad2,
+  Lightbulb,
+  Brain,
+  Sparkles,
+  Bot,
+  Frame,
+  Wand,
+  BookText,
+  Library,
+  NotepadText,
+} from "lucide-react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text3D, Environment, Float } from "@react-three/drei";
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import TypingText from "@/hooks/useTypingEffect";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
 import { Theme } from "@/types/Theme";
+import { useIsMdUp } from "@/hooks/useIsMdUp";
+import { scrollToSection } from "@/lib/utils";
+
+const INITIAL_TRAITS = [
+  { label: "Curious Mind", type: "general", icon: Lightbulb },
+  {
+    label: "Problem Solver (still eager to learn)",
+    type: "general",
+    icon: Workflow,
+  },
+  { label: "Always Growing", type: "general", icon: Brain },
+
+  { label: "Exploring Front-End Craft", type: "frontend", icon: Layout },
+  { label: "UI/UX Enthusiast", type: "frontend", icon: Frame },
+  { label: "Playful Experiments", type: "frontend", icon: Sparkles },
+  { label: "Test Driven Development", type: "frontend", icon: Sparkles },
+
+  { label: "Learning 3D & Graphics", type: "three", icon: Layers3 },
+  { label: "Trying Out Animations", type: "three", icon: Gamepad2 },
+  { label: "Polishing Interfaces", type: "three", icon: Wand },
+
+  { label: "Backend Beginner", type: "backend", icon: Code },
+  { label: "REST API Craft", type: "backend", icon: Cpu },
+  { label: "Docker Self Test Endpoint", type: "backend", icon: Bot },
+
+  {
+    label: "DevOps Love at The First Deployment",
+    type: "learning",
+    icon: BookText,
+  },
+  { label: "AI Engineer Wanna Be", type: "learning", icon: Library },
+  { label: "Database Want to Learn", type: "learning", icon: NotepadText },
+  { label: "Shuffle", type: "shuffle", icon: Shuffle },
+];
 
 const FloatingCube = ({
   position,
@@ -29,6 +80,7 @@ const FloatingCube = ({
 };
 
 const Scene3D = ({ theme }: { theme: Theme }) => {
+  const isMdUp = useIsMdUp();
   const colors =
     theme === "dark"
       ? {
@@ -46,15 +98,17 @@ const Scene3D = ({ theme }: { theme: Theme }) => {
       <pointLight position={[10, 10, 10]} />
       <Environment preset="studio" />
 
-      <Text3D
-        font="/fonts/Press Start 2P.json"
-        size={1}
-        height={0.2}
-        position={[-1.5, 1.5, -1.2]}
-      >
-        Hi,
-        <meshStandardMaterial color={colors.text} />
-      </Text3D>
+      {isMdUp && (
+        <Text3D
+          font="/fonts/Press Start 2P.json"
+          size={1}
+          height={0.2}
+          position={[-1.5, 1.5, -1.2]}
+        >
+          Hi,
+          <meshStandardMaterial color={colors.text} />
+        </Text3D>
+      )}
 
       <FloatingCube position={[3, 1, 0]} color={colors.cubes[0]} />
       <FloatingCube position={[-3, -1.5, -5]} color={colors.cubes[1]} />
@@ -69,12 +123,49 @@ const Scene3D = ({ theme }: { theme: Theme }) => {
 export const Hero3D = () => {
   const { theme } = useThemeContext();
 
-  const scrollToSection = (section: string) => {
-    const element = document.getElementById(section);
-    if (element) {
-      const y = element.getBoundingClientRect().top + window.scrollY + -64;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
+  const [traits, setTraits] = useState(INITIAL_TRAITS);
+  const [shuffleKey, setShuffleKey] = useState(0);
+
+  const shuffleArray = (array: typeof traits) => {
+    return [...array].sort(() => Math.random() - 0.5);
+  };
+
+  const handleShuffle = () => {
+    setTraits(shuffleArray(traits));
+    setShuffleKey((k) => k + 1);
+  };
+
+  const colorKeys: Record<string, { light: string; dark: string }> = {
+    frontend: {
+      light:
+        "bg-yellow-200 hover:bg-yellow-300 text-yellow-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-300 shadow-yellow-500/30 hover:shadow-yellow-400/50 hover:scale-105 transition-all",
+    },
+    backend: {
+      light:
+        "bg-green-200 hover:bg-green-300 text-green-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-green-500/20 hover:bg-green-500/40 text-green-300 shadow-green-500/30 hover:shadow-green-400/50 hover:scale-105 transition-all",
+    },
+    three: {
+      light:
+        "bg-purple-200 hover:bg-purple-300 text-purple-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 shadow-purple-500/30 hover:shadow-purple-400/50 hover:scale-105 transition-all",
+    },
+    learning: {
+      light:
+        "bg-pink-200 hover:bg-pink-300 text-pink-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-pink-500/20 hover:bg-pink-500/40 text-pink-300 shadow-pink-500/30 hover:shadow-pink-400/50 hover:scale-105 transition-all",
+    },
+    general: {
+      light:
+        "bg-blue-200 hover:bg-blue-300 text-blue-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 shadow-blue-500/30 hover:shadow-blue-400/50 hover:scale-105 transition-all",
+    },
+    shuffle: {
+      light:
+        "bg-emerald-400 hover:bg-emerald-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all",
+      dark: "bg-emerald-800 hover:bg-emerald-600 shadow-blue-500/30 hover:shadow-blue-400/50 hover:scale-105 transition-all",
+    },
   };
 
   return (
@@ -90,7 +181,7 @@ export const Hero3D = () => {
         </Canvas>
       </div>
 
-      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto mt-auto sm:py-10">
+      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto mt-auto mb-10 sm:py-10">
         <h1
           className={`font-heading text-4xl md:text-6xl lg:text-7xl mb-6 ${
             theme === "dark" ? "text-gray-100" : "text-gray-800"
@@ -100,97 +191,42 @@ export const Hero3D = () => {
         </h1>
 
         <TypingText
-          text={`Front-End Developer with a knack for crafting clean UIs and
-          playful interactions. I’m working my way toward Full-Stack reliability
-          — curious about LLMs, fascinated by 3D elements, and putting in the
-          reps to become just as comfortable building the back end as I am
-          polishing the front.`}
+          text={`<p>
+  Hi, I'm Shendy, a Front-End Developer at <b>Daya Dimensi Indonesia</b> with <b>4+ years of experience</b>. I specialize in creating clean, user-friendly UIs and playful interactions. Currently, I'm expanding my skills to become a full-stack developer, with a keen interest in <b>Large Language Models</b> and <b>3D web elements</b>.
+</p>`}
         />
 
-        {/* CTA buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-          {/* Primary CTA */}
-          <Button
-            size="lg"
-            className={`cursor-pointer font-semibold rounded-lg transition-all duration-300 transform
-      ${
-        theme === "dark"
-          ? "bg-yellow-400 text-black hover:bg-yellow-300 hover:ring-2 hover:ring-yellow-500 hover:scale-105 shadow-md"
-          : "bg-indigo-600 text-white hover:bg-indigo-500 hover:ring-2 hover:ring-indigo-400 hover:scale-105 shadow-md"
-      }`}
-            onClick={() => scrollToSection("projects")}
-            aria-label="View My Work"
-          >
-            View My Work
-          </Button>
-
-          {/* CV Button */}
-          <Button
-            variant="outline"
-            size="lg"
-            asChild
-            aria-label="Download CV"
-            className={`rounded-lg transition-all duration-300 transform
-      ${
-        theme === "dark"
-          ? "border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-muted-foreground hover:scale-105 hover:shadow-lg"
-          : "border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white hover:scale-105 hover:shadow-lg"
-      }`}
-          >
-            <Link
-              href="/assets/CV_Shendy Putra Perdana Yohansah_19 Sep 2025.pdf"
-              download
-            >
-              Download CV
-            </Link>
-          </Button>
+        {/* Shuffle button + traits */}
+        <div
+          key={shuffleKey}
+          className="flex flex-wrap gap-2 justify-center transition-all duration-500 px-2 sm:px-4"
+        >
+          {traits.map((trait) => {
+            const Icon = trait.icon;
+            const traitColors =
+              colorKeys[trait.type][theme === "dark" ? "dark" : "light"];
+            return (
+              <Button
+                key={trait.label}
+                className={`flex items-center gap-1 
+          px-2 py-1 text-xs
+          sm:px-3 sm:py-1.5 sm:text-sm 
+          md:px-4 md:py-2 md:text-base
+          rounded-full font-medium animate-fadeIn select-none ${traitColors}`}
+                onClick={trait.type === "shuffle" ? handleShuffle : undefined}
+              >
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                {trait.label}
+              </Button>
+            );
+          })}
         </div>
 
-        {/* Social buttons */}
-        <div className="flex justify-center space-x-6 mb-12">
-          {[
-            {
-              href: "https://github.com/shendyppy",
-              icon: <Github className="h-5 w-5" />,
-              label: "GitHub",
-            },
-            {
-              href: "https://www.linkedin.com/in/shendyppy/",
-              icon: <Linkedin className="h-5 w-5" />,
-              label: "LinkedIn",
-            },
-            {
-              href: "mailto:shendyppy@gmail.com?subject=Hello Shendy&body=I%20saw%20your%20portfolio!",
-              icon: <Mail className="h-5 w-5" />,
-              label: "Email",
-            },
-          ].map((item, i) => (
-            <Button
-              key={i}
-              variant="outline"
-              size="sm"
-              asChild
-              aria-label={`Link to my ${item.label}`}
-              className={`rounded-lg transition-all duration-300 transform
-        ${
-          theme === "dark"
-            ? "border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-muted-foreground hover:scale-110 hover:shadow-md"
-            : "border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white hover:scale-110 hover:shadow-md"
-        }`}
-            >
-              <Link href={item.href} target="_blank">
-                {item.icon}
-              </Link>
-            </Button>
-          ))}
-        </div>
-
-        {/* Scroll down arrow */}
-        <div className="flex justify-center space-x-6 mb-12">
+        <div className="flex justify-center space-x-6 my-12">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => scrollToSection("about")}
+            onClick={() => scrollToSection("professional")}
             className={`animate-bounce cursor-pointer rounded-lg transition-all duration-300 transform
       ${
         theme === "dark"
