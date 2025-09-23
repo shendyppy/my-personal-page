@@ -125,9 +125,9 @@ export const About = () => {
     >
       <div className="max-w-6xl w-full flex flex-col gap-8 md:gap-12">
         {/* Top row: text, photo, socials */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4 md:gap-6 items-start">
           {/* Text block */}
-          <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl transition-all duration-500 hover:rotate-2 hover:scale-105 hover:shadow-xl">
+          <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
             <h2 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                 Professional Dreamer
@@ -199,17 +199,17 @@ export const About = () => {
           </div>
         </div>
 
+        {/* --- */}
+
         {/* Bottom row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
           {/* CV Card */}
-          <Card className="col-span-2 sm:col-span-1 lg:col-span-2 p-4 md:p-6 flex flex-col items-center justify-center gap-4 transition-all duration-500 hover:shadow-xl">
+          <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 flex flex-col items-center justify-center gap-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
             <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-2 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                 Curriculum Vitae
               </span>
             </h4>
-
-            {/* CV Preview with hover scroll effect */}
             <div className="w-full h-[150px] md:h-[200px] overflow-hidden rounded-lg shadow-md relative">
               <div className="absolute inset-0 transition-transform duration-[2500ms] ease-in-out hover:-translate-y-[65%]">
                 <Image
@@ -218,14 +218,13 @@ export const About = () => {
                   width={300}
                   height={1000}
                   className="w-full h-auto object-contain"
+                  priority
                 />
               </div>
             </div>
-
-            {/* Download button with hover animation */}
             <Button
               asChild
-              className="px-6 md:px-8 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:bg-primary/90 active:scale-95"
+              className="px-6 md:px-8 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-primary/90 active:scale-95"
             >
               <Link
                 href="/assets/CV_Shendy Putra Perdana Yohansah_19 Sep 2025.pdf"
@@ -239,7 +238,7 @@ export const About = () => {
           </Card>
 
           {/* Tech Stacks Card */}
-          <Card className="col-span-2 sm:col-span-1 lg:col-span-2 p-4 md:p-6 transition-all duration-500 hover:scale-105 hover:shadow-xl">
+          <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
             <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                 Tech Stacks
@@ -249,7 +248,7 @@ export const About = () => {
               {techStacks.map((tech, index) => (
                 <div
                   key={index}
-                  className="group relative bg-background/50 backdrop-blur-sm rounded-lg p-2 md:p-3 transition-all duration-300 hover:scale-110 hover:rotate-12 hover:shadow-lg border border-border/50"
+                  className="group relative bg-background/50 backdrop-blur-sm rounded-lg p-2 md:p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg border border-border/50"
                 >
                   <Image
                     src={tech.src}
@@ -276,7 +275,7 @@ export const About = () => {
           </Card>
 
           {/* Experiences Card */}
-          <Card className="col-span-2 p-4 md:p-6 transition-all duration-500 hover:shadow-xl">
+          <Card className="col-span-1 md:col-span-2 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
             <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                 Experiences
@@ -296,7 +295,6 @@ export const About = () => {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        {/* Company Logo */}
                         <div className="flex-shrink-0">
                           <Image
                             src={exp.logo}
@@ -306,8 +304,6 @@ export const About = () => {
                             className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover bg-white/10 p-1"
                           />
                         </div>
-
-                        {/* Company Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <h5 className="font-semibold text-sm md:text-base text-foreground truncate">
@@ -338,13 +334,11 @@ export const About = () => {
                       </div>
                     </div>
                   </button>
-
                   {expandedExperience === exp.id && (
                     <div className="p-3 md:p-4 border-t border-border/50 bg-background/30 animate-in slide-in-from-top-2 duration-300">
                       <p className="text-xs md:text-sm text-muted-foreground mb-3 leading-relaxed">
                         {exp.description}
                       </p>
-
                       <div className="space-y-2 md:space-y-3">
                         <div>
                           <h6 className="font-medium text-xs md:text-sm text-foreground mb-1 md:mb-2">
@@ -359,7 +353,6 @@ export const About = () => {
                             ))}
                           </ul>
                         </div>
-
                         {exp.projects && (
                           <div>
                             <h6 className="font-medium text-xs md:text-sm text-foreground mb-1 md:mb-2">
@@ -380,7 +373,6 @@ export const About = () => {
                             </ul>
                           </div>
                         )}
-
                         <div>
                           <h6 className="font-medium text-xs md:text-sm text-foreground mb-1">
                             Tech Stack:
