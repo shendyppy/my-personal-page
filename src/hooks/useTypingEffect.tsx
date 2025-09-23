@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 
 const TypingText = ({ text }: { text: string }) => {
   const [displayedText, setDisplayedText] = useState("");
-  const [done, setDone] = useState(false);
 
   useEffect(() => {
     let i = 0;
@@ -11,7 +10,6 @@ const TypingText = ({ text }: { text: string }) => {
       i++;
       if (i === text.length) {
         clearInterval(interval);
-        setDone(true);
       }
     }, 30);
     return () => clearInterval(interval);

@@ -17,8 +17,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { scrollToSection } from "@/lib/utils";
+import { useThemeContext } from "@/app/providers/ThemeProvider";
 
 export const About = () => {
+  const { theme } = useThemeContext();
   const [expandedExperience, setExpandedExperience] = useState<number | null>(
     null
   );
@@ -148,32 +150,52 @@ export const About = () => {
           </Card>
 
           {/* Photo */}
-          <div className="lg:col-span-2 transition-all duration-500 hover:-rotate-2 hover:scale-105 hover:shadow-xl">
-            <Image
-              src="/assets/Shendy.webp"
-              width={1000}
-              height={1000}
-              alt="Photos of Me"
-              className="w-full h-auto rounded-xl object-cover"
-              priority
-            />
-          </div>
+          <div className="lg:col-span-3">
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-3 lg:col-span-2 transition-all duration-500 hover:-rotate-2 hover:scale-105 hover:shadow-xl">
+                  <Image
+                    src="/assets/Shendy.webp"
+                    width={1000}
+                    height={1000}
+                    alt="Photos of Me"
+                    className="w-full h-auto rounded-xl object-cover"
+                    priority
+                  />
+                </div>
 
-          {/* Social buttons */}
-          <div className="grid grid-cols-5 md:grid-cols-3 lg:grid-cols-1 xl:grid-cols-2 gap-2 md:gap-3 justify-items-center lg:col-span-1">
-            {items.map((item, i) => (
-              <Button
-                key={i}
-                variant="outline"
-                asChild
-                aria-label={`Link to my ${item.label}`}
-                className="size-14 md:size-16 rounded-lg transition-all duration-300 transform hover:scale-110 hover:shadow-lg flex items-center justify-center"
-              >
-                <Link href={item.href} target="_blank">
-                  {item.icon}
-                </Link>
-              </Button>
-            ))}
+                {/* Social buttons */}
+                <div className="col-span-3 lg:col-span-1 grid grid-cols-5 md:grid-cols-3 lg:grid-cols-2 gap-2 md:gap-3 justify-items-center">
+                  {items.map((item, i) => (
+                    <Button
+                      key={i}
+                      variant="outline"
+                      asChild
+                      aria-label={`Link to my ${item.label}`}
+                      className="size-14 md:size-16 rounded-lg transition-all duration-300 transform hover:scale-110 hover:shadow-lg flex items-center justify-center"
+                    >
+                      <Link href={item.href} target="_blank">
+                        {item.icon}
+                      </Link>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-row">
+                <h4
+                  className={`transition-colors ${
+                    theme === "dark" ? "text-yellow-500" : "text-yellow-200"
+                  } text-center text-sm md:text-base font-semibold mb-6 leading-relaxed italic`}
+                >
+                  &quot;Recently, I’ve been revisiting the backend, DevOps, and
+                  even dipping my toes into LLMs — learning my way through
+                  Node.js, Nest.js, ORMs, Python, and the world of CI/CD and
+                  deployment. I’m still early on this path, but my aim is clear:
+                  to eventually feel just as comfortable building systems behind
+                  the scenes as I do shaping the UI up front.&quot;
+                </h4>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -244,7 +266,7 @@ export const About = () => {
             </div>
             <div className="flex justify-end relative">
               <Button
-                className="mt-4 md:mt-6 cursor-pointer animate-moveRight text-"
+                className="mt-4 md:mt-6 cursor-pointer animate-moveRight"
                 variant="link"
                 onClick={() => scrollToSection("skills")}
               >
