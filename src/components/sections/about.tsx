@@ -125,7 +125,7 @@ export const About = () => {
     >
       <div className="max-w-6xl w-full flex flex-col gap-8 md:gap-12">
         {/* Top row: text, photo, socials */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4 md:gap-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
           {/* Text block */}
           <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
             <h2 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
@@ -202,7 +202,7 @@ export const About = () => {
         {/* --- */}
 
         {/* Bottom row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
           {/* CV Card */}
           <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 flex flex-col items-center justify-center gap-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
             <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-2 md:mb-4">
@@ -275,7 +275,7 @@ export const About = () => {
           </Card>
 
           {/* Experiences Card */}
-          <Card className="col-span-1 md:col-span-2 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
+          <Card className="col-span-1 sm:col-span-2 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
             <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                 Experiences
