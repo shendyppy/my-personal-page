@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import TypingText from "@/hooks/useTypingEffect";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
 import { Theme } from "@/types/Theme";
-import { useIsMdUp } from "@/hooks/useIsMdUp";
+import { useIsSmUp } from "@/hooks/useIsSmUp";
 import { scrollToSection } from "@/lib/utils";
 
 const INITIAL_TRAITS = [
@@ -80,7 +80,7 @@ const FloatingCube = ({
 };
 
 const Scene3D = ({ theme }: { theme: Theme }) => {
-  const isMdUp = useIsMdUp();
+  const isSmUp = useIsSmUp();
   const colors =
     theme === "dark"
       ? {
@@ -98,7 +98,7 @@ const Scene3D = ({ theme }: { theme: Theme }) => {
       <pointLight position={[10, 10, 10]} />
       <Environment preset="studio" />
 
-      {isMdUp && (
+      {isSmUp && (
         <Text3D
           font="/fonts/Press Start 2P.json"
           size={1}
@@ -181,7 +181,7 @@ export const Hero3D = () => {
         </Canvas>
       </div>
 
-      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto mt-auto mb-10 sm:py-10">
+      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto mt-auto sm:py-16">
         <h1
           className={`font-heading text-4xl md:text-6xl lg:text-7xl mb-6 ${
             theme === "dark" ? "text-gray-100" : "text-gray-800"

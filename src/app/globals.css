@@ -197,7 +197,7 @@
 
 @keyframes move-right {
   from {
-    transform: translateX(-20%);
+    transform: translateX(-25%);
   }
   to {
     transform: translateX(0);

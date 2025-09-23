@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useThemeContext } from "@/app/providers/ThemeProvider";
 
 const projects = [
   {
@@ -29,8 +28,6 @@ const projects = [
 ];
 
 export const Professional = () => {
-  const { theme } = useThemeContext();
-
   return (
     <section
       id="professional"
