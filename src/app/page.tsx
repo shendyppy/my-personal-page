@@ -7,6 +7,7 @@ import { Navigation } from "@/components/navigation";
 import { About } from "@/components/sections/about";
 import { Hero3D } from "@/components/sections/hero3d";
 import { Skills } from "@/components/sections/skills";
+import { Professional } from "@/components/sections/professional";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -20,15 +21,16 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-10">
+    <div className="items-center justify-items-center min-h-screen pb-20">
       <Navigation />
       {loading ? (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
           <LoaderPinwheel className="h-16 w-16 text-accent animate-spin" />
         </div>
       ) : (
-        <main className="flex flex-col justify-center items-center w-full">
+        <main className="flex flex-col justify-center items-center w-full gap-16">
           <Hero3D />
+          <Professional />
           <About />
           <Skills />
         </main>

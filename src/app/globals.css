@@ -42,6 +42,8 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #e5e7eb;
   --sidebar-ring: #374151;
+
+  overflow-x: hidden;
 }
 
 .dark {
@@ -79,6 +81,8 @@
   --sidebar-accent-foreground: #f9fafb;
   --sidebar-border: #334155;
   --sidebar-ring: #9ca3af;
+
+  overflow-x: hidden;
 }
 
 @theme inline {
@@ -191,6 +195,19 @@
   }
 }
 
+@keyframes move-right {
+  from {
+    transform: translateX(-20%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-moveRight {
+  animation: move-right 2s ease infinite;
+}
+
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease forwards;
 }
@@ -204,4 +221,23 @@
 .animate-slide-up.show {
   transform: translateY(0);
   opacity: 1;
+}
+
+::-webkit-scrollbar {
+  width: 0.3em;
+  height: 0.3em;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
