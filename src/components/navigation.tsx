@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import {
   Box,
   BriefcaseBusiness,
+  ClipboardList,
   FlaskConical,
   HatGlasses,
   Menu,
@@ -22,7 +23,7 @@ export function Navigation() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["hero", "about", "skills", "professional"];
+      const sections = ["hero", "about", "projects", "experiences", "skills"];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -60,10 +61,14 @@ export function Navigation() {
   const navItems = [
     { id: "hero", label: <Box className="!size-8 p-1 inline my-1" /> },
     {
-      id: "professional",
+      id: "projects",
       label: <BriefcaseBusiness className="!size-8 p-1 inline my-1" />,
     },
     { id: "about", label: <HatGlasses className="!size-8 p-1 inline my-1" /> },
+    {
+      id: "experiences",
+      label: <ClipboardList className="!size-8 p-1 inline my-1" />,
+    },
     {
       id: "skills",
       label: <FlaskConical className="!size-8 p-1 inline my-1" />,
@@ -78,7 +83,7 @@ export function Navigation() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="font-logo text-2xl text-primary">Portfolio</div>
+          <div className="font-logo text-2xl text-primary">SHENKS!</div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">

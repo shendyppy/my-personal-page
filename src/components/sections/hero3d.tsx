@@ -192,7 +192,7 @@ export const Hero3D = () => {
 
         <TypingText
           text={`<p>
-  Hi, I'm Shendy, a Front-End Developer at <b>Daya Dimensi Indonesia</b> with <b>4+ years of experience</b>. I specialize in creating clean, user-friendly UIs and playful interactions. Currently, I'm expanding my skills to become a full-stack developer, with a keen interest in <b>Large Language Models</b> and <b>3D web elements</b>.
+  Front-End Developer currently at <b>Daya Dimensi Indonesia</b> with <b>4+ years of experience</b>. I specialize in creating clean, user-friendly UIs and playful interactions. Currently, I'm expanding my skills to become a full-stack developer, with a keen interest in <b>Large Language Models</b> and <b>3D web elements</b>.
 </p>`}
         />
 
@@ -226,7 +226,7 @@ export const Hero3D = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => scrollToSection("professional")}
+            onClick={() => scrollToSection("projects")}
             className={`animate-bounce cursor-pointer rounded-lg transition-all duration-300 transform
       ${
         theme === "dark"

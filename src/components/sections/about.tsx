@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 
 import {
   Mail,
@@ -10,7 +9,6 @@ import {
   Github,
   Instagram,
   Twitter,
-  ChevronDown,
   ArrowBigRight,
 } from "lucide-react";
 
@@ -21,9 +19,6 @@ import { useThemeContext } from "@/app/providers/ThemeProvider";
 
 export const About = () => {
   const { theme } = useThemeContext();
-  const [expandedExperience, setExpandedExperience] = useState<number | null>(
-    null
-  );
 
   const items = [
     {
@@ -54,69 +49,45 @@ export const About = () => {
   ];
 
   const techStacks = [
-    { name: "React", src: "/assets/img/react.png" },
-    { name: "TypeScript", src: "/assets/img/typescript.png" },
-    { name: "JavaScript", src: "/assets/img/javascript.png" },
-    { name: "Redux", src: "/assets/img/redux.png" },
-    { name: "Axios", src: "/assets/img/axios.png" },
+    { name: "React", src: "/assets/img/content/react.png" },
+    { name: "TypeScript", src: "/assets/img/content/typescript.png" },
+    { name: "JavaScript", src: "/assets/img/content/javascript.png" },
+    { name: "Redux", src: "/assets/img/content/redux.png" },
+    { name: "Axios", src: "/assets/img/content/axios.png" },
+    { name: "Jest", src: "/assets/img/content/jest.png" },
+    { name: "NodeJS", src: "/assets/img/content/nodejs.png" },
+    { name: "Firebase", src: "/assets/img/content/firebase.png" },
+    { name: "Vue", src: "/assets/img/content/vue.png" },
   ];
 
-  const experiences = [
+  const loves = [
     {
-      id: 1,
-      title: "Front End Developer",
-      company: "PT. Daya Dimensi Indonesia (DDI)",
-      logo: "/assets/img/ddi-logo.webp",
-      location: "Jakarta, Indonesia - Remote",
-      period: "February 2022 - Present",
-      current: true,
-      description:
-        "Human resources consultant specializing in learning management systems and assessment platforms.",
-      responsibilities: [
-        "Drove product iteration cycles by participating in planning and quality reviews, ensuring timely delivery of high-impact features.",
-        "Enhanced learning management systems with focus on usability, scalability, and performance.",
-        "Built and delivered 80+ features including face recognition, video conferencing, dynamic organizational charts, and real-time communication.",
-        "Led end-to-end development of multiple applications across diverse business domains.",
+      main: { name: "DOTA 2", src: "/assets/img/content/dota-2.png" },
+      clubs: [
+        { name: "Rekonix", src: "/assets/img/content/rekonix.png" },
+        {
+          name: "Tundra Esports",
+          src: "/assets/img/content/tundra-esports.png",
+        },
       ],
-      projects: [
-        "EnGauge – Assessment Platform (Released, internal use)",
-        "Learning Hub – Learning Platform (Released, internal use)",
-        "TPOP (Talent Potential Predictors) – (Released, internal use)",
-        "DASH SaaS – SaaS assessment platform with video conferencing (Released, internal use)",
-        "WISH – Career discovery platform (Released, education.acelents.com)",
-        "ACELENTS – SaaS platform for assessment and recruitment (In development)",
-        "PortrAI – AI-driven assessment platform (In development)",
-      ],
-      techStack:
-        "React.js, Redux, Axios, Ant Design, Firebase, Vite.js, TypeScript",
     },
     {
-      id: 2,
-      title: "Front End Developer",
-      company: "PT. Mahardika Solusi Teknologi (IDE Asia)",
-      logo: "/assets/img/ide-logo.webp",
-      location: "Jakarta, Indonesia - Remote",
-      period: "October 2021 - May 2022, September 2024 - August 2025",
-      current: false,
-      description:
-        "Technology consultant working on banking integration features and cross-border payment solutions.",
-      responsibilities: [
-        "Contributed to BI-FAST, one of Indonesia's largest banking integration features for interbank transactions.",
-        "Implemented Vietnam eTax Payment, a regional cross-border banking initiative.",
-        "Delivered 20+ production-ready features enhancing customer experience in banking applications.",
-        "Collaborated with Big 4 global consulting firm on retail/consumer banking platform.",
-        "Built responsive, accessible, and user-friendly banking service interfaces.",
+      main: { name: "Football", src: "/assets/img/content/football.png" },
+      clubs: [
+        { name: "Real Madrid", src: "/assets/img/content/real-madrid.png" },
       ],
-      projects: [
-        "Banking Platform (BI-FAST & VN eTax features, Released, internal use)",
+    },
+    {
+      main: { name: "Basketball", src: "/assets/img/content/basketball.png" },
+      clubs: [
+        { name: "Los Angeles Lakers", src: "/assets/img/content/lakers.png" },
+        {
+          name: "Golden State Warriors",
+          src: "/assets/img/content/warriors.png",
+        },
       ],
-      techStack: "React.js, Redux, Axios, Material UI, Jenkins, Sonar",
     },
   ];
-
-  const toggleExperience = (id: number | null) => {
-    setExpandedExperience(expandedExperience === id ? null : id);
-  };
 
   return (
     <section
@@ -127,7 +98,7 @@ export const About = () => {
         {/* Top row: text, photo, socials */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
           {/* Text block */}
-          <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
+          <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl transition-all duration-500 hover:-rotate-2 hover:scale-105 hover:shadow-xl">
             <h2 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                 Professional Dreamer
@@ -153,7 +124,7 @@ export const About = () => {
           <div className="lg:col-span-3">
             <div className="flex flex-col gap-4">
               <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-3 lg:col-span-2 transition-all duration-500 hover:-rotate-2 hover:scale-105 hover:shadow-xl">
+                <div className="col-span-3 lg:col-span-2 transition-all duration-500 hover:rotate-2 hover:scale-105 hover:shadow-xl">
                   <Image
                     src="/assets/Shendy.webp"
                     width={1000}
@@ -204,8 +175,8 @@ export const About = () => {
         {/* Bottom row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
           {/* CV Card */}
-          <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 flex flex-col items-center justify-center gap-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
-            <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-2 md:mb-4">
+          <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 flex flex-col justify-center gap-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
+            <h4 className="text-left font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-2 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                 Curriculum Vitae
               </span>
@@ -224,7 +195,7 @@ export const About = () => {
             </div>
             <Button
               asChild
-              className="px-6 md:px-8 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-primary/90 active:scale-95"
+              className="px-6 md:px-8 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-primary/90 active:scale-95 mx-auto"
             >
               <Link
                 href="/assets/CV_Shendy Putra Perdana Yohansah_19 Sep 2025.pdf"
@@ -239,12 +210,12 @@ export const About = () => {
 
           {/* Tech Stacks Card */}
           <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
-            <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
+            <h4 className="text-center font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                 Tech Stacks
               </span>
             </h4>
-            <div className="flex flex-wrap gap-2 md:gap-3">
+            <div className="flex flex-wrap justify-center items-center gap-2 md:gap-3">
               {techStacks.map((tech, index) => (
                 <div
                   key={index}
@@ -252,10 +223,10 @@ export const About = () => {
                 >
                   <Image
                     src={tech.src}
-                    width={32}
-                    height={32}
+                    width={1000}
+                    height={1000}
                     alt={tech.name}
-                    className="md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110"
+                    className="size-8 md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
                     {tech.name}
@@ -263,7 +234,7 @@ export const About = () => {
                 </div>
               ))}
             </div>
-            <div className="flex justify-end relative">
+            <div className="flex justify-end items-end relative">
               <Button
                 className="mt-4 md:mt-6 cursor-pointer animate-moveRight"
                 variant="link"
@@ -274,116 +245,57 @@ export const About = () => {
             </div>
           </Card>
 
-          {/* Experiences Card */}
-          <Card className="col-span-1 sm:col-span-2 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
-            <h4 className="font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
+          {/* What I Love Card */}
+          <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
+            <h4 className="text-right font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-                Experiences
+                What I Love
               </span>
             </h4>
-            <div className="space-y-3 md:space-y-4 max-h-[400px] overflow-y-auto px-1">
-              {experiences.map((exp) => (
+
+            <div className="flex flex-col gap-6">
+              {loves.map((love, idx) => (
                 <div
-                  key={exp.id}
-                  className="border border-border/50 rounded-lg overflow-hidden"
+                  key={idx}
+                  className="flex flex-row items-center gap-3 md:gap-4 flex-wrap justify-center"
                 >
-                  <button
-                    onClick={() => toggleExperience(exp.id)}
-                    className={`w-full p-3 md:p-4 text-left transition-all duration-300 hover:bg-accent/20 ${
-                      exp.current ? "bg-primary/10" : "bg-background/50"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className="flex-shrink-0">
-                          <Image
-                            src={exp.logo}
-                            width={40}
-                            height={40}
-                            alt={`${exp.company} logo`}
-                            className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover bg-white/10 p-1"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h5 className="font-semibold text-sm md:text-base text-foreground truncate">
-                              {exp.title}
-                            </h5>
-                            {exp.current && (
-                              <span className="text-xs bg-green-500/20 text-green-700 px-2 py-1 rounded-full whitespace-nowrap">
-                                Current
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs md:text-sm text-muted-foreground truncate">
-                            {exp.company}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {exp.period}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="ml-2">
-                        <ChevronDown
-                          className={`size-4 md:size-5 transition-transform duration-300 ${
-                            expandedExperience === exp.id
-                              ? "rotate-180"
-                              : "rotate-0"
-                          }`}
+                  {/* Main category (DOTA2, Football, Basketball) */}
+                  <div className="group relative bg-background/50 backdrop-blur-sm rounded-lg p-2 md:p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg border border-border/50">
+                    <Image
+                      src={love.main.src}
+                      width={1000}
+                      height={1000}
+                      alt={love.main.name}
+                      className="size-8 md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                      {love.main.name}
+                    </div>
+                  </div>
+
+                  {/* Arrow icon */}
+                  <ArrowBigRight className="text-muted-foreground animate-moveRight" />
+
+                  {/* Clubs under that category */}
+                  <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                    {love.clubs.map((club, i) => (
+                      <div
+                        key={i}
+                        className="group relative bg-background/50 backdrop-blur-sm rounded-lg p-2 md:p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg border border-border/50"
+                      >
+                        <Image
+                          src={club.src}
+                          width={1000}
+                          height={1000}
+                          alt={club.name}
+                          className="size-8 md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110"
                         />
-                      </div>
-                    </div>
-                  </button>
-                  {expandedExperience === exp.id && (
-                    <div className="p-3 md:p-4 border-t border-border/50 bg-background/30 animate-in slide-in-from-top-2 duration-300">
-                      <p className="text-xs md:text-sm text-muted-foreground mb-3 leading-relaxed">
-                        {exp.description}
-                      </p>
-                      <div className="space-y-2 md:space-y-3">
-                        <div>
-                          <h6 className="font-medium text-xs md:text-sm text-foreground mb-1 md:mb-2">
-                            Key Responsibilities:
-                          </h6>
-                          <ul className="space-y-1 text-xs text-muted-foreground">
-                            {exp.responsibilities.map((resp, idx) => (
-                              <li key={idx} className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span className="leading-relaxed">{resp}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        {exp.projects && (
-                          <div>
-                            <h6 className="font-medium text-xs md:text-sm text-foreground mb-1 md:mb-2">
-                              Key Projects:
-                            </h6>
-                            <ul className="space-y-1 text-xs text-muted-foreground">
-                              {exp.projects.map((project, idx) => (
-                                <li
-                                  key={idx}
-                                  className="flex items-start gap-2"
-                                >
-                                  <span className="text-accent mt-1">•</span>
-                                  <span className="leading-relaxed">
-                                    {project}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        <div>
-                          <h6 className="font-medium text-xs md:text-sm text-foreground mb-1">
-                            Tech Stack:
-                          </h6>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            {exp.techStack}
-                          </p>
+                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                          {club.name}
                         </div>
                       </div>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>

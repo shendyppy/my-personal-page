@@ -9,7 +9,7 @@ const geistOutfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Shendy's Personal Page",
+  title: "Shendy Putra P. Y. | Software Engineer",
   description:
     "A personal space to sharpen my skills while exploring and experimenting with new tech stacks I haven’t tried before",
 };

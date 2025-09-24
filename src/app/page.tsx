@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import { LoaderPinwheel } from "lucide-react";
 
 import { Navigation } from "@/components/navigation";
-import { About } from "@/components/sections/about";
 import { Hero3D } from "@/components/sections/hero3d";
+import { Projects } from "@/components/sections/projects";
+import { About } from "../components/sections/about";
+import { Experiences } from "@/components/sections/experiences";
 import { Skills } from "@/components/sections/skills";
-import { Professional } from "@/components/sections/professional";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -30,8 +31,9 @@ const Home = () => {
       ) : (
         <main className="flex flex-col justify-center items-center w-full gap-16">
           <Hero3D />
-          <Professional />
+          <Projects />
           <About />
+          <Experiences />
           <Skills />
         </main>
       )}
