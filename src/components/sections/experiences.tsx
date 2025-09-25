@@ -73,7 +73,7 @@ export const Experiences = () => {
   return (
     <section
       id="experiences"
-      className="relative max-w-6xl flex flex-col justify-center items-center py-20 px-6 mx-auto"
+      className="relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto"
     >
       <div className="flex flex-col items-center space-y-8 w-full relative z-20">
         <div className="flex flex-col items-center text-center">

@@ -31,7 +31,7 @@ export const Projects = () => {
   return (
     <section
       id="projects"
-      className="relative max-w-6xl flex flex-col justify-center items-center xl:h-screen py-20 px-6 mx-auto"
+      className="relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto"
     >
       {/* Floating Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
@@ -49,7 +49,7 @@ export const Projects = () => {
         </h2>
 
         {/* Project Grid */}
-        <div className="flex flex-col gap-8 w-3/5 relative z-10">
+        <div className="flex flex-col gap-8 w-2/3 relative z-10">
           {projects.map((project, idx) => (
             <Link
               href={project.link}
