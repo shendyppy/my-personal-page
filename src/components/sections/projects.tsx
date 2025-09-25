@@ -5,25 +5,32 @@ import Link from "next/link";
 
 const projects = [
   {
-    title: "Daya Dimensi Indonesia - HR Consultant",
+    slug: "ddi-released",
+    title: "Daya Dimensi Indonesia - HR Consultant [RELEASED PROJECT]",
     description:
       "Building assessment platform for HR consultants to evaluate candidates, also manage clients and reports.",
-    image: "/assets/img/projects/learning-hub/cms-1.png",
-    link: "https://sapasonny.com",
+    image: "/assets/img/content/bg-released-ddi.png",
   },
   {
+    slug: "ddi-incoming",
+    title: "Daya Dimensi Indonesia - HR Consultant [INCOMING PROJECT]",
+    description:
+      "Building assessment platform for HR consultants to evaluate candidates, also manage clients and reports.",
+    image: "/assets/img/content/bg-incoming-ddi.png",
+  },
+  {
+    slug: "uob-infinity",
     title: "UOB Infinity - Banking Platform",
     description:
       "A banking platform for UOB customers to manage accounts, transfer funds, pay bills, and access financial services.",
-    image: "/assets/img/projects/learning-hub/participant-2.png",
-    link: "https://sayangikotamu.com",
+    image: "/assets/img/content/bg-uob-infinity.png",
   },
   {
+    slug: "sapasonny",
     title: "Sapasonny - Personal Branding Website",
     description:
       "A personal branding website to showcase portfolio, services, contact information, and can be used as aspiration tracker.",
-    image: "/assets/img/projects/learning-hub/cms-3.png",
-    link: "#",
+    image: "/assets/img/content/bg-bandung-makin-juara.png",
   },
 ];
 
@@ -49,10 +56,10 @@ export const Projects = () => {
         </h2>
 
         {/* Project Grid */}
-        <div className="flex flex-col gap-8 w-2/3 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-2/3 relative z-10">
           {projects.map((project, idx) => (
             <Link
-              href={project.link}
+              href={`/projects/${project.slug}`}
               key={idx}
               className="group bg-card rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-transform hover:scale-[1.02]"
             >
