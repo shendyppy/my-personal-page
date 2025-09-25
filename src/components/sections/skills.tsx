@@ -5,6 +5,7 @@ import React, { Suspense, useState, useMemo } from "react";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, OrbitControls } from "@react-three/drei";
+import Image from "next/image";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,120 +16,120 @@ const skills = [
     name: "TypeScript",
     level: 90,
     category: "Frontend",
-    logo: "assets/img/content/typescript.png",
-    model: "assets/models/typescript.glb",
+    logo: "/assets/img/content/typescript.png",
+    model: "/assets/models/typescript.glb",
     color: "#3178C6",
   },
   {
     name: "JavaScript",
     level: 95,
     category: "Frontend",
-    logo: "assets/img/content/javascript.png",
-    model: "assets/models/javascript.glb",
+    logo: "/assets/img/content/javascript.png",
+    model: "/assets/models/javascript.glb",
     color: "#F7DF1E",
   },
   {
     name: "Vue.js",
     level: 50,
     category: "Frontend",
-    logo: "assets/img/content/vue.png",
-    model: "assets/models/vue.glb",
+    logo: "/assets/img/content/vue.png",
+    model: "/assets/models/vue.glb",
     color: "#42B883",
   },
   {
     name: "React.js",
     level: 95,
     category: "Frontend",
-    logo: "assets/img/content/react.png",
-    model: "assets/models/react.glb",
+    logo: "/assets/img/content/react.png",
+    model: "/assets/models/react.glb",
     color: "#61DAFB",
   },
   {
     name: "AXIOS",
     level: 90,
     category: "Frontend",
-    logo: "assets/img/content/axios.png",
-    model: "assets/models/axios.glb",
+    logo: "/assets/img/content/axios.png",
+    model: "/assets/models/axios.glb",
     color: "#5A29E4",
   },
   {
     name: "Redux",
     level: 80,
     category: "Frontend",
-    logo: "assets/img/content/redux.png",
-    model: "assets/models/redux.glb",
+    logo: "/assets/img/content/redux.png",
+    model: "/assets/models/redux.glb",
     color: "#764ABC",
   },
   {
     name: "Jest",
     level: 70,
     category: "Frontend",
-    logo: "assets/img/content/jest.png",
-    model: "assets/models/jest.glb",
+    logo: "/assets/img/content/jest.png",
+    model: "/assets/models/jest.glb",
     color: "#C21325",
   },
   {
     name: "Python",
     level: 40,
     category: "Backend",
-    logo: "assets/img/content/python.png",
-    model: "assets/models/python.glb",
+    logo: "/assets/img/content/python.png",
+    model: "/assets/models/python.glb",
     color: "#3776AB",
   },
   {
     name: "Node.js",
     level: 60,
     category: "Backend",
-    logo: "assets/img/content/nodejs.png",
-    model: "assets/models/nodejs.glb",
+    logo: "/assets/img/content/nodejs.png",
+    model: "/assets/models/nodejs.glb",
     color: "#339933",
   },
   {
     name: "Sequelize",
     level: 50,
     category: "Backend",
-    logo: "assets/img/content/sequelize.png",
-    model: "assets/models/sequelize.glb",
+    logo: "/assets/img/content/sequelize.png",
+    model: "/assets/models/sequelize.glb",
     color: "#52B0E7",
   },
   {
     name: "Github Actions",
     level: 60,
     category: "DevOps",
-    logo: "assets/img/content/github-actions.png",
-    model: "assets/models/github-actions.glb",
+    logo: "/assets/img/content/github-actions.png",
+    model: "/assets/models/github-actions.glb",
     color: "#2088FF",
   },
   {
     name: "AWS",
     level: 50,
     category: "DevOps",
-    logo: "assets/img/content/aws.png",
-    model: "assets/models/aws.glb",
+    logo: "/assets/img/content/aws.png",
+    model: "/assets/models/aws.glb",
     color: "#FF9900",
   },
   {
     name: "cPanel",
     level: 50,
     category: "DevOps",
-    logo: "assets/img/content/cPanel.png",
-    model: "assets/models/cPanel.glb",
+    logo: "/assets/img/content/cPanel.png",
+    model: "/assets/models/cPanel.glb",
     color: "#FF6C2C",
   },
   {
     name: "Firebase",
     level: 75,
     category: "DevOps",
-    logo: "assets/img/content/firebase.png",
-    model: "assets/models/firebase.glb",
+    logo: "/assets/img/content/firebase.png",
+    model: "/assets/models/firebase.glb",
     color: "#FFCA28",
   },
   {
     name: "PostgreSQL",
     level: 60,
     category: "Database",
-    logo: "assets/img/content/postgresql.png",
-    model: "assets/models/postgresql.glb",
+    logo: "/assets/img/content/postgresql.png",
+    model: "/assets/models/postgresql.glb",
     color: "#336791",
   },
 ];
@@ -220,8 +221,8 @@ export const Skills = () => {
           </span>
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
-          Explore <span className="text-accent font-semibold">3D orbit</span>{" "}
-          of skills and browse through categorized cards{" "}
+          Explore <span className="text-accent font-semibold">3D orbit</span> of
+          skills and browse through categorized cards{" "}
         </p>
         <div className="mt-3 w-24 h-1 bg-gradient-to-r from-accent to-primary mx-auto rounded-full" />
       </div>
@@ -288,10 +289,11 @@ export const Skills = () => {
                   `}
                 >
                   <CardContent className="flex items-start gap-2 p-3 md:p-4 !py-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={skill.logo}
                       alt={skill.name}
+                      width={32}
+                      height={32}
                       className="w-8 h-8 md:w-10 md:h-10 object-contain"
                     />
                     <div>
