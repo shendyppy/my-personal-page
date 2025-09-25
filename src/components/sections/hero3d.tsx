@@ -181,7 +181,7 @@ export const Hero3D = () => {
         </Canvas>
       </div>
 
-      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto mt-auto sm:py-16">
+      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto mt-auto sm:pt-20 sm:pb-12">
         <h1
           className={`font-heading text-4xl md:text-6xl lg:text-7xl mb-6 ${
             theme === "dark" ? "text-gray-100" : "text-gray-800"
@@ -222,7 +222,7 @@ export const Hero3D = () => {
           })}
         </div>
 
-        <div className="flex justify-center space-x-6 my-12">
+        <div className="flex justify-center space-x-6 mt-12 mb-4">
           <Button
             variant="outline"
             size="sm"

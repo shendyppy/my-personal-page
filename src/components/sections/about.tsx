@@ -92,7 +92,7 @@ export const About = () => {
   return (
     <section
       id="about"
-      className="w-full flex flex-col justify-center items-center xl:h-screen py-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 mx-auto rounded-[40px] md:rounded-[80px] shadow-2xl bg-accent"
+      className="w-full flex flex-col justify-center items-center py-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 mx-auto rounded-[40px] md:rounded-[80px] shadow-2xl bg-accent"
     >
       <div className="max-w-6xl w-full flex flex-col gap-8 md:gap-12">
         {/* Top row: text, photo, socials */}

@@ -210,7 +210,7 @@ export const Skills = () => {
   return (
     <section
       id="skills"
-      className="max-w-6xl xl:h-screen px-4 md:px-6 py-2 relative overflow-hidden space-y-8 !mx-auto"
+      className="max-w-6xl px-4 md:px-6 py-2 relative overflow-hidden space-y-8 !mx-auto"
     >
       {/* Header */}
       <div className="relative text-center">
