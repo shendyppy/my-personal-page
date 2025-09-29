@@ -226,10 +226,10 @@
 @keyframes bounce-x-big {
   0%,
   100% {
-    transform: translateX(-30dvh);
+    transform: translateX(-40dvh);
   }
   50% {
-    transform: translateX(30dvh);
+    transform: translateX(40dvh);
   }
 }
 
