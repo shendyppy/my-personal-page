@@ -171,7 +171,7 @@ export const Hero3D = () => {
   return (
     <section
       id="hero"
-      className="w-full h-screen flex items-center justify-center overflow-hidden"
+      className="w-full sm:h-screen flex items-center justify-center overflow-hidden"
     >
       <div className="absolute inset-0 z-0">
         <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
@@ -181,7 +181,7 @@ export const Hero3D = () => {
         </Canvas>
       </div>
 
-      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto mt-auto sm:pt-20 sm:pb-12">
+      <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto sm:mt-auto pt-20 pb-12 sm:py-20">
         <h1
           className={`font-heading text-4xl md:text-6xl lg:text-7xl mb-6 ${
             theme === "dark" ? "text-gray-100" : "text-gray-800"
@@ -209,13 +209,13 @@ export const Hero3D = () => {
               <Button
                 key={trait.label}
                 className={`flex items-center gap-1 
-          px-2 py-1 text-xs
+          !py-[2px] !px-1 text-xs
           sm:px-3 sm:py-1.5 sm:text-sm 
           md:px-4 md:py-2 md:text-base
           rounded-full font-medium animate-fadeIn select-none ${traitColors}`}
                 onClick={trait.type === "shuffle" ? handleShuffle : undefined}
               >
-                <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Icon className="size-4 sm:size-5" />
                 {trait.label}
               </Button>
             );

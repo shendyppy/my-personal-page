@@ -62,7 +62,9 @@ const experiences = [
 export const Experiences = () => {
   const { theme } = useThemeContext();
 
-  const [expandedExperiences, setExpandedExperiences] = useState<number[]>([]);
+  const [expandedExperiences, setExpandedExperiences] = useState<number[]>([
+    1, 2,
+  ]);
 
   const toggleExperience = (id: number) => {
     setExpandedExperiences((prev) =>
