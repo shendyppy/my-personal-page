@@ -15,6 +15,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
+import Image from "next/image";
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -83,7 +84,17 @@ export function Navigation() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="font-logo text-2xl text-primary">SHENKS!</div>
+          <Image
+            src={
+              theme === "light"
+                ? "/assets/img/content/font-logo.png"
+                : "/assets/img/content/font-logo-white.png"
+            }
+            alt="logo"
+            width={100}
+            height={100}
+            className="flex w-32 h-auto transition-colors duration-400"
+          />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
