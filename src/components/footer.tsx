@@ -22,8 +22,6 @@ export const Footer = ({ loading }: { loading: boolean }) => {
             className="animate-bounce-x-big whitespace-nowrap flex flex-row gap-4 sm:gap-6 md:gap-8 px-3 sm:px-6"
           >
             <div className="flex flex-row items-center gap-3 sm:gap-6">
-              <span className="text-[10px] sm:text-xs text-gray-600">◆</span>
-
               <span className="text-[10px] sm:text-sm md:text-base tracking-widest group-hover:text-pink-400 transition-colors whitespace-nowrap">
                 © {new Date().getFullYear()} – Shendy Putra Perdana Yohansah
               </span>
