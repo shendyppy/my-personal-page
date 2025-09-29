@@ -134,19 +134,21 @@
   }
 }
 
-.font-logo {
-  font-family: "Press Start 2P", cursive;
-  font-weight: 400;
-}
+@layer utilities {
+  .font-logo {
+    font-family: "Press Start 2P", cursive;
+    font-weight: 900;
+  }
 
-.font-heading {
-  font-family: "Outfit", sans-serif;
-  font-weight: 900;
-}
+  .font-heading {
+    font-family: "Outfit", sans-serif;
+    font-weight: 900;
+  }
 
-.font-subheading {
-  font-family: "Outfit", sans-serif;
-  font-weight: 600;
+  .font-subheading {
+    font-family: "Outfit", sans-serif;
+    font-weight: 600;
+  }
 }
 
 @keyframes firework {
