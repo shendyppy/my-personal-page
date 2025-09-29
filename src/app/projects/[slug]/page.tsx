@@ -25,11 +25,26 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "EnGauge seems like a strong asset for DDI because psychometric/assessment platforms are highly valuable in HR consulting. It provides recurring value, could help differentiate them, and possibly generate reliable revenue (via clients subscribing).",
           impact: ["Scale code to be maintainable", "Revamped UI/UX"],
           images: [
-            "/assets/img/projects/engauge/cms-1.png",
-            "/assets/img/projects/engauge/cms-2.png",
-            "/assets/img/projects/engauge/participant-1.png",
-            "/assets/img/projects/engauge/participant-2.png",
-            "/assets/img/projects/engauge/participant-3.png",
+            {
+              link: "/assets/img/projects/engauge/cms-1.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/engauge/cms-2.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/engauge/participant-1.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/engauge/participant-2.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/engauge/participant-3.png",
+              isScrollable: false,
+            },
           ],
         },
         {
@@ -39,13 +54,34 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "Learning Hub is a learning platform for employees to learn and grow. It provides a convenient way for employees to access educational content, resources, and tools to improve their skills and knowledge. Have multiple learning paths, learning modules, and quizzes.",
           impact: ["Scale code to be maintainable", "Revamped UI/UX"],
           images: [
-            "/assets/img/projects/learning-hub/cms-1.png",
-            "/assets/img/projects/learning-hub/cms-2.png",
-            "/assets/img/projects/learning-hub/cms-3.png",
-            "/assets/img/projects/learning-hub/participant-1.png",
-            "/assets/img/projects/learning-hub/participant-2.png",
-            "/assets/img/projects/learning-hub/participant-3.png",
-            "/assets/img/projects/learning-hub/participant-4.png",
+            {
+              link: "/assets/img/projects/learning-hub/cms-1.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/learning-hub/cms-2.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/learning-hub/cms-3.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/learning-hub/participant-1.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/learning-hub/participant-2.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/learning-hub/participant-3.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/learning-hub/participant-4.png",
+              isScrollable: false,
+            },
           ],
         },
         {
@@ -55,9 +91,15 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "Talent Potential Predictors (TPOP) is a platform that predicts the potential of candidates based on their performance on a test. It provides an objective way to evaluate candidates and help companies make informed hiring decisions.",
           impact: ["Scale code to be maintainable", "Revamped UI/UX"],
           images: [
-            "/assets/img/projects/tpop/cms-1.png",
-            "/assets/img/projects/tpop/participant-1.png",
-            "/assets/img/projects/tpop/validator-1.png",
+            { link: "/assets/img/projects/tpop/cms-1.png", isScrollable: true },
+            {
+              link: "/assets/img/projects/tpop/participant-1.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/tpop/validator-1.png",
+              isScrollable: false,
+            },
           ],
         },
         {
@@ -71,9 +113,34 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "Software as a Service (SaaS)",
           ],
           images: [
-            "/assets/img/projects/tpop/cms-1.png",
-            "/assets/img/projects/tpop/participant-1.png",
-            "/assets/img/projects/tpop/validator-1.png",
+            {
+              link: "/assets/img/projects/dash-saas/cms-1.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/dash-saas/cms-assessor-1.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/dash-saas/cms-assessor-2.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/dash-saas/cms-assessor-3.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/dash-saas/participant-1.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/dash-saas/participant-2.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/dash-saas/participant-3.png",
+              isScrollable: false,
+            },
           ],
         },
         {
@@ -87,12 +154,30 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "Software as a Service (SaaS)",
           ],
           images: [
-            "/assets/img/projects/wish/participant-1.png",
-            "/assets/img/projects/wish/participant-2.png",
-            "/assets/img/projects/wish/participant-3.png",
-            "/assets/img/projects/wish/participant-4.png",
-            "/assets/img/projects/wish/participant-5.png",
-            "/assets/img/projects/wish/participant-6.png",
+            {
+              link: "/assets/img/projects/wish/participant-1.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/wish/participant-2.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/wish/participant-3.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/wish/participant-4.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/wish/participant-5.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/wish/participant-6.png",
+              isScrollable: true,
+            },
           ],
           link: "https://education.acelents.com/",
         },
@@ -119,13 +204,34 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "Software as a Service (SaaS)",
           ],
           images: [
-            "/assets/img/projects/acelents/cms-1.png",
-            "/assets/img/projects/acelents/cms-2.png",
-            "/assets/img/projects/acelents/cms-3.png",
-            "/assets/img/projects/acelents/cms-4-1.png",
-            "/assets/img/projects/acelents/cms-4-2.png",
-            "/assets/img/projects/acelents/cms-5.png",
-            "/assets/img/projects/acelents/cms-6.png",
+            {
+              link: "/assets/img/projects/acelents/cms-1.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/acelents/cms-2.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/acelents/cms-3.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/acelents/cms-4-1.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/acelents/cms-4-2.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/acelents/cms-5.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/acelents/cms-6.png",
+              isScrollable: false,
+            },
           ],
         },
         {
@@ -139,10 +245,22 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "Software as a Service (SaaS)",
           ],
           images: [
-            "/assets/img/projects/portrAI/cms-1.png",
-            "/assets/img/projects/portrAI/home-participant-3.png",
-            "/assets/img/projects/portrAI/chat-participant-2.png",
-            "/assets/img/projects/portrAI/email-participant-1.png",
+            {
+              link: "/assets/img/projects/portrAI/cms-1.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/portrAI/home-participant-3.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/portrAI/chat-participant-2.png",
+              isScrollable: false,
+            },
+            {
+              link: "/assets/img/projects/portrAI/email-participant-1.png",
+              isScrollable: true,
+            },
           ],
         },
       ],
@@ -163,7 +281,12 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
           description:
             "BI-FAST implementation for UOB Indonesia, for Single and Bulk Transactions",
           impact: ["Scale code to be maintainable"],
-          images: ["/assets/img/projects/uob-infinity/uob-indonesia.png"],
+          images: [
+            {
+              link: "/assets/img/projects/uob-infinity/uob-indonesia.png",
+              isScrollable: false,
+            },
+          ],
         },
         {
           id: "uob-vietnam",
@@ -175,7 +298,12 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "Review code",
             "Refactor code",
           ],
-          images: ["/assets/img/projects/uob-infinity/uob-vietnam.png"],
+          images: [
+            {
+              link: "/assets/img/projects/uob-infinity/uob-vietnam.png",
+              isScrollable: false,
+            },
+          ],
         },
       ],
     },
@@ -200,8 +328,14 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             "Review code",
           ],
           images: [
-            "/assets/img/projects/sapasonny/homepage-1.png",
-            "/assets/img/projects/sapasonny/aspiration-1.png",
+            {
+              link: "/assets/img/projects/sapasonny/homepage-1.png",
+              isScrollable: true,
+            },
+            {
+              link: "/assets/img/projects/sapasonny/aspiration-1.png",
+              isScrollable: true,
+            },
           ],
           link: "https://sonny-salimi-dummy.web.app/",
         },
@@ -214,7 +348,7 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
   if (!project) return notFound();
 
   return (
-    <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 gap-4">
+    <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 h-screen">
       <div className="flex justify-start items-start mb-6">
         <Link href="/">
           <Button
@@ -244,43 +378,54 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
             {project.overview}
           </p>
         </div>
-        <div className="space-y-4">
+        <div className="grid lg:flex grid-cols-1 sm:grid-cols-2 lg:flex-col gap-4">
           <div className="bg-gray-50 p-4 rounded-lg border hover:bg-gray-100 transition-colors duration-200">
-            <h3 className="font-semibold">Scope</h3>
+            <h3 className="text-muted-foreground font-semibold">Scope</h3>
             <p className="text-sm text-gray-600">{project.scope}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-lg border hover:bg-gray-100 transition-colors duration-200">
-            <h3 className="font-semibold">Industry</h3>
+            <h3 className="text-muted-foreground font-semibold">Industry</h3>
             <p className="text-sm text-gray-600">{project.industry}</p>
           </div>
         </div>
       </div>
 
-      {/* Highlights with sticky layout */}
-      {project.highlights.map((highlight, index) => (
-        <div key={highlight.id} className="mb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* Left side - Sticky content */}
-            <div className="lg:sticky lg:top-16 lg:self-start lg:flex lg:flex-col lg:justify-start">
-              <div className="lg:py-8">
-                <div className="text-sm text-gray-400 mb-2 font-mono">
+      {/* Enhanced highlights with improved animations and single scrollbar */}
+      <div className="lg:max-h-screen space-y-24">
+        {project.highlights.map((highlight, index) => (
+          <div
+            key={highlight.id}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16"
+          >
+            {/* Left side - Enhanced sticky content with smooth animations */}
+            <div className="lg:sticky lg:top-20 self-start h-fit">
+              <div
+                className="lg:py-8 transform transition-all duration-700 ease-out"
+                style={{
+                  animationDelay: `${index * 200}ms`,
+                }}
+              >
+                <div className="text-sm text-gray-400 mb-3 font-mono tracking-wider transform hover:scale-110 transition-transform duration-300">
                   {String(index + 1).padStart(2, "0")} /{" "}
                   {String(project.highlights.length).padStart(2, "0")}
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+                <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-6 bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent hover:from-blue-400 hover:to-purple-800 transition-all duration-500">
                   {highlight.title}
                 </h2>
-                <p className="text-muted-foreground mb-6 whitespace-pre-line leading-relaxed">
+                <p className="text-muted-foreground mb-8 whitespace-pre-line leading-relaxed text-base transform hover:translate-x-2 transition-transform duration-300">
                   {highlight.description}
                 </p>
 
-                {/* Impacts */}
+                {/* Enhanced Impacts with stagger animation */}
                 {highlight.impact?.length > 0 && (
-                  <div className="flex flex-wrap gap-3 mb-6">
+                  <div className="flex flex-wrap gap-3 mb-8">
                     {highlight.impact.map((item, i) => (
                       <div
                         key={i}
-                        className="px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-sm font-medium hover:bg-blue-100 transition-all duration-200 hover:scale-105"
+                        className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-700 text-sm font-medium hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-300 hover:scale-110 hover:-translate-y-1 cursor-default shadow-sm hover:shadow-md"
+                        style={{
+                          animationDelay: `${index * 200 + i * 100}ms`,
+                        }}
                       >
                         {item}
                       </div>
@@ -288,7 +433,7 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
                   </div>
                 )}
 
-                {/* External link button */}
+                {/* Enhanced external link button */}
                 {highlight.link && (
                   <Link
                     href={highlight.link}
@@ -297,54 +442,86 @@ const ProjectPage = async ({ params }: { params: { slug: string } }) => {
                   >
                     <Button
                       variant="outline"
-                      className="mt-4 hover:translate-y-[-2px] transition-transform duration-200 rounded-2xl"
+                      className="group relative overflow-hidden rounded-2xl border-2 px-6 py-3 font-semibold transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 hover:text-yellow-600 hover:bg-yellow-100"
                     >
-                      Visit Project
-                      <ArrowBigRight className="-rotate-45" />
+                      <span className="relative flex items-center gap-2">
+                        Visit Project
+                        <ArrowBigRight className="transition-transform duration-300 group-hover:-rotate-45 group-hover:translate-x-1" />
+                      </span>
                     </Button>
                   </Link>
                 )}
               </div>
             </div>
 
-            {/* Right side - Scrollable images */}
-            <div className="flex flex-col gap-8">
+            {/* Right side - Enhanced scrollable images with single container */}
+            <div className="space-y-8">
               {highlight.images.map((img, i) => (
                 <div
                   key={i}
-                  className="group relative bg-gradient-to-br from-white to-gray-50 p-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+                  className="group relative bg-gradient-to-br from-white via-gray-50 to-gray-100 p-4 rounded-3xl transition-all duration-700 hover:-translate-y-3 hover:rotate-1 transform-gpu"
+                  style={{
+                    animationDelay: `${index * 300 + i * 150}ms`,
+                  }}
                 >
-                  <div className="w-full h-[150px] md:h-[200px] lg:h-[250px] overflow-hidden rounded-xl shadow-md relative bg-white">
-                    <div className="absolute inset-0 transition-transform duration-[3000ms] ease-in-out group-hover:-translate-y-[70%]">
+                  <div className="relative w-full h-[160px] md:h-[220px] lg:h-[280px] overflow-hidden rounded-2xl shadow-inner bg-white">
+                    <div
+                      className={`absolute inset-0 transition-all duration-[4000ms] ease-in-out ${
+                        img.isScrollable && "group-hover:-translate-y-[75%]"
+                      } transform-gpu`}
+                    >
                       <Image
-                        src={img}
+                        src={img.link}
                         alt={`${highlight.title} - Screenshot ${i + 1}`}
                         width={600}
                         height={1200}
-                        className="w-full h-auto object-contain"
+                        className={`w-full ${
+                          img.isScrollable ? "h-auto" : "h-full"
+                        } object-contain transition-transform duration-700 group-hover:scale-105`}
                         priority={i === 0}
                       />
                     </div>
 
-                    {/* Gradient overlay at bottom to indicate more content */}
-                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 to-transparent opacity-60 group-hover:opacity-0 transition-opacity duration-500"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/30 via-black/10 to-transparent opacity-70 group-hover:opacity-0 transition-all duration-700"></div>
+
+                    <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-blue-200 transition-all duration-500"></div>
                   </div>
 
-                  {/* Image number indicator */}
-                  <div className="absolute top-5 right-5 bg-black/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute top-6 right-6 bg-black/30 backdrop-blur-md text-white text-sm px-3 py-1.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
                     {i + 1} / {highlight.images.length}
                   </div>
 
-                  {/* Scroll hint */}
-                  <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-gray-400 text-xs opacity-60 group-hover:opacity-0 transition-opacity duration-300">
-                    Hover to scroll
+                  {img.isScrollable && (
+                    <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-gray-500 text-sm opacity-60 group-hover:opacity-0 transition-all duration-500 flex items-center gap-2">
+                      <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce"></div>
+                      Hover to explore
+                      <div
+                        className="w-1 h-1 bg-gray-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
+                    </div>
+                  )}
+
+                  <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                    {[...Array(3)].map((_, particleIndex) => (
+                      <div
+                        key={particleIndex}
+                        className="absolute w-1 h-1 bg-blue-400 rounded-full animate-ping"
+                        style={{
+                          top: `${20 + particleIndex * 30}%`,
+                          left: `${10 + particleIndex * 35}%`,
+                          animationDelay: `${particleIndex * 0.5}s`,
+                          animationDuration: "2s",
+                        }}
+                      ></div>
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
