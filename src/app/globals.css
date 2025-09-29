@@ -204,15 +204,6 @@
   }
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
 @keyframes gradient-x {
   0%,
   100% {
@@ -233,6 +224,20 @@
   }
 }
 
+@keyframes bounce-x-big {
+  0%,
+  100% {
+    transform: translateX(-30dvh);
+  }
+  50% {
+    transform: translateX(30dvh);
+  }
+}
+
+.animate-bounce-x-big {
+  animation: bounce-x-big 10s infinite;
+}
+
 .animate-bounce-x {
   animation: bounce-x 1s infinite;
 }
@@ -240,12 +245,6 @@
 .animate-gradient-x {
   background-size: 200% 200%;
   animation: gradient-x 4s ease infinite;
-}
-
-.animate-marquee {
-  display: inline-block;
-  min-width: 100%;
-  animation: marquee 20s linear infinite;
 }
 
 .animate-moveRight {
