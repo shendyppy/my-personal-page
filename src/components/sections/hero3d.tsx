@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import TypingText from "@/hooks/useTypingEffect";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
 import { Theme } from "@/types/Theme";
-import { useIsSmUp } from "@/hooks/useIsSmUp";
+import { useMediaQuery } from "@/hooks/useResponsive";
 import { scrollToSection } from "@/lib/utils";
 
 const INITIAL_TRAITS = [
@@ -59,8 +59,11 @@ const INITIAL_TRAITS = [
   },
   { label: "AI Engineer Wanna Be", type: "learning", icon: Library },
   { label: "Database Want to Learn", type: "learning", icon: NotepadText },
+
   { label: "Shuffle", type: "shuffle", icon: Shuffle },
 ];
+
+type Trait = (typeof INITIAL_TRAITS)[number];
 
 const FloatingCube = ({
   position,
@@ -79,8 +82,7 @@ const FloatingCube = ({
   );
 };
 
-const Scene3D = ({ theme }: { theme: Theme }) => {
-  const isSmUp = useIsSmUp();
+const Scene3D = ({ theme, isSmUp }: { theme: Theme; isSmUp: boolean }) => {
   const colors =
     theme === "dark"
       ? {
@@ -122,6 +124,8 @@ const Scene3D = ({ theme }: { theme: Theme }) => {
 
 export const Hero3D = () => {
   const { theme } = useThemeContext();
+  const isSmUp = useMediaQuery({ min: 640 });
+  const mobileToSm = useMediaQuery({ min: 0, max: 512 });
 
   const [traits, setTraits] = useState(INITIAL_TRAITS);
   const [shuffleKey, setShuffleKey] = useState(0);
@@ -134,6 +138,46 @@ export const Hero3D = () => {
     setTraits(shuffleArray(traits));
     setShuffleKey((k) => k + 1);
   };
+
+  const groupByType = (items: Trait[]) => {
+    return items.reduce<Record<string, Trait[]>>((acc, trait) => {
+      if (!acc[trait.type]) acc[trait.type] = [];
+      acc[trait.type].push(trait);
+      return acc;
+    }, {});
+  };
+
+  const pickRandom = <T,>(arr: T[]): T | null => {
+    if (!arr || arr.length === 0) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  };
+
+  const getDisplayedTraits = (
+    traits: Trait[],
+    mobileToSm: boolean,
+    maxCount: number
+  ) => {
+    if (!mobileToSm) return traits;
+
+    const grouped = groupByType(traits);
+    const picks: Trait[] = [];
+
+    Object.values(grouped).forEach((list) => {
+      const randomPick = pickRandom(list);
+      if (randomPick) picks.push(randomPick);
+    });
+
+    const pickedLabels = new Set(picks.map((t) => t.label));
+    const leftovers = traits.filter((t) => !pickedLabels.has(t.label));
+
+    const shuffledLeftovers = leftovers.sort(() => Math.random() - 0.5);
+    const slotsLeft = maxCount - picks.length;
+    picks.push(...shuffledLeftovers.slice(0, slotsLeft));
+
+    return picks;
+  };
+
+  const displayedTraits = getDisplayedTraits(traits, mobileToSm, 7);
 
   const colorKeys: Record<string, { light: string; dark: string }> = {
     frontend: {
@@ -176,7 +220,7 @@ export const Hero3D = () => {
       <div className="absolute inset-0 z-0">
         <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
           <Suspense fallback={null}>
-            <Scene3D theme={theme} />
+            <Scene3D theme={theme} isSmUp={isSmUp} />
           </Suspense>
         </Canvas>
       </div>
@@ -201,7 +245,7 @@ export const Hero3D = () => {
           key={shuffleKey}
           className="flex flex-wrap gap-2 justify-center transition-all duration-500 px-2 sm:px-4"
         >
-          {traits.map((trait) => {
+          {displayedTraits.map((trait) => {
             const Icon = trait.icon;
             const traitColors =
               colorKeys[trait.type][theme === "dark" ? "dark" : "light"];
