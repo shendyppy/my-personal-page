@@ -122,6 +122,9 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --font-logo: "Press Start 2P", cursive;
+  --font-heading: "Outfit", sans-serif;
+  --font-subheading: "Outfit", sans-serif;
 }
 
 @layer base {
@@ -136,7 +139,7 @@
 
 @layer utilities {
   .font-logo {
-    font-family: "Press Start 2P", cursive;
+    font-family: "Press Start 2P", system-ui;
     font-weight: 900;
   }
 
@@ -149,6 +152,11 @@
     font-family: "Outfit", sans-serif;
     font-weight: 600;
   }
+}
+
+@utility font-logo {
+  font-family: "Press Start 2P", cursive;
+  font-weight: 900;
 }
 
 @keyframes firework {
