@@ -15,11 +15,11 @@ export const Footer = ({ loading }: { loading: boolean }) => {
         dark:from-gray-900 dark:to-black dark:border-gray-800
         text-gray-400`}
     >
-      <div className="flex flex-row overflow-hidden">
+      <div className="flex flex-row justify-center items-center text-center overflow-hidden">
         {[...Array(1)].map((_, i) => (
           <div
             key={i}
-            className="animate-marquee whitespace-nowrap flex flex-row gap-4 sm:gap-6 md:gap-8 px-3 sm:px-6"
+            className="animate-bounce-x-big whitespace-nowrap flex flex-row gap-4 sm:gap-6 md:gap-8 px-3 sm:px-6"
           >
             <div className="flex flex-row items-center gap-3 sm:gap-6">
               <span className="text-[10px] sm:text-xs text-gray-600">◆</span>
