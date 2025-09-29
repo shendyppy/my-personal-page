@@ -134,17 +134,17 @@
   }
 }
 
-.font-logo {
-  font-family: "Press Start 2P", system-ui;
+@utility font-logo {
+  font-family: "Press Start 2P", cursive;
   font-weight: 900;
 }
 
-.font-heading {
+@utility font-heading {
   font-family: "Outfit", sans-serif;
   font-weight: 900;
 }
 
-.font-subheading {
+@utility font-subheading {
   font-family: "Outfit", sans-serif;
   font-weight: 600;
 }
