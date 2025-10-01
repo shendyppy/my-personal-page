@@ -333,7 +333,7 @@ export const About = () => {
     md:group-hover:opacity-100 md:group-hover:translate-x-0
     transition-all duration-500 ease-out
     relative bg-background/50 backdrop-blur-sm
-    rounded-full p-2 sm:p-3
+    rounded-full p-2
     border border-border/50
     hover:scale-110 hover:shadow-lg"
                         >
@@ -342,7 +342,7 @@ export const About = () => {
                             width={1000}
                             height={1000}
                             alt={club.name}
-                            className="size-7 sm:size-8 md:size-10 transition-transform duration-300 group-hover:scale-110"
+                            className="size-6 sm:size-8 md:size-10 transition-transform duration-300 group-hover:scale-110"
                           />
                           <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
                             {club.name}
