@@ -1,69 +1,20 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import {
-  ArrowDown,
-  Shuffle,
-  Code,
-  Layout,
-  Layers3,
-  Cpu,
-  Workflow,
-  Gamepad2,
-  Lightbulb,
-  Brain,
-  Sparkles,
-  Bot,
-  Frame,
-  Wand,
-  BookText,
-  Library,
-  NotepadText,
-} from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text3D, Environment, Float } from "@react-three/drei";
 
 import { Button } from "@/components/ui/button";
 import TypingText from "@/hooks/useTypingEffect";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
-import { Theme } from "@/types/Theme";
+import { Theme, Trait } from "@/types";
 import { useMediaQuery } from "@/hooks/useResponsive";
 import { scrollToSection } from "@/lib/utils";
-
-const INITIAL_TRAITS = [
-  { label: "Curious Mind", type: "general", icon: Lightbulb },
-  {
-    label: "Problem Solver (still eager to learn)",
-    type: "general",
-    icon: Workflow,
-  },
-  { label: "Always Growing", type: "general", icon: Brain },
-
-  { label: "Exploring Front-End Craft", type: "frontend", icon: Layout },
-  { label: "UI/UX Enthusiast", type: "frontend", icon: Frame },
-  { label: "Playful Experiments", type: "frontend", icon: Sparkles },
-  { label: "Test Driven Development", type: "frontend", icon: Sparkles },
-
-  { label: "Learning 3D & Graphics", type: "three", icon: Layers3 },
-  { label: "Trying Out Animations", type: "three", icon: Gamepad2 },
-  { label: "Polishing Interfaces", type: "three", icon: Wand },
-
-  { label: "Backend Beginner", type: "backend", icon: Code },
-  { label: "REST API Craft", type: "backend", icon: Cpu },
-  { label: "Docker Self Test Endpoint", type: "backend", icon: Bot },
-
-  {
-    label: "DevOps Love at The First Deployment",
-    type: "learning",
-    icon: BookText,
-  },
-  { label: "AI Engineer Wanna Be", type: "learning", icon: Library },
-  { label: "Database Want to Learn", type: "learning", icon: NotepadText },
-
-  { label: "Shuffle", type: "shuffle", icon: Shuffle },
-];
-
-type Trait = (typeof INITIAL_TRAITS)[number];
+import { heroTraits, heroBio } from "@/data/hero";
+import { traitColors, scene3DColors } from "@/constants/colors";
+import { SECTION_IDS } from "@/constants/config";
+import { TraitBadge } from "@/components/molecules/TraitBadge";
 
 const FloatingCube = ({
   position,
@@ -83,16 +34,7 @@ const FloatingCube = ({
 };
 
 const Scene3D = ({ theme, isSmUp }: { theme: Theme; isSmUp: boolean }) => {
-  const colors =
-    theme === "dark"
-      ? {
-          text: "#00E5FF", // cyan neon
-          cubes: ["#A3FF12", "#FF1F8F", "#FFD60A", "#7C4DFF"],
-        }
-      : {
-          text: "#2563EB", // sky blue pastel
-          cubes: ["#34D399", "#F87171", "#A78BFA", "#FBBF24"],
-        };
+  const colors = scene3DColors[theme];
 
   return (
     <>
@@ -127,7 +69,7 @@ export const Hero3D = () => {
   const isSmUp = useMediaQuery({ min: 640 });
   const mobileToSm = useMediaQuery({ min: 0, max: 512 });
 
-  const [traits, setTraits] = useState(INITIAL_TRAITS);
+  const [traits, setTraits] = useState(heroTraits);
   const [shuffleKey, setShuffleKey] = useState(0);
 
   const shuffleArray = (array: typeof traits) => {
@@ -179,39 +121,6 @@ export const Hero3D = () => {
 
   const displayedTraits = getDisplayedTraits(traits, mobileToSm, 7);
 
-  const colorKeys: Record<string, { light: string; dark: string }> = {
-    frontend: {
-      light:
-        "bg-yellow-200 hover:bg-yellow-300 text-yellow-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-300 shadow-yellow-500/30 hover:shadow-yellow-400/50 hover:scale-105 transition-all",
-    },
-    backend: {
-      light:
-        "bg-green-200 hover:bg-green-300 text-green-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-green-500/20 hover:bg-green-500/40 text-green-300 shadow-green-500/30 hover:shadow-green-400/50 hover:scale-105 transition-all",
-    },
-    three: {
-      light:
-        "bg-purple-200 hover:bg-purple-300 text-purple-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 shadow-purple-500/30 hover:shadow-purple-400/50 hover:scale-105 transition-all",
-    },
-    learning: {
-      light:
-        "bg-pink-200 hover:bg-pink-300 text-pink-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-pink-500/20 hover:bg-pink-500/40 text-pink-300 shadow-pink-500/30 hover:shadow-pink-400/50 hover:scale-105 transition-all",
-    },
-    general: {
-      light:
-        "bg-blue-200 hover:bg-blue-300 text-blue-900 shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 shadow-blue-500/30 hover:shadow-blue-400/50 hover:scale-105 transition-all",
-    },
-    shuffle: {
-      light:
-        "bg-emerald-400 hover:bg-emerald-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all",
-      dark: "bg-emerald-800 hover:bg-emerald-600 shadow-blue-500/30 hover:shadow-blue-400/50 hover:scale-105 transition-all",
-    },
-  };
-
   return (
     <section
       id="hero"
@@ -234,11 +143,7 @@ export const Hero3D = () => {
           <span className="text-accent">Shendy&apos;s here!</span>
         </h1>
 
-        <TypingText
-          text={`<p>
-  Front-End Developer currently at <b>Daya Dimensi Indonesia</b> with <b>4+ years of experience</b>. I specialize in creating clean, user-friendly UIs and playful interactions. Currently, I'm expanding my skills to become a full-stack developer, with a keen interest in <b>Large Language Models</b> and <b>3D web elements</b>.
-</p>`}
-        />
+        <TypingText text={heroBio} />
 
         {/* Shuffle button + traits */}
         <div
@@ -246,22 +151,15 @@ export const Hero3D = () => {
           className="flex flex-wrap gap-2 justify-center transition-all duration-500 px-2 sm:px-4"
         >
           {displayedTraits.map((trait) => {
-            const Icon = trait.icon;
-            const traitColors =
-              colorKeys[trait.type][theme === "dark" ? "dark" : "light"];
+            const colorClasses =
+              traitColors[trait.type][theme === "dark" ? "dark" : "light"];
             return (
-              <Button
+              <TraitBadge
                 key={trait.label}
-                className={`flex items-center gap-1 
-          !py-[2px] !px-1 text-xs
-          sm:px-3 sm:py-1.5 sm:text-sm 
-          md:px-4 md:py-2 md:text-base
-          rounded-full font-medium animate-fadeIn select-none ${traitColors}`}
+                trait={trait}
+                colorClasses={colorClasses}
                 onClick={trait.type === "shuffle" ? handleShuffle : undefined}
-              >
-                <Icon className="size-4 sm:size-5" />
-                {trait.label}
-              </Button>
+              />
             );
           })}
         </div>
@@ -270,7 +168,7 @@ export const Hero3D = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => scrollToSection("projects")}
+            onClick={() => scrollToSection(SECTION_IDS.projects)}
             className={`animate-bounce cursor-pointer rounded-lg transition-all duration-300 transform
       ${
         theme === "dark"
