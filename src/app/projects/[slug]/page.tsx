@@ -1,16 +1,42 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { projectDetails, getAllProjectSlugs } from "@/data/projects";
+import { projectDetails, getAllProjectSlugs, getProjectBySlug } from "@/data/projects";
 
 export async function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({
     slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = getProjectBySlug(slug);
+
+  if (!project) {
+    return {
+      title: "Project Not Found",
+    };
+  }
+
+  return {
+    title: `${project.company} | Shendy's Portfolio`,
+    description: project.title,
+    openGraph: {
+      title: `${project.company} | Shendy's Portfolio`,
+      description: project.title,
+      type: "website",
+    },
+  };
 }
 
 const ProjectPage = async ({
