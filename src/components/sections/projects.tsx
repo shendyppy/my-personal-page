@@ -1,38 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-
-const projects = [
-  {
-    slug: "ddi-released",
-    title: "Daya Dimensi Indonesia - HR Consultant [RELEASED PROJECT]",
-    description:
-      "Building assessment platform for HR consultants to evaluate candidates, also manage clients and reports.",
-    image: "/assets/img/content/bg-released-ddi.png",
-  },
-  {
-    slug: "ddi-incoming",
-    title: "Daya Dimensi Indonesia - HR Consultant [INCOMING PROJECT]",
-    description:
-      "Building assessment platform for HR consultants to evaluate candidates, also manage clients and reports.",
-    image: "/assets/img/content/bg-incoming-ddi.png",
-  },
-  {
-    slug: "uob-infinity",
-    title: "UOB Infinity - Banking Platform",
-    description:
-      "A banking platform for UOB customers to manage accounts, transfer funds, pay bills, and access financial services.",
-    image: "/assets/img/content/bg-uob-infinity.png",
-  },
-  {
-    slug: "sapasonny",
-    title: "Sapasonny - Personal Branding Website",
-    description:
-      "A personal branding website to showcase portfolio, services, contact information, and can be used as aspiration tracker.",
-    image: "/assets/img/content/bg-bandung-makin-juara.png",
-  },
-];
+import { projectCards } from "@/data/projects";
+import { ProjectCard } from "@/components/molecules/ProjectCard";
 
 export const Projects = () => {
   return (
@@ -57,29 +26,8 @@ export const Projects = () => {
 
         {/* Project Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-2/3 relative z-10">
-          {projects.map((project, idx) => (
-            <Link
-              href={`/projects/${project.slug}`}
-              key={idx}
-              className="group bg-card rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-transform hover:scale-[1.02]"
-            >
-              <div className="relative w-full h-48">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-card-foreground mb-2">
-                  {project.title}
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  {project.description}
-                </p>
-              </div>
-            </Link>
+          {projectCards.map((project, idx) => (
+            <ProjectCard key={idx} project={project} />
           ))}
         </div>
       </div>

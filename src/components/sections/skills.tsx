@@ -5,170 +5,19 @@ import React, { Suspense, useState, useMemo } from "react";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, OrbitControls } from "@react-three/drei";
-import Image from "next/image";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
-
-const skills = [
-  {
-    name: "TypeScript",
-    level: 90,
-    category: "Frontend",
-    logo: "/assets/img/content/typescript.png",
-    model: "/assets/models/typescript.glb",
-    color: "#3178C6",
-  },
-  {
-    name: "JavaScript",
-    level: 95,
-    category: "Frontend",
-    logo: "/assets/img/content/javascript.png",
-    model: "/assets/models/javascript.glb",
-    color: "#F7DF1E",
-  },
-  {
-    name: "Vue.js",
-    level: 50,
-    category: "Frontend",
-    logo: "/assets/img/content/vue.png",
-    model: "/assets/models/vue.glb",
-    color: "#42B883",
-  },
-  {
-    name: "React.js",
-    level: 95,
-    category: "Frontend",
-    logo: "/assets/img/content/react.png",
-    model: "/assets/models/react.glb",
-    color: "#61DAFB",
-  },
-  {
-    name: "AXIOS",
-    level: 90,
-    category: "Frontend",
-    logo: "/assets/img/content/axios.png",
-    model: "/assets/models/axios.glb",
-    color: "#5A29E4",
-  },
-  {
-    name: "Redux",
-    level: 80,
-    category: "Frontend",
-    logo: "/assets/img/content/redux.png",
-    model: "/assets/models/redux.glb",
-    color: "#764ABC",
-  },
-  {
-    name: "Jest",
-    level: 70,
-    category: "Frontend",
-    logo: "/assets/img/content/jest.png",
-    model: "/assets/models/jest.glb",
-    color: "#C21325",
-  },
-  {
-    name: "Python",
-    level: 40,
-    category: "Backend",
-    logo: "/assets/img/content/python.png",
-    model: "/assets/models/python.glb",
-    color: "#3776AB",
-  },
-  {
-    name: "Node.js",
-    level: 60,
-    category: "Backend",
-    logo: "/assets/img/content/nodejs.png",
-    model: "/assets/models/nodejs.glb",
-    color: "#339933",
-  },
-  {
-    name: "Sequelize",
-    level: 50,
-    category: "Backend",
-    logo: "/assets/img/content/sequelize.png",
-    model: "/assets/models/sequelize.glb",
-    color: "#52B0E7",
-  },
-  {
-    name: "Github Actions",
-    level: 60,
-    category: "DevOps",
-    logo: "/assets/img/content/github-actions.png",
-    model: "/assets/models/github-actions.glb",
-    color: "#2088FF",
-  },
-  {
-    name: "AWS",
-    level: 50,
-    category: "DevOps",
-    logo: "/assets/img/content/aws.png",
-    model: "/assets/models/aws.glb",
-    color: "#FF9900",
-  },
-  {
-    name: "cPanel",
-    level: 50,
-    category: "DevOps",
-    logo: "/assets/img/content/cPanel.png",
-    model: "/assets/models/cPanel.glb",
-    color: "#FF6C2C",
-  },
-  {
-    name: "Firebase",
-    level: 75,
-    category: "DevOps",
-    logo: "/assets/img/content/firebase.png",
-    model: "/assets/models/firebase.glb",
-    color: "#FFCA28",
-  },
-  {
-    name: "PostgreSQL",
-    level: 60,
-    category: "Database",
-    logo: "/assets/img/content/postgresql.png",
-    model: "/assets/models/postgresql.glb",
-    color: "#336791",
-  },
-];
-
-const categoryColors: Record<string, { light: string; dark: string }> = {
-  Frontend: {
-    light: "bg-blue-100 border-blue-400",
-    dark: "bg-blue-900/40 border-blue-600",
-  },
-  Backend: {
-    light: "bg-green-100 border-green-400",
-    dark: "bg-green-900/40 border-green-600",
-  },
-  DevOps: {
-    light: "bg-yellow-100 border-yellow-400",
-    dark: "bg-yellow-900/40 border-yellow-600",
-  },
-  Database: {
-    light: "bg-purple-100 border-purple-400",
-    dark: "bg-purple-900/40 border-purple-600",
-  },
-  All: {
-    light: "bg-gray-100 border-gray-400",
-    dark: "bg-gray-800 border-gray-600",
-  },
-};
-
-const getLevelLabel = (level: number) => {
-  if (level >= 90) return "Expert";
-  if (level >= 70) return "Advanced";
-  if (level >= 50) return "Intermediate";
-  return "Beginner";
-};
+import { skills } from "@/data/skills";
+import { skillCategoryColors } from "@/constants/colors";
+import { Skill } from "@/types";
+import { SkillCard } from "@/components/molecules/SkillCard";
 
 const SkillModel = ({
   skill,
   theme,
 }: {
-  skill: (typeof skills)[0];
+  skill: Skill;
   theme: string;
 }) => {
   const glb = useGLTF(skill.model);
@@ -197,9 +46,7 @@ const SkillModel = ({
 
 export const Skills = () => {
   const { theme } = useThemeContext();
-  const [selectedSkill, setSelectedSkill] = useState<(typeof skills)[0]>(
-    skills[0]
-  );
+  const [selectedSkill, setSelectedSkill] = useState<Skill>(skills[0]);
   const [filter, setFilter] = useState("All");
 
   const filteredSkills = useMemo(
@@ -272,48 +119,16 @@ export const Skills = () => {
             {filteredSkills.map((skill) => {
               const isActive = selectedSkill?.name === skill.name;
               const colorClasses =
-                categoryColors[skill.category][theme as "light" | "dark"];
+                skillCategoryColors[skill.category][theme as "light" | "dark"];
 
               return (
-                <Card
+                <SkillCard
                   key={skill.name}
+                  skill={skill}
+                  isActive={isActive}
+                  colorClasses={colorClasses}
                   onClick={() => setSelectedSkill(skill)}
-                  className={`
-                    ${colorClasses}
-                    cursor-pointer transition-all duration-300
-                    ${
-                      isActive
-                        ? "ring-2 ring-offset-2 ring-secondary scale-[1.05] shadow-xl"
-                        : "hover:scale-[1.02] hover:shadow-lg"
-                    }
-                  `}
-                >
-                  <CardContent className="flex items-start gap-2 p-3 md:p-4 !py-2">
-                    <Image
-                      src={skill.logo}
-                      alt={skill.name}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 md:w-10 md:h-10 object-contain"
-                    />
-                    <div>
-                      <h4
-                        className={`font-semibold text-sm xl:text-base ${
-                          isActive ? "text-accent" : "text-foreground"
-                        }`}
-                      >
-                        {skill.name}
-                      </h4>
-                      <p
-                        className={`text-xs lg:text-sm ${
-                          isActive ? "text-accent/80" : "text-muted-foreground"
-                        }`}
-                      >
-                        {getLevelLabel(skill.level)}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                />
               );
             })}
           </div>
