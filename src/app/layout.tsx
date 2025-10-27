@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import "./globals.css";
 
@@ -11,7 +12,7 @@ const geistOutfit = Outfit({
 export const metadata: Metadata = {
   title: "Shendy Putra P. Y. | Software Engineer",
   description:
-    "A personal space to sharpen my skills while exploring and experimenting with new tech stacks I haven’t tried before",
+    "A personal space to sharpen my skills while exploring and experimenting with new tech stacks I haven't tried before",
 };
 
 export default function RootLayout({
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistOutfit.variable} antialiased`}>
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
