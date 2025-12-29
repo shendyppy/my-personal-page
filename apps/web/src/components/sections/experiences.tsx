@@ -93,9 +93,9 @@ export const Experiences = () => {
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        <div className="flex flex-col items-center space-y-8 w-full relative z-20">
+        <div className="flex flex-col items-center space-y-8 w-screen relative z-20">
           <div className="flex flex-col items-center text-center">
-            <Skeleton className="h-12 w-48 mb-2" />
+            <Skeleton className="h-12 w-48" />
           </div>
           <div className="space-y-4 px-1 w-4/5">
             {[1, 2, 3].map((i) => (
@@ -107,12 +107,40 @@ export const Experiences = () => {
                   <div className="flex items-center gap-4 flex-1">
                     <Skeleton className="w-12 h-12 rounded-lg" />
                     <div className="flex-1">
-                      <Skeleton className="h-6 w-48 mb-2" />
+                      <div className="flex items-center gap-2 mb-1">
+                        <Skeleton className="h-6 w-48" />
+                        <Skeleton className="h-5 w-16 rounded-full" />
+                        <Skeleton className="h-5 w-20 rounded-full" />
+                      </div>
                       <Skeleton className="h-4 w-64 mb-1" />
                       <Skeleton className="h-4 w-40" />
                     </div>
                   </div>
                   <Skeleton className="w-6 h-6" />
+                </div>
+                {/* Expanded content skeleton */}
+                <div className="p-4 border-t border-border/50 bg-background/40 space-y-4">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-28" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-11/12" />
+                      <Skeleton className="h-4 w-10/12" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-11/12" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
                 </div>
               </div>
             ))}

@@ -21,7 +21,6 @@ export const Projects = () => {
     }>
   >([]);
   const [loading, setLoading] = useState(true);
-  const [showSkeleton, setShowSkeleton] = useState(false);
   const [hasStartedFetching, setHasStartedFetching] = useState(false);
 
   useEffect(() => {
@@ -29,13 +28,6 @@ export const Projects = () => {
     if (!isVisible || hasStartedFetching) return;
 
     setHasStartedFetching(true);
-
-    // Show skeleton only after 150ms delay to avoid flash for fast loads
-    const skeletonTimer = setTimeout(() => {
-      if (loading) {
-        setShowSkeleton(true);
-      }
-    }, 150);
 
     async function fetchProjects() {
       try {
@@ -45,20 +37,14 @@ export const Projects = () => {
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       } finally {
-        clearTimeout(skeletonTimer);
         setLoading(false);
       }
     }
 
     fetchProjects();
+  }, [isVisible, hasStartedFetching]);
 
-    return () => {
-      clearTimeout(skeletonTimer);
-    };
-  }, [isVisible, hasStartedFetching, loading]);
-
-  // Only show skeleton if loading takes longer than 150ms
-  if (loading && showSkeleton) {
+  if (loading) {
     return (
       <section
         ref={sectionRef}
@@ -74,36 +60,34 @@ export const Projects = () => {
           <div className="absolute bottom-1/10 left-1/8 w-12 h-12 rounded-full bg-[#f97316]/70 animate-firework delay-500" />
         </div>
 
-        <div className="flex flex-col items-center space-y-8 w-full relative z-20">
+        <div className="flex flex-col items-center space-y-8 w-screen relative z-20">
           {/* Title skeleton */}
           <Skeleton className="h-12 w-40" />
 
           {/* Project Grid skeletons */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-2/3 relative z-10 items-stretch">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="border border-border/50 rounded-lg overflow-hidden">
-                <Skeleton className="w-full h-48" />
-                <div className="p-4 space-y-2">
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-2/3" />
+              <div key={i} className="flex flex-col h-full">
+                <div className="border border-border/50 rounded-2xl overflow-hidden flex flex-col h-full">
+                  <Skeleton className="w-full h-52" />
+                  <div className="p-5 space-y-3 flex-1 flex flex-col">
+                    <div className="h-px w-full bg-border/50" />
+                    <Skeleton className="h-7 w-4/5" />
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-4 w-4" />
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-    );
-  }
-
-  // If loading but skeleton not shown yet, show minimal placeholder
-  if (loading) {
-    return (
-      <section
-        ref={sectionRef}
-        id="projects"
-        className="relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto min-h-[400px]"
-      />
     );
   }
 
