@@ -64,7 +64,11 @@ export const Experiences = () => {
           responsibilities: exp.responsibilities,
           projects: exp.projects,
           techStack: exp.techStack,
-          employmentType: exp.employmentType as "Full Time" | "Part Time" | "Contract" | "Internship",
+          employmentType: exp.employmentType as
+            | "Full Time"
+            | "Part Time"
+            | "Contract"
+            | "Internship",
         }));
 
         setExperiences(mappedData);
@@ -93,9 +97,9 @@ export const Experiences = () => {
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        <div className="flex flex-col items-center space-y-8 w-screen relative z-20">
+        <div className="flex flex-col items-center space-y-8 w-full md:w-screen relative z-20">
           <div className="flex flex-col items-center text-center">
-            <Skeleton className="h-12 w-48 mb-2" />
+            <Skeleton className="h-12 w-48" />
           </div>
           <div className="space-y-4 px-1 w-full md:w-4/5">
             {[1, 2, 3].map((i) => (
@@ -113,6 +117,30 @@ export const Experiences = () => {
                     </div>
                   </div>
                   <Skeleton className="w-6 h-6 self-end md:self-center flex-shrink-0" />
+                </div>
+                {/* Expanded content skeleton */}
+                <div className="p-4 border-t border-border/50 bg-background/40 space-y-4">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-28" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-11/12" />
+                      <Skeleton className="h-4 w-10/12" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-11/12" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
                 </div>
               </div>
             ))}
