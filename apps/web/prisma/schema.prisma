@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Projects
+model Project {
+  id          String              @id @default(cuid())
+  slug        String              @unique
+  title       String
+  description String
+  image       String
+  company     String?
+  overview    String?
+  scope       String?
+  industry    String?
+  isPublished Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  highlights  ProjectHighlight[]
+}
+
+model ProjectHighlight {
+  id          String         @id @default(cuid())
+  projectId   String
+  project     Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  highlightId String // e.g., "engauge", "learning-hub"
+  title       String
+  description String
+  impact      String[] // Array of strings
+  link        String?
+  order       Int            @default(0)
+  images      ProjectImage[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ProjectImage {
+  id          String           @id @default(cuid())
+  highlightId String
+  highlight   ProjectHighlight @relation(fields: [highlightId], references: [id], onDelete: Cascade)
+  link        String
+  isScrollable Boolean         @default(false)
+  order       Int              @default(0)
+  createdAt   DateTime         @default(now())
+}
+
+// Experiences
+model Experience {
+  id             String   @id @default(cuid())
+  company        String
+  companyLogo    String
+  title          String
+  location       String
+  period         String
+  current        Boolean  @default(false)
+  description    String
+  responsibilities String[] // Array of strings
+  projects       String[] // Array of strings - project names
+  techStack      String   // Comma-separated string
+  employmentType String   @default("Full Time") // "Full Time", "Part Time", "Contract", "Internship"
+  isPublished    Boolean  @default(true)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// About Section Data
+model AboutSection {
+  id    String @id @default(cuid())
+  key   String @unique // e.g., "professional_bio", "current_learning"
+  title String?
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// CV Info
+model CvInfo {
+  id           String   @id @default(cuid())
+  title        String
+  previewImage String
+  downloadPath String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model TechStack {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  src       String   // Path to image
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SocialLink {
+  id       String   @id @default(cuid())
+  platform String   @unique // e.g., "github", "linkedin", "email"
+  url      String
+  label    String   // e.g., "GitHub", "LinkedIn"
+  iconName String   // Icon name from lucide-react: "Github", "Linkedin", etc.
+  order    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Love {
+  id        String   @id @default(cuid())
+  mainName  String   // e.g., "DOTA 2"
+  mainSrc   String   // Path to main image
+  clubs     Json     // Array of {name, src} objects
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Skills
+model Skill {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  level     Int      // 1-100
+  category  String   // "Frontend", "Backend", "DevOps", "Database"
+  logo      String   // Path to logo image
+  model     String   // Path to 3D model .glb file
+  color     String   // Hex color code
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -138,7 +138,5 @@ npm init -y
 
 **Shendy**
 
-- Portfolio: [Your URL]
+- Portfolio: https://shendyppy.vercel.app/
 - GitHub: [@shendyppy](https://github.com/shendyppy)
-
----
