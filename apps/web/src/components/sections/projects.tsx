@@ -60,7 +60,7 @@ export const Projects = () => {
           <div className="absolute bottom-1/10 left-1/8 w-12 h-12 rounded-full bg-[#f97316]/70 animate-firework delay-500" />
         </div>
 
-        <div className="flex flex-col items-center space-y-8 w-screen relative z-20">
+        <div className="flex flex-col items-center space-y-8 w-full md:w-screen relative z-20">
           {/* Title skeleton */}
           <Skeleton className="h-12 w-40" />
 
