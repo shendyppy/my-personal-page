@@ -20,7 +20,7 @@ export const ExperienceCard = ({
     <div className="border border-border/50 rounded-lg overflow-hidden shadow-sm transition hover:shadow-md">
       <button
         onClick={onToggle}
-        className={`w-full p-4 text-left transition-all duration-300 hover:bg-accent/10 flex items-center justify-between ${
+        className={`w-full p-4 text-left transition-all duration-300 hover:bg-accent/10 flex flex-col md:flex-row md:items-center justify-between gap-4 ${
           experience.current ? "bg-primary/10" : "bg-background"
         }`}
       >
@@ -30,35 +30,37 @@ export const ExperienceCard = ({
             width={48}
             height={48}
             alt={`${experience.company} logo`}
-            className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-contain bg-white p-1"
+            className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-contain bg-white p-1 flex-shrink-0"
           />
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <h5 className="font-semibold text-base md:text-lg text-foreground truncate">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+              <h5 className="font-semibold text-base md:text-lg text-foreground">
                 {experience.title}
               </h5>
-              {experience.current && (
+              <div className="flex items-center gap-2 flex-wrap">
+                {experience.current && (
+                  <span
+                    className={`text-xs ${
+                      theme === "light"
+                        ? "bg-green-500/20 text-green-700"
+                        : "bg-green-400 text-green-700"
+                    } px-2 py-1 rounded-full whitespace-nowrap`}
+                  >
+                    Current
+                  </span>
+                )}
                 <span
                   className={`text-xs ${
                     theme === "light"
-                      ? "bg-green-500/20 text-green-700"
-                      : "bg-green-400 text-green-700"
+                      ? "bg-blue-500/20 text-blue-700"
+                      : "bg-blue-400 text-blue-700"
                   } px-2 py-1 rounded-full whitespace-nowrap`}
                 >
-                  Current
+                  {experience.employmentType}
                 </span>
-              )}
-              <span
-                className={`text-xs ${
-                  theme === "light"
-                    ? "bg-blue-500/20 text-blue-700"
-                    : "bg-blue-400 text-blue-700"
-                } px-2 py-1 rounded-full whitespace-nowrap`}
-              >
-                {experience.employmentType}
-              </span>
+              </div>
             </div>
-            <p className="text-sm md:text-base text-muted-foreground truncate">
+            <p className="text-sm md:text-base text-muted-foreground">
               {experience.company}
             </p>
             <p className="text-xs md:text-sm text-muted-foreground">
@@ -67,7 +69,7 @@ export const ExperienceCard = ({
           </div>
         </div>
         <ChevronDown
-          className={`size-5 md:size-6 transition-transform duration-300 ${
+          className={`size-5 md:size-6 transition-transform duration-300 self-end md:self-center flex-shrink-0 ${
             isExpanded ? "rotate-180" : "rotate-0"
           }`}
         />

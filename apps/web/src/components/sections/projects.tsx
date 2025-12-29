@@ -21,7 +21,6 @@ export const Projects = () => {
     }>
   >([]);
   const [loading, setLoading] = useState(true);
-  const [showSkeleton, setShowSkeleton] = useState(false);
   const [hasStartedFetching, setHasStartedFetching] = useState(false);
 
   useEffect(() => {
@@ -29,13 +28,6 @@ export const Projects = () => {
     if (!isVisible || hasStartedFetching) return;
 
     setHasStartedFetching(true);
-
-    // Show skeleton only after 150ms delay to avoid flash for fast loads
-    const skeletonTimer = setTimeout(() => {
-      if (loading) {
-        setShowSkeleton(true);
-      }
-    }, 150);
 
     async function fetchProjects() {
       try {
@@ -45,20 +37,14 @@ export const Projects = () => {
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       } finally {
-        clearTimeout(skeletonTimer);
         setLoading(false);
       }
     }
 
     fetchProjects();
+  }, [isVisible, hasStartedFetching]);
 
-    return () => {
-      clearTimeout(skeletonTimer);
-    };
-  }, [isVisible, hasStartedFetching, loading]);
-
-  // Only show skeleton if loading takes longer than 150ms
-  if (loading && showSkeleton) {
+  if (loading) {
     return (
       <section
         ref={sectionRef}
@@ -74,7 +60,7 @@ export const Projects = () => {
           <div className="absolute bottom-1/10 left-1/8 w-12 h-12 rounded-full bg-[#f97316]/70 animate-firework delay-500" />
         </div>
 
-        <div className="flex flex-col items-center space-y-8 w-full relative z-20">
+        <div className="flex flex-col items-center space-y-8 w-screen relative z-20">
           {/* Title skeleton */}
           <Skeleton className="h-12 w-40" />
 
@@ -93,17 +79,6 @@ export const Projects = () => {
           </div>
         </div>
       </section>
-    );
-  }
-
-  // If loading but skeleton not shown yet, show minimal placeholder
-  if (loading) {
-    return (
-      <section
-        ref={sectionRef}
-        id="projects"
-        className="relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto min-h-[400px]"
-      />
     );
   }
 
