@@ -64,7 +64,11 @@ export const Experiences = () => {
           responsibilities: exp.responsibilities,
           projects: exp.projects,
           techStack: exp.techStack,
-          employmentType: exp.employmentType as "Full Time" | "Part Time" | "Contract" | "Internship",
+          employmentType: exp.employmentType as
+            | "Full Time"
+            | "Part Time"
+            | "Contract"
+            | "Internship",
         }));
 
         setExperiences(mappedData);
@@ -93,30 +97,26 @@ export const Experiences = () => {
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        <div className="flex flex-col items-center space-y-8 w-screen relative z-20">
+        <div className="flex flex-col items-center space-y-8 w-full md:w-screen relative z-20">
           <div className="flex flex-col items-center text-center">
             <Skeleton className="h-12 w-48" />
           </div>
-          <div className="space-y-4 px-1 w-4/5">
+          <div className="space-y-4 px-1 w-full md:w-4/5">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
                 className="border border-border/50 rounded-lg overflow-hidden"
               >
-                <div className="w-full p-4 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4 flex-1">
-                    <Skeleton className="w-12 h-12 rounded-lg" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Skeleton className="h-6 w-48" />
-                        <Skeleton className="h-5 w-16 rounded-full" />
-                        <Skeleton className="h-5 w-20 rounded-full" />
-                      </div>
-                      <Skeleton className="h-4 w-64 mb-1" />
-                      <Skeleton className="h-4 w-40" />
+                <div className="w-full p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <Skeleton className="w-10 h-10 md:w-12 md:h-12 rounded-lg flex-shrink-0" />
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <Skeleton className="h-6 w-full max-w-[200px]" />
+                      <Skeleton className="h-4 w-full max-w-[250px]" />
+                      <Skeleton className="h-4 w-full max-w-[150px]" />
                     </div>
                   </div>
-                  <Skeleton className="w-6 h-6" />
+                  <Skeleton className="w-6 h-6 self-end md:self-center flex-shrink-0" />
                 </div>
                 {/* Expanded content skeleton */}
                 <div className="p-4 border-t border-border/50 bg-background/40 space-y-4">
@@ -167,7 +167,7 @@ export const Experiences = () => {
           </h2>
         </div>
 
-        <div className="space-y-4 px-1 w-4/5">
+        <div className="space-y-4 px-1 w-full md:w-4/5">
           {experiences.map((exp) => {
             const isExpanded = expandedExperiences.includes(exp.id);
             return (
