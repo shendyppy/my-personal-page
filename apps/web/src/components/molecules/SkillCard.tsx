@@ -19,7 +19,11 @@ export const SkillCard = ({
 }: SkillCardProps) => {
   return (
     <Card
+      role="button"
+      tabIndex={0}
+      aria-label={`${skill.name} — ${getLevelLabel(skill.level)}`}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
       className={`
         ${colorClasses}
         cursor-pointer transition-all duration-300 h-25

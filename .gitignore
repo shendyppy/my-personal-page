@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# claude code (per-user only; shared config like settings.json + skills/ stays tracked)
+.claude/settings.local.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*
