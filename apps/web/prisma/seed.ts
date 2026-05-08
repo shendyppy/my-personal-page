@@ -1,7 +1,12 @@
 import { PrismaClient } from "../src/generated/prisma";
+import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("🌱 Starting database seed...");
@@ -954,10 +959,15 @@ async function main() {
         mainName: "DOTA 2",
         mainSrc: "/assets/img/content/dota-2.webp",
         clubs: JSON.stringify([
-          { name: "Rekonix", src: "/assets/img/content/rekonix.webp" },
+          {
+            name: "Rekonix",
+            src: "/assets/img/content/rekonix.webp",
+            url: "https://liquipedia.net/dota2/REKONIX",
+          },
           {
             name: "Tundra Esports",
             src: "/assets/img/content/tundra-esports.webp",
+            url: "https://liquipedia.net/dota2/Tundra_Esports",
           },
         ]),
         order: 1,
@@ -966,7 +976,11 @@ async function main() {
         mainName: "Football",
         mainSrc: "/assets/img/content/football.webp",
         clubs: JSON.stringify([
-          { name: "Real Madrid", src: "/assets/img/content/real-madrid.webp" },
+          {
+            name: "Real Madrid",
+            src: "/assets/img/content/real-madrid.webp",
+            url: "https://www.realmadrid.com/en-US",
+          },
         ]),
         order: 2,
       },
@@ -974,10 +988,15 @@ async function main() {
         mainName: "Basketball",
         mainSrc: "/assets/img/content/basketball.webp",
         clubs: JSON.stringify([
-          { name: "Los Angeles Lakers", src: "/assets/img/content/lakers.webp" },
+          {
+            name: "Los Angeles Lakers",
+            src: "/assets/img/content/lakers.webp",
+            url: "https://www.nba.com/lakers/",
+          },
           {
             name: "Golden State Warriors",
             src: "/assets/img/content/warriors.webp",
+            url: "https://www.nba.com/warriors",
           },
         ]),
         order: 3,

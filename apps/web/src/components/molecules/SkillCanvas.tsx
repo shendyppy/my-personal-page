@@ -48,7 +48,11 @@ type SkillCanvasProps = {
  * component renders, via `next/dynamic` from the parent.
  */
 const SkillCanvas = ({ skill, theme }: SkillCanvasProps) => (
-  <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
+  <Canvas
+    camera={{ position: [0, 0, 12], fov: 60 }}
+    dpr={[1, 1.5]}
+    gl={{ antialias: false, powerPreference: "high-performance" }}
+  >
     <ambientLight intensity={theme === "dark" ? 0.4 : 0.7} />
     <directionalLight
       position={[5, 5, 5]}
