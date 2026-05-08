@@ -89,6 +89,7 @@ export interface TechStack {
 export interface Club {
   name: string;
   src: string;
+  url?: string;
 }
 
 export interface Love {

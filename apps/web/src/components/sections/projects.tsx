@@ -1,24 +1,10 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
-
 import { ProjectCard } from "@/components/molecules/ProjectCard";
 import { SectionContainer } from "@/components/atoms/SectionContainer";
 import { SectionHeading } from "@/components/atoms/SectionHeading";
-import { queryKeys } from "@/lib/query-keys";
-import type { ProjectListItem } from "@/server/queries/projects";
+import { getProjects } from "@/server/queries/projects";
 
-const fetchProjects = async (): Promise<ProjectListItem[]> => {
-  const res = await fetch("/api/projects");
-  if (!res.ok) throw new Error("Failed to fetch projects");
-  return res.json();
-};
-
-export const Projects = () => {
-  const { data: projects = [] } = useQuery({
-    queryKey: queryKeys.projects,
-    queryFn: fetchProjects,
-  });
+export const Projects = async () => {
+  const projects = await getProjects();
 
   return (
     <SectionContainer
@@ -36,7 +22,7 @@ export const Projects = () => {
       <div className="flex flex-col items-center space-y-8 w-full relative z-20">
         <SectionHeading>Projects </SectionHeading>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-2/3 relative z-10 items-stretch">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10 items-stretch">
           {projects.map((project, index) => (
             <div
               key={project.slug}

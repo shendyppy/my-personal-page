@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text3D, Environment, Float } from "@react-three/drei";
+import { OrbitControls, Text3D, Float } from "@react-three/drei";
 
 import { scene3DColors } from "@/constants/colors";
 import type { Theme } from "@/types";
@@ -27,9 +27,9 @@ const Scene3D = ({ theme, isSmUp }: { theme: Theme; isSmUp: boolean }) => {
 
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <Environment preset="studio" />
+      <ambientLight intensity={0.6} />
+      <pointLight position={[10, 10, 10]} intensity={1.2} />
+      <pointLight position={[-10, -5, 5]} intensity={0.4} />
 
       {isSmUp ? (
         <Text3D

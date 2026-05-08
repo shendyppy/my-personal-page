@@ -90,7 +90,7 @@ export function Navigation() {
                 ? "/assets/img/content/font-logo.webp"
                 : "/assets/img/content/font-logo-white.webp"
             }
-            alt="logo"
+            alt="Shendy — Software Engineer"
             width={100}
             height={100}
             priority
