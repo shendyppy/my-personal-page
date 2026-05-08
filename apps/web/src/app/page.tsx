@@ -1,5 +1,10 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
+// Re-render once per hour at most. Content rarely changes; ISR keeps the
+// landing page fully static-cacheable while still picking up DB edits
+// without a full redeploy.
+export const revalidate = 3600;
+
 import { PageWrapper } from "@/components/organisms/PageWrapper";
 import { Hero3D } from "@/components/sections/hero3d";
 import { Projects } from "@/components/sections/projects";

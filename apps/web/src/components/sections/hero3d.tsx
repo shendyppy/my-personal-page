@@ -1,68 +1,25 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import { ArrowDown } from "lucide-react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text3D, Environment, Float } from "@react-three/drei";
 
 import { Button } from "@/components/ui/button";
 import TypingText from "@/hooks/useTypingEffect";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
-import { Theme, Trait } from "@/types";
+import { Trait } from "@/types";
 import { useMediaQuery } from "@/hooks/useResponsive";
 import { scrollToSection } from "@/lib/utils";
 import { heroTraits, heroBio } from "@/data/hero";
-import { traitColors, scene3DColors } from "@/constants/colors";
+import { traitColors } from "@/constants/colors";
 import { SECTION_IDS } from "@/constants/config";
 import { TraitBadge } from "@/components/molecules/TraitBadge";
 
-const FloatingCube = ({
-  position,
-  color,
-}: {
-  position: [number, number, number];
-  color: string;
-}) => {
-  return (
-    <Float speed={3} rotationIntensity={1} floatIntensity={2}>
-      <mesh position={position}>
-        <boxGeometry args={[0.5, 0.5, 0.5]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-    </Float>
-  );
-};
-
-const Scene3D = ({ theme, isSmUp }: { theme: Theme; isSmUp: boolean }) => {
-  const colors = scene3DColors[theme];
-
-  return (
-    <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <Environment preset="studio" />
-
-      {isSmUp && (
-        <Text3D
-          font="/fonts/Press Start 2P.json"
-          size={1}
-          height={0.2}
-          position={[-1.5, 1.5, -1.2]}
-        >
-          Hi,
-          <meshStandardMaterial color={colors.text} />
-        </Text3D>
-      )}
-
-      <FloatingCube position={[3, 1, 0]} color={colors.cubes[0]} />
-      <FloatingCube position={[-3, -1.5, -5]} color={colors.cubes[1]} />
-      <FloatingCube position={[-3, -1, 1]} color={colors.cubes[2]} />
-      <FloatingCube position={[2, -1.5, -1]} color={colors.cubes[3]} />
-
-      <OrbitControls enableZoom={false} enablePan={false} />
-    </>
-  );
-};
+// 3D scene streams in after the hero copy + traits are interactive.
+const HeroScene = dynamic(() => import("@/components/molecules/HeroScene"), {
+  ssr: false,
+  loading: () => null,
+});
 
 export const Hero3D = () => {
   const { theme } = useThemeContext();
@@ -127,11 +84,7 @@ export const Hero3D = () => {
       className="w-full sm:h-screen flex items-center justify-center overflow-hidden"
     >
       <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-          <Suspense fallback={null}>
-            <Scene3D theme={theme} isSmUp={isSmUp} />
-          </Suspense>
-        </Canvas>
+        <HeroScene theme={theme} isSmUp={isSmUp} />
       </div>
 
       <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto sm:mt-auto pt-20 pb-12 sm:py-20">
