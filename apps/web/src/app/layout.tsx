@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "./providers/ThemeProvider";
+import { QueryProvider } from "./providers/QueryProvider";
 import "./globals.css";
 
 const geistOutfit = Outfit({
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistOutfit.variable} antialiased`}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </QueryProvider>
         <Analytics />
       </body>
     </html>

@@ -1,21 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getProjects } from "@/server/queries/projects";
 
 export async function GET() {
   try {
-    const projects = await prisma.project.findMany({
-      where: { isPublished: true },
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        description: true,
-        image: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
-    return NextResponse.json(projects);
+    return NextResponse.json(await getProjects());
   } catch (error) {
     console.error("Error fetching projects:", error);
     return NextResponse.json(
