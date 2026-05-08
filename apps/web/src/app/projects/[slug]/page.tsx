@@ -14,8 +14,20 @@ export const dynamicParams = true;
 type ProjectWithHighlights = NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>;
 
 export const generateStaticParams = async () => {
-  const projects = await getProjects();
-  return projects.map((project) => ({ slug: project.slug }));
+  // If the DB is unreachable at build time (Neon cold start, network blip,
+  // missing DATABASE_URL on a preview), fall back to an empty list. With
+  // `dynamicParams: true` above, pages will be generated + ISR-cached on
+  // first request instead of failing the entire build.
+  try {
+    const projects = await getProjects();
+    return projects.map((project) => ({ slug: project.slug }));
+  } catch (error) {
+    console.warn(
+      "[generateStaticParams] DB unreachable; pages will generate on-demand.",
+      error
+    );
+    return [];
+  }
 };
 
 export const generateMetadata = async ({
