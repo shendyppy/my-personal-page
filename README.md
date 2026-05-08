@@ -2,6 +2,8 @@
 
 A modern fullstack portfolio monorepo built with Next.js, featuring 3D interactive elements, dark/light theme support, and PostgreSQL backend.
 
+> **Working with this repo with an AI assistant?** Read [`AGENTS.md`](./AGENTS.md) first, then [`apps/web/AGENTS.md`](./apps/web/AGENTS.md). Project-specific Claude skills live in [`.claude/skills/`](./.claude/skills/).
+
 ## 📁 Project Structure
 
 ```
@@ -90,12 +92,11 @@ Open [http://localhost:3000](http://localhost:3000)
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Lint all code
-
-**From apps/web:**
-
-- `npx prisma studio` - Open database GUI
-- `npx prisma migrate dev` - Create database migration
-- `npx prisma generate` - Generate Prisma Client
+- `npm run db:generate` - Generate Prisma Client
+- `npm run db:migrate` - Create / apply Prisma migrations
+- `npm run db:studio` - Open Prisma Studio
+- `npm run db:seed` - Seed database with portfolio content
+- `npm run images:optimize` - Convert PNG/JPG assets in `public/assets/img/` to WebP (idempotent; deletes originals)
 
 ## 🗄️ Database
 

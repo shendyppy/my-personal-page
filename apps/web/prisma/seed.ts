@@ -942,7 +942,7 @@ async function main() {
       title: "Curriculum Vitae",
       previewImage: "/assets/Screenshot_CV.png",
       downloadPath:
-        "/assets/CV_Shendy Putra Perdana Yohansah_03 Dec 2025.pdf",
+        "/assets/CV_Shendy Putra Perdana Yohansah_17 Mar 2026.pdf",
     },
   });
 
