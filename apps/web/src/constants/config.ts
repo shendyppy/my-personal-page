@@ -35,3 +35,14 @@ export const SECTION_IDS = {
   experiences: "experiences",
   skills: "skills",
 } as const;
+
+export const SKILL_CATEGORIES = [
+  "All",
+  "Frontend",
+  "Backend",
+  "DevOps",
+  "Database",
+  "Project Management",
+] as const;
+
+export type SkillCategoryFilter = (typeof SKILL_CATEGORIES)[number];

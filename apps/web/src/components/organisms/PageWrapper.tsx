@@ -63,7 +63,7 @@ export const PageWrapper = ({ children }: PageWrapperProps) => {
             : "opacity-0 pointer-events-none"
         }`}
       >
-        <Footer loading={false} />
+        <Footer />
       </div>
     </div>
   );

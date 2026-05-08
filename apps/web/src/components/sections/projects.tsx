@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { ProjectCard } from "@/components/molecules/ProjectCard";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { SectionContainer } from "@/components/atoms/SectionContainer";
+import { SectionHeading } from "@/components/atoms/SectionHeading";
 import { queryKeys } from "@/lib/query-keys";
 import type { ProjectListItem } from "@/server/queries/projects";
 
@@ -15,24 +15,16 @@ const fetchProjects = async (): Promise<ProjectListItem[]> => {
 };
 
 export const Projects = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isVisible = useIntersectionObserver(sectionRef, {
-    threshold: 0.1,
-    rootMargin: "100px",
-  });
-
   const { data: projects = [] } = useQuery({
     queryKey: queryKeys.projects,
     queryFn: fetchProjects,
   });
 
   return (
-    <section
-      ref={sectionRef}
+    <SectionContainer
       id="projects"
-      className={`relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto transition-all duration-[800ms] ease-out will-change-transform ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      }`}
+      duration="duration-[800ms]"
+      className="relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto will-change-transform"
     >
       {/* Floating Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
@@ -42,11 +34,7 @@ export const Projects = () => {
       </div>
 
       <div className="flex flex-col items-center space-y-8 w-full relative z-20">
-        <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground">
-          <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-            Projects{" "}
-          </span>
-        </h2>
+        <SectionHeading>Projects </SectionHeading>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-2/3 relative z-10 items-stretch">
           {projects.map((project, index) => (
@@ -63,6 +51,6 @@ export const Projects = () => {
           ))}
         </div>
       </div>
-    </section>
+    </SectionContainer>
   );
 };
