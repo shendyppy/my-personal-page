@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
     "@radix-ui/react-slot": "^1.2.3",
     "@react-three/drei": "^10.7.2",
     "@react-three/fiber": "^9.3.0",
@@ -35,7 +36,6 @@
     "three": "^0.184.0"
   },
   "devDependencies": {
-    "@prisma/client": "^7.8.0",
     "@tailwindcss/postcss": "^4",
     "@tanstack/react-query-devtools": "^5.100.9",
     "@types/node": "^20.19.25",
