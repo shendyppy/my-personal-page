@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { useThemeContext } from "@/app/providers/ThemeProvider";
 import { ExperienceCard } from "@/components/molecules/ExperienceCard";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { SectionContainer } from "@/components/atoms/SectionContainer";
+import { SectionHeading } from "@/components/atoms/SectionHeading";
 import { queryKeys } from "@/lib/query-keys";
 import type { ExperienceDto } from "@/server/queries/experiences";
 import type { Experience, EmploymentType } from "@/types";
@@ -34,11 +35,6 @@ const mapToExperience = (raw: ExperienceDto[]): Experience[] =>
 
 export const Experiences = () => {
   const { theme } = useThemeContext();
-  const sectionRef = useRef<HTMLElement>(null);
-  const isVisible = useIntersectionObserver(sectionRef, {
-    threshold: 0.1,
-    rootMargin: "100px",
-  });
 
   const { data: rawExperiences = [] } = useQuery({
     queryKey: queryKeys.experiences,
@@ -56,21 +52,12 @@ export const Experiences = () => {
   };
 
   return (
-    <section
-      ref={sectionRef}
+    <SectionContainer
       id="experiences"
-      className={`relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto transition-all duration-1000 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      }`}
+      className="relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto"
     >
       <div className="flex flex-col items-center space-y-8 w-full relative z-20">
-        <div className="flex flex-col items-center text-center">
-          <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground">
-            <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-              Experiences
-            </span>
-          </h2>
-        </div>
+        <SectionHeading>Experiences</SectionHeading>
 
         <div className="space-y-4 px-1 w-full md:w-4/5">
           {experiences.map((exp) => (
@@ -84,6 +71,6 @@ export const Experiences = () => {
           ))}
         </div>
       </div>
-    </section>
+    </SectionContainer>
   );
 };

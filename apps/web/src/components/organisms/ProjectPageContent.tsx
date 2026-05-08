@@ -7,6 +7,7 @@ import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ImageModal } from "@/components/ui/image-modal";
+import { GradientText } from "@/components/atoms/GradientText";
 import type { ProjectDetail } from "@/types";
 
 interface ProjectPageContentProps {
@@ -87,8 +88,10 @@ export const ProjectPageContent = ({ project }: ProjectPageContentProps) => {
                     {String(index + 1).padStart(2, "0")} /{" "}
                     {String(project.highlights.length).padStart(2, "0")}
                   </div>
-                  <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-6 bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent hover:from-blue-400 hover:to-purple-800 transition-all duration-500">
-                    {highlight.title}
+                  <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-6">
+                    <GradientText className="hover:from-blue-400 hover:to-purple-800 transition-all duration-500">
+                      {highlight.title}
+                    </GradientText>
                   </h2>
                   <p className="text-muted-foreground mb-8 whitespace-pre-line leading-relaxed text-base transform hover:translate-x-2 transition-transform duration-300">
                     {highlight.description}

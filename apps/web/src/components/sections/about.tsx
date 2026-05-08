@@ -1,13 +1,11 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
 import {
   ArrowBigRight,
-  Download,
   Github,
   Instagram,
   Linkedin,
@@ -23,7 +21,10 @@ import { useThemeContext } from "@/app/providers/ThemeProvider";
 import { SECTION_IDS, SITE_CONFIG } from "@/constants/config";
 import { SocialButton } from "@/components/molecules/SocialButton";
 import { TechStackItem } from "@/components/molecules/TechStackItem";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { LoveCard } from "@/components/molecules/LoveCard";
+import { CvDownloadCard } from "@/components/molecules/CvDownloadCard";
+import { SectionContainer } from "@/components/atoms/SectionContainer";
+import { GradientText } from "@/components/atoms/GradientText";
 import { queryKeys } from "@/lib/query-keys";
 import type { AboutBundle } from "@/server/queries/about";
 
@@ -43,13 +44,6 @@ const fetchAbout = async (): Promise<AboutBundle> => {
 
 export const About = () => {
   const { theme } = useThemeContext();
-  const sectionRef = useRef<HTMLElement>(null);
-  const isVisible = useIntersectionObserver(sectionRef, {
-    threshold: 0.1,
-    rootMargin: "100px",
-  });
-
-  const [isHovered, setIsHovered] = useState(false);
 
   const { data } = useQuery({ queryKey: queryKeys.about, queryFn: fetchAbout });
 
@@ -86,12 +80,9 @@ export const About = () => {
   const { professionalBio, currentLearningJourney, cvInfo, techStacks, socialLinks, loves } = view;
 
   return (
-    <section
-      ref={sectionRef}
+    <SectionContainer
       id="about"
-      className={`w-full flex flex-col justify-center items-center py-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 mx-auto rounded-[40px] md:rounded-[80px] shadow-2xl bg-accent transition-all duration-1000 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      }`}
+      className="w-full flex flex-col justify-center items-center py-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 mx-auto rounded-[40px] md:rounded-[80px] shadow-2xl bg-accent"
     >
       <div className="max-w-6xl w-full flex flex-col gap-8 md:gap-12">
         {/* Top row: text, photo, socials */}
@@ -99,9 +90,7 @@ export const About = () => {
           {/* Text block */}
           <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl transition-all duration-500 hover:-rotate-2 hover:scale-105 hover:shadow-xl">
             <h2 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
-              <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-                {professionalBio.title}
-              </span>
+              <GradientText>{professionalBio.title}</GradientText>
             </h2>
             <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
               {professionalBio.content}
@@ -150,79 +139,12 @@ export const About = () => {
 
         {/* Bottom row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
-          {/* CV Card */}
-          <Card
-            className="col-span-1 lg:col-span-2 p-4 md:p-6 flex flex-col justify-center gap-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <div className="flex justify-between items-center content-center mb-2 md:mb-4 transition-all duration-300">
-              <h4 className="text-left font-heading text-base md:text-lg lg:text-xl font-bold text-foreground">
-                <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-                  {cvInfo?.title}
-                </span>
-              </h4>
-              <Button
-                asChild
-                className={`
-    relative
-    size-10 sm:size-12 lg:size-14
-    rounded-lg sm:rounded-xl md:rounded-2xl
-    flex items-center justify-center
-    bg-gradient-to-br from-red-500 via-orange-500 to-yellow-400
-    text-white font-semibold
-    shadow-[0_6px_12px_rgba(0,0,0,0.3),0_0_8px_rgba(0,0,0,0.25)]
-    border border-transparent
-    transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]
-    hover:scale-105 hover:shadow-[0_10px_20px_rgba(0,0,0,0.35),0_0_12px_rgba(0,0,0,0.3)]
-    active:scale-95 active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.4),inset_0_0_4px_rgba(255,255,255,0.25)]
-    active:before:translate-y-[-2px] active:before:opacity-40
-    before:content-[''] before:absolute before:inset-0 before:rounded-xl
-    before:bg-gradient-to-t before:from-white/30 before:to-transparent
-    before:transition-all before:duration-150
-    after:content-[''] after:absolute after:inset-[-4px] after:rounded-[18px]
-    after:border after:border-white/10 after:opacity-0 after:scale-90
-    active:after:opacity-60 active:after:scale-100 active:after:transition-all active:after:duration-200
-    animate-gradient-x
-    ${
-      isHovered
-        ? "md:opacity-100 md:translate-y-0"
-        : "md:opacity-0 md:translate-y-2 md:pointer-events-none"
-    }
-  `}
-              >
-                <Link
-                  href={cvInfo?.downloadPath ?? "#"}
-                  target="_blank"
-                  download
-                  className="flex items-center justify-center"
-                >
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75 animate-ping md:hidden"></span>
-                  <Download className="size-6 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
-                </Link>
-              </Button>
-            </div>
-            <div className="w-full h-[150px] md:h-[200px] overflow-hidden rounded-lg shadow-md relative">
-              <div className="absolute inset-0 transition-transform duration-[1500ms] ease-in-out hover:-translate-y-[100%]">
-                <Image
-                  src={cvInfo?.previewImage ?? ""}
-                  alt="CV Preview"
-                  width={300}
-                  height={1000}
-                  className="w-full h-auto object-contain"
-                  priority
-                  onTouchMove={() => setIsHovered(true)}
-                />
-              </div>
-            </div>
-          </Card>
+          <CvDownloadCard cvInfo={cvInfo} />
 
           {/* Tech Stacks Card */}
           <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
             <h4 className="text-center font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
-              <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-                Tech Stacks
-              </span>
+              <GradientText>Tech Stacks</GradientText>
             </h4>
             <div className="flex flex-wrap justify-center items-center gap-2 md:gap-3">
               {techStacks.map((tech, index) => (
@@ -240,81 +162,9 @@ export const About = () => {
             </div>
           </Card>
 
-          {/* What I Love Card */}
-          <Card className="col-span-1 lg:col-span-2 p-4 md:p-6 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl">
-            <h4 className="text-right font-heading text-base md:text-lg lg:text-xl font-bold text-foreground mb-3 md:mb-4">
-              <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-                What I Love
-              </span>
-            </h4>
-
-            <div className="flex flex-col gap-10">
-              {loves.map((love, idx) => (
-                <div
-                  key={idx}
-                  className="group relative flex justify-center items-center"
-                >
-                  {/* Main category */}
-                  <div
-                    className="group relative bg-background/50 backdrop-blur-sm
-    rounded-full p-2
-    transition-all duration-500 ease-out
-    md:group-hover:-translate-x-20 md:group-hover:scale-110 md:group-hover:shadow-lg border border-border/50"
-                  >
-                    <Image
-                      src={love.main.src}
-                      width={1000}
-                      height={1000}
-                      alt={love.main.name}
-                      className="size-8 sm:size-10 lg:size-12 transition-transform duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                      {love.main.name}
-                    </div>
-                  </div>
-
-                  {/* Arrow + Clubs */}
-                  <div
-                    className="flex items-center gap-3 md:absolute left-1/2 -translate-x-[20%] animate-moveRight
-                     md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 delay-200"
-                  >
-                    {/* Arrow */}
-                    <ArrowBigRight className="text-muted-foreground ml-3 md:ml-0 animate-moveRight" />
-
-                    {/* Clubs (domino reveal) */}
-                    <div className="flex flex-row items-center gap-3 md:gap-4">
-                      {love.clubs.map((club, i) => (
-                        <div
-                          key={i}
-                          style={{ transitionDelay: `${i * 120 + 200}ms` }}
-                          className="md:opacity-0 md:translate-x-3
-    md:group-hover:opacity-100 md:group-hover:translate-x-0
-    transition-all duration-500 ease-out
-    relative bg-background/50 backdrop-blur-sm
-    rounded-full p-2
-    border border-border/50
-    hover:scale-110 hover:shadow-lg"
-                        >
-                          <Image
-                            src={club.src}
-                            width={1000}
-                            height={1000}
-                            alt={club.name}
-                            className="size-6 sm:size-8 md:size-10 transition-transform duration-300 group-hover:scale-110"
-                          />
-                          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                            {club.name}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
+          <LoveCard loves={loves} />
         </div>
       </div>
-    </section>
+    </SectionContainer>
   );
 };

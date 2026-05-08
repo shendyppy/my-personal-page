@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useMemo, useRef, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import * as THREE from "three";
@@ -10,19 +10,12 @@ import { useGLTF, OrbitControls } from "@react-three/drei";
 import { Button } from "@/components/ui/button";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
 import { skillCategoryColors } from "@/constants/colors";
+import { SKILL_CATEGORIES, type SkillCategoryFilter } from "@/constants/config";
 import { Skill } from "@/types";
 import { SkillCard } from "@/components/molecules/SkillCard";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { SectionContainer } from "@/components/atoms/SectionContainer";
+import { SectionHeading } from "@/components/atoms/SectionHeading";
 import { queryKeys } from "@/lib/query-keys";
-
-const SKILL_CATEGORIES = [
-  "All",
-  "Frontend",
-  "Backend",
-  "DevOps",
-  "Database",
-  "Project Management",
-] as const;
 
 const fetchSkills = async (): Promise<Skill[]> => {
   const res = await fetch("/api/skills");
@@ -62,18 +55,13 @@ const SkillModel = ({ skill, theme }: { skill: Skill; theme: string }) => {
 
 export const Skills = () => {
   const { theme } = useThemeContext();
-  const sectionRef = useRef<HTMLElement>(null);
-  const isVisible = useIntersectionObserver(sectionRef, {
-    threshold: 0.1,
-    rootMargin: "100px",
-  });
 
   const { data: skills = [] } = useQuery({
     queryKey: queryKeys.skills,
     queryFn: fetchSkills,
   });
 
-  const [filter, setFilter] = useState<(typeof SKILL_CATEGORIES)[number]>("All");
+  const [filter, setFilter] = useState<SkillCategoryFilter>("All");
   const [animatingKey, setAnimatingKey] = useState(0);
   const [explicitSelected, setExplicitSelected] = useState<Skill | null>(null);
 
@@ -82,12 +70,9 @@ export const Skills = () => {
     [filter, skills]
   );
 
-  // Selected skill defaults to the first item in the current filter when the
-  // user hasn't picked anything explicitly. Avoids the previous useEffect race.
-  const selectedSkill: Skill | null =
-    explicitSelected ?? filteredSkills[0] ?? null;
+  const selectedSkill: Skill | null = explicitSelected ?? filteredSkills[0] ?? null;
 
-  const handleFilterChange = (newFilter: (typeof SKILL_CATEGORIES)[number]) => {
+  const handleFilterChange = (newFilter: SkillCategoryFilter) => {
     setFilter(newFilter);
     setExplicitSelected(null);
     setAnimatingKey((prev) => prev + 1);
@@ -96,25 +81,21 @@ export const Skills = () => {
   if (!selectedSkill) return null;
 
   return (
-    <section
-      ref={sectionRef}
+    <SectionContainer
       id="skills"
-      className={`max-w-6xl px-4 md:px-6 py-2 relative overflow-hidden space-y-8 !mx-auto transition-all duration-1000 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      }`}
+      className="max-w-6xl px-4 md:px-6 py-2 relative overflow-hidden space-y-8 !mx-auto"
     >
-      <div className="relative text-center">
-        <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-4">
-          <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-            Experiments{" "}
-          </span>
-        </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
-          Explore <span className="text-accent font-semibold">3D orbit</span> of skills
-          and browse through categorized cards{" "}
-        </p>
-        <div className="mt-3 w-24 h-1 bg-gradient-to-r from-accent to-primary mx-auto rounded-full" />
-      </div>
+      <SectionHeading
+        subtitle={
+          <>
+            Explore <span className="text-accent font-semibold">3D orbit</span> of skills
+            and browse through categorized cards{" "}
+          </>
+        }
+        withDivider
+      >
+        Experiments{" "}
+      </SectionHeading>
 
       <div className="flex flex-col !justify-center md:grid md:grid-cols-2 gap-6 md:gap-8 items-center mx-auto">
         <div className="flex-1 h-[50vh] md:h-[calc(100dvh-12rem)] relative rounded-xl flex items-center justify-center">
@@ -183,6 +164,6 @@ export const Skills = () => {
           </div>
         </div>
       </div>
-    </section>
+    </SectionContainer>
   );
 };
