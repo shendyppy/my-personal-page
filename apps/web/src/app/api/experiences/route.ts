@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getExperiences } from "@/server/queries/experiences";
 
 export async function GET() {
   try {
-    const experiences = await prisma.experience.findMany({
-      where: { isPublished: true },
-      orderBy: { order: "asc" },
-    });
-
-    return NextResponse.json(experiences);
+    return NextResponse.json(await getExperiences());
   } catch (error) {
     console.error("Error fetching experiences:", error);
     return NextResponse.json(

@@ -1,78 +1,31 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 
-import { ArrowBigRight, Download } from "lucide-react";
+import {
+  ArrowBigRight,
+  Download,
+  Github,
+  Instagram,
+  Linkedin,
+  type LucideIcon,
+  Mail,
+  Twitter,
+} from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { scrollToSection } from "@/lib/utils";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
 import { SECTION_IDS, SITE_CONFIG } from "@/constants/config";
 import { SocialButton } from "@/components/molecules/SocialButton";
 import { TechStackItem } from "@/components/molecules/TechStackItem";
-import { SocialLink, TechStack, Love, CvInfo as CvInfoType, Club } from "@/types";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-
-// Import icon components from lucide-react
-import {
-  Github,
-  Linkedin,
-  Instagram,
-  Twitter,
-  Mail,
-  LucideIcon,
-} from "lucide-react";
-
-// API Response Types
-type AboutSection = {
-  id: string;
-  key: string;
-  title: string | null;
-  content: string;
-};
-
-type CvInfoResponse = {
-  id: string;
-  title: string;
-  previewImage: string;
-  downloadPath: string;
-};
-
-type TechStackResponse = {
-  id: string;
-  name: string;
-  src: string;
-  order: number;
-};
-
-type SocialLinkResponse = {
-  id: string;
-  platform: string;
-  url: string;
-  label: string;
-  iconName: string;
-  order: number;
-};
-
-type LoveResponse = {
-  id: string;
-  mainName: string;
-  mainSrc: string;
-  clubs: Club[]; // Prisma Json type returns plain object
-  order: number;
-};
-
-type AboutApiResponse = {
-  aboutSections: AboutSection[];
-  cvInfo: CvInfoResponse;
-  techStacks: TechStackResponse[];
-  socialLinks: SocialLinkResponse[];
-  loves: LoveResponse[];
-};
+import { queryKeys } from "@/lib/query-keys";
+import type { AboutBundle } from "@/server/queries/about";
 
 const iconMap: Record<string, LucideIcon> = {
   Github,
@@ -80,6 +33,12 @@ const iconMap: Record<string, LucideIcon> = {
   Instagram,
   Twitter,
   Mail,
+};
+
+const fetchAbout = async (): Promise<AboutBundle> => {
+  const res = await fetch("/api/about");
+  if (!res.ok) throw new Error("Failed to fetch about data");
+  return res.json();
 };
 
 export const About = () => {
@@ -91,149 +50,40 @@ export const About = () => {
   });
 
   const [isHovered, setIsHovered] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [hasStartedFetching, setHasStartedFetching] = useState(false);
 
-  // Data from API
-  const [professionalBio, setProfessionalBio] = useState<{
-    title: string;
-    content: string;
-  } | null>(null);
-  const [currentLearningJourney, setCurrentLearningJourney] = useState<
-    string | null
-  >(null);
-  const [cvInfo, setCvInfo] = useState<CvInfoType | null>(null);
-  const [techStacks, setTechStacks] = useState<TechStack[]>([]);
-  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
-  const [loves, setLoves] = useState<Love[]>([]);
+  const { data } = useQuery({ queryKey: queryKeys.about, queryFn: fetchAbout });
 
-  useEffect(() => {
-    // Only fetch when section becomes visible and hasn't fetched yet
-    if (!isVisible || hasStartedFetching) return;
+  const view = useMemo(() => {
+    if (!data) return null;
 
-    setHasStartedFetching(true);
-
-    async function fetchAboutData() {
-      try {
-        const response = await fetch("/api/about");
-        const data: AboutApiResponse = await response.json();
-
-        // Map about sections to their keys
-        const bioSection = data.aboutSections?.find(
-          (s) => s.key === "professional_bio"
-        );
-        const learningSection = data.aboutSections?.find(
-          (s) => s.key === "current_learning"
-        );
-
-        setProfessionalBio({
-          title: bioSection?.title || "Professional Dreamer",
-          content: bioSection?.content || "",
-        });
-
-        setCurrentLearningJourney(learningSection?.content || "");
-
-        // Map CV info
-        if (data.cvInfo) {
-          setCvInfo({
-            title: data.cvInfo.title,
-            previewImage: data.cvInfo.previewImage,
-            downloadPath: data.cvInfo.downloadPath,
-          });
-        }
-
-        // Map tech stacks
-        setTechStacks(
-          data.techStacks?.map((tech) => ({
-            name: tech.name,
-            src: tech.src,
-          })) || []
-        );
-
-        // Map social links - convert iconName to actual icon component
-        setSocialLinks(
-          data.socialLinks?.map((link) => ({
-            href: link.url,
-            icon: (iconMap[link.iconName] || Mail) as React.ComponentType<{ className?: string }>,
-            label: link.label,
-          })) || []
-        );
-
-        // Map loves - Prisma Json type returns plain object, no need to parse
-        setLoves(
-          data.loves?.map((love) => ({
-            main: {
-              name: love.mainName,
-              src: love.mainSrc,
-            },
-            clubs: love.clubs,
-          })) || []
-        );
-      } catch (error) {
-        console.error("Failed to fetch about data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchAboutData();
-  }, [isVisible, hasStartedFetching]);
-
-  if (loading) {
-    return (
-      <section
-        ref={sectionRef}
-        id="about"
-        className={`w-full flex flex-col justify-center items-center py-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 mx-auto rounded-[40px] md:rounded-[80px] shadow-2xl bg-accent transition-all duration-1000 ease-out ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
-      >
-        <div className="max-w-6xl w-full flex flex-col gap-8 md:gap-12">
-          {/* Top row skeletons */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6">
-            <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl">
-              <Skeleton className="h-8 w-3/4 mb-4" />
-              <Skeleton className="h-4 w-full mb-2" />
-              <Skeleton className="h-4 w-5/6 mb-2" />
-              <Skeleton className="h-4 w-4/6" />
-            </Card>
-            <div className="lg:col-span-3 flex flex-col gap-4">
-              <div className="grid grid-cols-3 gap-4">
-                <Skeleton className="col-span-2 h-48 lg:h-56 rounded-xl" />
-                <div className="col-span-1 grid grid-cols-2 lg:grid-cols-1 gap-2">
-                  <Skeleton className="h-10 rounded-lg" />
-                  <Skeleton className="h-10 rounded-lg" />
-                  <Skeleton className="h-10 rounded-lg" />
-                  <Skeleton className="h-10 rounded-lg" />
-                </div>
-              </div>
-              <Skeleton className="h-6 w-3/4 mx-auto" />
-            </div>
-          </div>
-          {/* Bottom row skeletons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6">
-            <Card className="col-span-1 lg:col-span-2 p-4 md:p-6">
-              <Skeleton className="h-6 w-1/2 mb-4" />
-              <Skeleton className="h-40 w-full" />
-            </Card>
-            <Card className="col-span-1 lg:col-span-2 p-4 md:p-6">
-              <Skeleton className="h-6 w-1/3 mb-4 mx-auto" />
-              <div className="flex flex-wrap justify-center gap-2">
-                <Skeleton className="h-8 w-16 rounded-full" />
-                <Skeleton className="h-8 w-20 rounded-full" />
-                <Skeleton className="h-8 w-16 rounded-full" />
-                <Skeleton className="h-8 w-20 rounded-full" />
-              </div>
-            </Card>
-            <Card className="col-span-1 lg:col-span-2 p-4 md:p-6">
-              <Skeleton className="h-6 w-1/3 mb-10 ml-auto" />
-              <Skeleton className="h-16 w-16 rounded-full mx-auto" />
-            </Card>
-          </div>
-        </div>
-      </section>
+    const bioSection = data.aboutSections.find((s) => s.key === "professional_bio");
+    const learningSection = data.aboutSections.find(
+      (s) => s.key === "current_learning"
     );
-  }
+
+    return {
+      professionalBio: {
+        title: bioSection?.title ?? "Professional Dreamer",
+        content: bioSection?.content ?? "",
+      },
+      currentLearningJourney: learningSection?.content ?? "",
+      cvInfo: data.cvInfo,
+      techStacks: data.techStacks.map((t) => ({ name: t.name, src: t.src })),
+      socialLinks: data.socialLinks.map((link) => ({
+        href: link.url,
+        icon: (iconMap[link.iconName] ?? Mail) as React.ComponentType<{ className?: string }>,
+        label: link.label,
+      })),
+      loves: data.loves.map((love) => ({
+        main: { name: love.mainName, src: love.mainSrc },
+        clubs: love.clubs,
+      })),
+    };
+  }, [data]);
+
+  if (!view) return null;
+
+  const { professionalBio, currentLearningJourney, cvInfo, techStacks, socialLinks, loves } = view;
 
   return (
     <section
@@ -250,11 +100,11 @@ export const About = () => {
           <Card className="lg:col-span-3 p-4 md:p-6 rounded-xl transition-all duration-500 hover:-rotate-2 hover:scale-105 hover:shadow-xl">
             <h2 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
               <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-                {professionalBio?.title}
+                {professionalBio.title}
               </span>
             </h2>
             <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-              {professionalBio?.content}
+              {professionalBio.content}
             </p>
           </Card>
 
@@ -297,8 +147,6 @@ export const About = () => {
             </div>
           </div>
         </div>
-
-        {/* --- */}
 
         {/* Bottom row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
@@ -344,7 +192,7 @@ export const About = () => {
   `}
               >
                 <Link
-                  href={cvInfo?.downloadPath || "#"}
+                  href={cvInfo?.downloadPath ?? "#"}
                   target="_blank"
                   download
                   className="flex items-center justify-center"
@@ -357,7 +205,7 @@ export const About = () => {
             <div className="w-full h-[150px] md:h-[200px] overflow-hidden rounded-lg shadow-md relative">
               <div className="absolute inset-0 transition-transform duration-[1500ms] ease-in-out hover:-translate-y-[100%]">
                 <Image
-                  src={cvInfo?.previewImage || ""}
+                  src={cvInfo?.previewImage ?? ""}
                   alt="CV Preview"
                   width={300}
                   height={1000}

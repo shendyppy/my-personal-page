@@ -1,13 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getSkills } from "@/server/queries/skills";
 
 export async function GET() {
   try {
-    const skills = await prisma.skill.findMany({
-      orderBy: { order: "asc" },
-    });
-
-    return NextResponse.json(skills);
+    return NextResponse.json(await getSkills());
   } catch (error) {
     console.error("Error fetching skills:", error);
     return NextResponse.json(
