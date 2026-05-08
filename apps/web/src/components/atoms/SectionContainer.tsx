@@ -1,53 +1,49 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 type SectionContainerProps = {
   id: string;
   children: ReactNode;
   className?: string;
   /**
-   * Tailwind transition-duration class applied to the reveal animation.
-   * Defaults to `duration-1000`.
+   * Reveal animation duration in seconds. Defaults to 0.8s. Pass 0 to
+   * disable the reveal entirely.
    */
-  duration?: string;
+  duration?: number;
 };
 
 /**
  * Page-section wrapper that fades + translates content in once it scrolls
- * into view. The reveal pattern was duplicated across every section before
- * Phase 4 — extracted here as the single source of truth.
+ * into view. Built on Framer Motion's `whileInView` so we get spring-y
+ * easing, a single `once: true` viewport trigger, and built-in respect
+ * for `prefers-reduced-motion` via `useReducedMotion()`.
  *
- * Phase 6 will swap the intersection-observer + Tailwind transition for
- * `motion.section` + `whileInView`. Keep the public API identical so the
- * cutover is a one-file change.
+ * Pre-Phase-6 this used a `useIntersectionObserver` hook + Tailwind
+ * transition classes. Public API is preserved (id / children / className),
+ * `duration` switched from a Tailwind class string to a number of seconds
+ * since Motion's transition takes seconds.
  */
 export const SectionContainer = ({
   id,
   children,
   className,
-  duration = "duration-1000",
+  duration = 0.8,
 }: SectionContainerProps) => {
-  const ref = useRef<HTMLElement>(null);
-  const isVisible = useIntersectionObserver(ref, {
-    threshold: 0.1,
-    rootMargin: "100px",
-  });
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section
-      ref={ref}
+    <motion.section
       id={id}
-      className={cn(
-        "transition-all ease-out",
-        duration,
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
-        className
-      )}
+      className={cn(className)}
+      initial={reduceMotion || duration === 0 ? false : { opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
-    </section>
+    </motion.section>
   );
 };

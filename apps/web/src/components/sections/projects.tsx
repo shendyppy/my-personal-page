@@ -23,7 +23,7 @@ export const Projects = () => {
   return (
     <SectionContainer
       id="projects"
-      duration="duration-[800ms]"
+      duration={0.8}
       className="relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto will-change-transform"
     >
       {/* Floating Blobs */}

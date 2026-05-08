@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { ArrowDown } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import TypingText from "@/hooks/useTypingEffect";
@@ -78,14 +79,29 @@ export const Hero3D = () => {
 
   const displayedTraits = getDisplayedTraits(traits, mobileToSm, 7);
 
+  // Subtle scroll-driven parallax: as the user leaves the hero, the 3D
+  // scene fades out and drifts down a touch. Cheap (transform/opacity
+  // only) and respects reduced motion via `useScroll` + Framer Motion.
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const sceneOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0.25]);
+  const sceneY = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="w-full sm:h-screen flex items-center justify-center overflow-hidden"
     >
-      <div className="absolute inset-0 z-0">
+      <motion.div
+        style={{ opacity: sceneOpacity, y: sceneY }}
+        className="absolute inset-0 z-0"
+      >
         <HeroScene theme={theme} isSmUp={isSmUp} />
-      </div>
+      </motion.div>
 
       <div className="flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto sm:mt-auto pt-20 pb-12 sm:py-20">
         <h1
