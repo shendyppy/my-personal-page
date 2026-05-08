@@ -3,13 +3,31 @@ import type { Metadata } from "next";
 
 import { ProjectPageContent } from "@/components/organisms/ProjectPageContent";
 import { getProjectBySlug, getProjects } from "@/server/queries/projects";
+import { SITE_CONFIG } from "@/constants/config";
 import type { ProjectDetail, ProjectHighlight } from "@/types";
+
+// Re-render once per hour at most. Content rarely changes; ISR gives us
+// near-static performance while still picking up DB edits.
+export const revalidate = 3600;
+export const dynamicParams = true;
 
 type ProjectWithHighlights = NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>;
 
 export const generateStaticParams = async () => {
-  const projects = await getProjects();
-  return projects.map((project) => ({ slug: project.slug }));
+  // If the DB is unreachable at build time (Neon cold start, network blip,
+  // missing DATABASE_URL on a preview), fall back to an empty list. With
+  // `dynamicParams: true` above, pages will be generated + ISR-cached on
+  // first request instead of failing the entire build.
+  try {
+    const projects = await getProjects();
+    return projects.map((project) => ({ slug: project.slug }));
+  } catch (error) {
+    console.warn(
+      "[generateStaticParams] DB unreachable; pages will generate on-demand.",
+      error
+    );
+    return [];
+  }
 };
 
 export const generateMetadata = async ({
@@ -21,13 +39,27 @@ export const generateMetadata = async ({
   const project = await getProjectBySlug(slug);
   if (!project) return { title: "Project Not Found" };
 
+  const title = `${project.company} — ${project.title}`;
+  const description = project.overview ?? project.description;
+  const url = `/projects/${slug}`;
+
   return {
-    title: `${project.company} | Shendy's Portfolio`,
-    description: project.title,
+    title,
+    description,
+    alternates: { canonical: url },
     openGraph: {
-      title: `${project.company} | Shendy's Portfolio`,
-      description: project.title,
-      type: "website",
+      title,
+      description,
+      url,
+      type: "article",
+      siteName: SITE_CONFIG.title,
+      images: project.image ? [{ url: project.image, alt: title }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: project.image ? [project.image] : undefined,
     },
   };
 };
