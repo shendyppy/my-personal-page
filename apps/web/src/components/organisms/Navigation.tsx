@@ -87,10 +87,10 @@ export function Navigation() {
           <Image
             src={
               theme === "light"
-                ? "/assets/img/content/font-logo.png"
-                : "/assets/img/content/font-logo-white.png"
+                ? "/assets/img/content/font-logo.webp"
+                : "/assets/img/content/font-logo-white.webp"
             }
-            alt="logo"
+            alt="Shendy — Software Engineer"
             width={100}
             height={100}
             priority

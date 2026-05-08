@@ -1,87 +1,89 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+
 import { ProjectPageContent } from "@/components/organisms/ProjectPageContent";
+import { getProjectBySlug, getProjects } from "@/server/queries/projects";
+import { SITE_CONFIG } from "@/constants/config";
 import type { ProjectDetail, ProjectHighlight } from "@/types";
 
-type ProjectWithHighlights = {
-  slug: string;
-  title: string;
-  description: string;
-  image: string;
-  company: string | null;
-  overview: string | null;
-  scope: string | null;
-  industry: string | null;
-  highlights: Array<{
-    highlightId: string;
-    title: string;
-    description: string;
-    impact: string[];
-    link: string | null;
-    images: Array<{
-      link: string;
-      isScrollable: boolean;
-    }>;
-  }>;
+// Re-render once per hour at most. Content rarely changes; ISR gives us
+// near-static performance while still picking up DB edits.
+export const revalidate = 3600;
+export const dynamicParams = true;
+
+type ProjectWithHighlights = NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>;
+
+export const generateStaticParams = async () => {
+  // If the DB is unreachable at build time (Neon cold start, network blip,
+  // missing DATABASE_URL on a preview), fall back to an empty list. With
+  // `dynamicParams: true` above, pages will be generated + ISR-cached on
+  // first request instead of failing the entire build.
+  try {
+    const projects = await getProjects();
+    return projects.map((project) => ({ slug: project.slug }));
+  } catch (error) {
+    console.warn(
+      "[generateStaticParams] DB unreachable; pages will generate on-demand.",
+      error
+    );
+    return [];
+  }
 };
 
-export async function generateStaticParams() {
-  const projects = await prisma.project.findMany({
-    where: { isPublished: true },
-    select: { slug: true },
-  });
-
-  return projects.map((project) => ({
-    slug: project.slug,
-  }));
-}
-
-export async function generateMetadata({
+export const generateMetadata = async ({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+}): Promise<Metadata> => {
   const { slug } = await params;
-  const project = await prisma.project.findUnique({
-    where: { slug },
-  });
+  const project = await getProjectBySlug(slug);
+  if (!project) return { title: "Project Not Found" };
 
-  if (!project) {
-    return {
-      title: "Project Not Found",
-    };
-  }
+  const title = `${project.company} — ${project.title}`;
+  const description = project.overview ?? project.description;
+  const url = `/projects/${slug}`;
 
   return {
-    title: `${project.company} | Shendy's Portfolio`,
-    description: project.title,
+    title,
+    description,
+    alternates: { canonical: url },
     openGraph: {
-      title: `${project.company} | Shendy's Portfolio`,
-      description: project.title,
-      type: "website",
+      title,
+      description,
+      url,
+      type: "article",
+      siteName: SITE_CONFIG.title,
+      images: project.image ? [{ url: project.image, alt: title }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: project.image ? [project.image] : undefined,
     },
   };
-}
+};
 
 const mapProjectToDetail = (data: ProjectWithHighlights): ProjectDetail => ({
   slug: data.slug,
-  company: data.company || "",
+  company: data.company ?? "",
   title: data.title,
-  overview: data.overview || "",
-  scope: data.scope || "",
-  industry: data.industry || "",
-  highlights: data.highlights.map((h): ProjectHighlight => ({
-    id: h.highlightId,
-    title: h.title,
-    description: h.description,
-    impact: h.impact,
-    images: h.images.map((img) => ({
-      link: img.link,
-      isScrollable: img.isScrollable,
-    })),
-    link: h.link || undefined,
-  })),
+  overview: data.overview ?? "",
+  scope: data.scope ?? "",
+  industry: data.industry ?? "",
+  highlights: data.highlights.map(
+    (h): ProjectHighlight => ({
+      id: h.highlightId,
+      title: h.title,
+      description: h.description,
+      impact: h.impact,
+      images: h.images.map((img) => ({
+        link: img.link,
+        isScrollable: img.isScrollable,
+      })),
+      link: h.link ?? undefined,
+    })
+  ),
 });
 
 const ProjectPage = async ({
@@ -90,26 +92,10 @@ const ProjectPage = async ({
   params: Promise<{ slug: string }>;
 }) => {
   const { slug } = await params;
-
-  const project = await prisma.project.findUnique({
-    where: { slug },
-    include: {
-      highlights: {
-        include: {
-          images: {
-            orderBy: { order: "asc" },
-          },
-        },
-        orderBy: { order: "asc" },
-      },
-    },
-  });
-
+  const project = await getProjectBySlug(slug);
   if (!project) return notFound();
 
-  const projectDetail = mapProjectToDetail(project as ProjectWithHighlights);
-
-  return <ProjectPageContent project={projectDetail} />;
+  return <ProjectPageContent project={mapProjectToDetail(project)} />;
 };
 
 export default ProjectPage;

@@ -1,19 +1,21 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+// Flat config — required by ESLint 10 + eslint-config-next 16. The
+// previous file used `FlatCompat` from `@eslint/eslintrc` to bridge the
+// legacy "extends" syntax; that compatibility layer broke against the
+// new eslint-config-next exports (circular structure during config
+// validation). The native flat export from `eslint-config-next` works
+// directly.
+import nextConfig from "eslint-config-next";
 
 const eslintConfig = [
   {
-    ignores: ["**/generated/**", "**/node_modules/**", ".next/**", "out/**"],
+    ignores: [
+      "**/generated/**",
+      "**/node_modules/**",
+      ".next/**",
+      "out/**",
+    ],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...nextConfig,
 ];
 
 export default eslintConfig;
