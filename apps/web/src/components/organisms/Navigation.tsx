@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   BriefcaseBusiness,
@@ -20,13 +20,19 @@ import Image from "next/image";
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
+  // Auto-hide on scroll-down, reveal on scroll-up; `scrolled` adds a readable
+  // backdrop once we leave the very top.
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const lastScrollY = useRef(0);
   const { theme, toggleTheme } = useThemeContext();
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["hero", "about", "projects", "experiences", "skills"];
-      const scrollPosition = window.scrollY + 100;
+      const currentY = window.scrollY;
+      const scrollPosition = currentY + 100;
 
+      const sections = ["hero", "about", "projects", "experiences", "skills"];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -40,9 +46,18 @@ export function Navigation() {
           }
         }
       }
+
+      setScrolled(currentY > 8);
+      // Only hide past a small threshold so the bar doesn't flicker near the top.
+      if (currentY > lastScrollY.current && currentY > 96) {
+        setHidden(true);
+      } else if (currentY < lastScrollY.current) {
+        setHidden(false);
+      }
+      lastScrollY.current = currentY;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -78,8 +93,14 @@ export function Navigation() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 bg-background/80 ${
-        isOpen ? "backdrop-blur-md h-screen" : ""
+      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 will-change-transform ${
+        hidden && !isOpen ? "-translate-y-full" : "translate-y-0"
+      } ${
+        isOpen
+          ? "h-screen bg-background/95 backdrop-blur-md"
+          : scrolled
+            ? "bg-background/70 backdrop-blur-md border-b border-border/40"
+            : ""
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

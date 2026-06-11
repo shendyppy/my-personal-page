@@ -18,6 +18,7 @@ import { BioCard } from "@/components/molecules/BioCard";
 import { ProfilePhoto } from "@/components/molecules/ProfilePhoto";
 import { LearningQuote } from "@/components/molecules/LearningQuote";
 import { SectionContainer } from "@/components/atoms/SectionContainer";
+import { AboutBackdrop } from "@/components/molecules/AboutBackdrop";
 import type { AboutBundle } from "@/server/queries/about";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -58,9 +59,11 @@ export const AboutSection = ({ initialData }: AboutSectionProps) => {
   return (
     <SectionContainer
       id="about"
-      className="w-full flex flex-col justify-center items-center py-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 mx-auto rounded-[40px] md:rounded-[80px] shadow-2xl bg-accent"
+      className="relative overflow-hidden w-full flex flex-col justify-center items-center py-16 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 mx-auto rounded-[40px] md:rounded-[80px] shadow-2xl bg-accent"
     >
-      <div className="max-w-6xl w-full flex flex-col gap-8 md:gap-12">
+      <AboutBackdrop />
+
+      <div className="relative z-10 max-w-6xl w-full flex flex-col gap-8 md:gap-12">
         {/* Top row: bio, photo + socials, quote */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 items-start">
           <BioCard title={professionalBio.title} content={professionalBio.content} />

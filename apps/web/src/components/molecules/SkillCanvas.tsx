@@ -43,26 +43,52 @@ type SkillCanvasProps = {
 };
 
 /**
- * 3D viewer for the Skills section. Extracted into its own module so the
- * heavy R3F + drei + three bundle (~600 KB raw) is only loaded when this
- * component renders, via `next/dynamic` from the parent.
+ * 3D viewer for the Skills section.
+ *
+ * The container uses `position: relative` + `minWidth: 0` so it can shrink
+ * freely inside flex/grid parents, while the Canvas is `position: absolute`
+ * to stay out of normal flow. This lets R3F's built-in ResizeObserver
+ * track the real available space in both grow and shrink directions.
  */
 const SkillCanvas = ({ skill, theme }: SkillCanvasProps) => (
-  <Canvas
-    camera={{ position: [0, 0, 12], fov: 60 }}
-    dpr={[1, 1.5]}
-    gl={{ antialias: false, powerPreference: "high-performance" }}
+  <div
+    style={{
+      position: "relative",
+      width: "100%",
+      height: "100%",
+      overflow: "hidden",
+      minWidth: 0,
+    }}
   >
-    <ambientLight intensity={theme === "dark" ? 0.4 : 0.7} />
-    <directionalLight
-      position={[5, 5, 5]}
-      intensity={theme === "dark" ? 1.5 : 2}
-    />
-    <Suspense fallback={null}>
-      <OrbitControls enableZoom autoRotate autoRotateSpeed={1} />
-      <SkillModel skill={skill} theme={theme} />
-    </Suspense>
-  </Canvas>
+    <Canvas
+      camera={{ position: [0, 0, 12], fov: 60 }}
+      dpr={[1, 1.5]}
+      resize={{ debounce: { scroll: 50, resize: 0 } }}
+      gl={{ antialias: false, powerPreference: "high-performance" }}
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <ambientLight intensity={theme === "dark" ? 0.4 : 0.7} />
+      <directionalLight
+        position={[5, 5, 5]}
+        intensity={theme === "dark" ? 1.5 : 2}
+      />
+      <Suspense fallback={null}>
+        <OrbitControls
+          enableZoom
+          enablePan={false}
+          autoRotate
+          autoRotateSpeed={1}
+        />
+        <SkillModel skill={skill} theme={theme} />
+      </Suspense>
+    </Canvas>
+  </div>
 );
 
 export default SkillCanvas;
