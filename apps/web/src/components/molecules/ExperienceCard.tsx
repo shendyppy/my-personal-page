@@ -1,209 +1,129 @@
 "use client";
 
-import Image from "next/image";
-import { ChevronDown } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Calendar, Briefcase } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 
-import { useTilt } from "@/hooks/useTilt";
-import type { Experience, EmploymentType } from "@/types";
+import type { Experience } from "@/types";
 
 interface ExperienceCardProps {
   experience: Experience;
-  isExpanded: boolean;
-  onToggle: () => void;
+  /** Row position — drives the left/right alternation on desktop. */
+  index: number;
+  /** Aurora gradient pair (from-via-to) for this row's node + company name. */
+  gradient: string;
 }
 
-type EmploymentTheme = {
-  /** Solid color for the timeline dot. */
-  dot: string;
-  /** Pill background + text + border. */
-  pill: string;
-  /** Aurora gradient tint for the card body. */
-  wash: string;
-  /** Optional subtle ring on the whole card. */
-  ring: string;
-};
-
-const employmentThemes: Record<EmploymentType, EmploymentTheme> = {
-  "Full Time": {
-    dot: "bg-emerald-500",
-    pill: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
-    wash: "from-emerald-500/[0.07]",
-    ring: "ring-emerald-500/20",
-  },
-  "Part Time": {
-    dot: "bg-blue-500",
-    pill: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30",
-    wash: "from-blue-500/[0.07]",
-    ring: "ring-blue-500/20",
-  },
-  Contract: {
-    dot: "bg-orange-500",
-    pill: "bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30",
-    wash: "from-orange-500/[0.07]",
-    ring: "ring-orange-500/20",
-  },
-  Internship: {
-    dot: "bg-purple-500",
-    pill: "bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30",
-    wash: "from-purple-500/[0.07]",
-    ring: "ring-purple-500/20",
-  },
-};
-
+/**
+ * One row of the alternating experience timeline. On desktop the meta column
+ * (period/role/company) hugs the centre rail and the detail card sits on the
+ * opposite side, flipping each row — even rows put the meta on the RIGHT and
+ * the card on the LEFT. On mobile everything collapses to a single left-railed
+ * column. The detail card keeps its content left-aligned (tidy) while only the
+ * column position alternates. Vivid accents come from the per-row aurora
+ * `gradient`; everything else is token-based so it reads on both themes.
+ */
 export const ExperienceCard = ({
   experience,
-  isExpanded,
-  onToggle,
+  index,
+  gradient,
 }: ExperienceCardProps) => {
   const reduceMotion = useReducedMotion();
-  const { ref: tiltRef, rotateX, rotateY } = useTilt<HTMLDivElement>({ max: 3 });
-  const theme =
-    employmentThemes[experience.employmentType] ?? employmentThemes["Full Time"];
+  // Even rows: meta on the right, descriptive card on the left.
+  const metaOnRight = index % 2 === 0;
 
   return (
-    <div className="relative pl-9 sm:pl-12">
-      {/* Timeline dot — sits on the rail rendered by the parent list.
-          Aligned so dot center = rail center: left-1.5 + size-3.5/2 = 13px. */}
+    <motion.div
+      initial={reduceMotion ? false : { opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`relative lg:grid lg:grid-cols-2 lg:items-center gap-8 lg:gap-16 ${
+        metaOnRight ? "lg:[&>*:first-child]:order-2" : ""
+      }`}
+    >
+      {/* Node on the rail (with a soft aurora glow). */}
       <span
         aria-hidden
-        className={`absolute left-0.5 sm:left-1.5 top-7 z-10 size-3.5 rounded-full ring-4 ring-background ${theme.dot} ${
-          experience.current ? "animate-pulse" : ""
-        }`}
-      />
+        className="absolute left-4 top-7 z-10 -translate-x-1/2 lg:left-1/2"
+      >
+        <span
+          className={`absolute -inset-1 rounded-full bg-gradient-to-br ${gradient} opacity-60 blur-md ${
+            experience.current ? "animate-pulse motion-reduce:animate-none" : ""
+          }`}
+        />
+        <span
+          className={`relative block size-4 rounded-full bg-gradient-to-br ${gradient} ring-4 ring-background`}
+        />
+      </span>
 
-      <motion.div
-        ref={tiltRef}
-        style={{
-          rotateX,
-          rotateY,
-          transformPerspective: 1600,
-          transformStyle: "preserve-3d",
-        }}
-        className={`relative border border-border/50 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow ${
-          experience.current ? `ring-1 ${theme.ring}` : ""
+      {/* Meta — hugs the rail. */}
+      <div
+        className={`min-w-0 pl-12 lg:pl-0 ${
+          metaOnRight ? "lg:pl-4 lg:text-left" : "lg:pr-4 lg:text-right"
         }`}
       >
-        {/* Aurora wash */}
-        <div
-          aria-hidden
-          className={`pointer-events-none absolute inset-0 bg-gradient-to-r ${theme.wash} via-transparent to-transparent`}
-        />
-
-        <button
-          onClick={onToggle}
-          aria-expanded={isExpanded}
-          className="relative w-full p-4 text-left transition-colors duration-200 hover:bg-accent/10 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-background/40"
-          style={{ transform: "translateZ(20px)" }}
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/5 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
+          <Calendar className="size-3" />
+          {experience.period}
+        </span>
+        <h3 className="mt-3 text-xl font-bold text-foreground md:text-2xl">
+          {experience.title}
+        </h3>
+        <p
+          className={`mt-1 bg-gradient-to-r font-semibold ${gradient} bg-clip-text text-transparent`}
         >
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            <Image
-              src={experience.logo}
-              width={48}
-              height={48}
-              alt={`${experience.company} logo`}
-              className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-contain bg-white p-1 flex-shrink-0 shadow-sm"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                <h5 className="font-semibold text-base md:text-lg text-foreground">
-                  {experience.title}
-                </h5>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {experience.current && (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full whitespace-nowrap">
-                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Current
-                    </span>
-                  )}
-                  <span
-                    className={`text-xs font-medium border px-2 py-0.5 rounded-full whitespace-nowrap ${theme.pill}`}
-                  >
-                    {experience.employmentType}
-                  </span>
-                </div>
-              </div>
-              <p className="text-sm md:text-base font-medium text-foreground/80">
-                {experience.company}
-              </p>
-              <p className="text-xs md:text-sm text-muted-foreground">
-                {experience.period}
-              </p>
-            </div>
-          </div>
-          <motion.div
-            animate={{ rotate: isExpanded ? 180 : 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="self-end md:self-center flex-shrink-0"
-          >
-            <ChevronDown className="size-5 md:size-6" />
-          </motion.div>
-        </button>
+          {experience.company}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {experience.employmentType}
+          {experience.current ? " · Current" : ""}
+        </p>
+      </div>
 
-        <AnimatePresence initial={false}>
-          {isExpanded && (
-            <motion.div
-              key="content"
-              initial={reduceMotion ? false : { height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{
-                height: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-                opacity: { duration: 0.3 },
-              }}
-              className="overflow-hidden"
-              style={{ transform: "translateZ(15px)" }}
-            >
-              <div className="p-4 border-t border-border/50 bg-background/40">
-                <p className="text-sm md:text-base text-muted-foreground mb-4 leading-relaxed">
-                  {experience.description}
+      {/* Detail card — always left-aligned content. */}
+      <div
+        className={`min-w-0 mt-4 pl-12 text-left lg:mt-0 lg:pl-0 ${
+          metaOnRight ? "lg:pr-4" : "lg:pl-4"
+        }`}
+      >
+        <div className="group/card relative overflow-hidden rounded-2xl border border-border/50 bg-card/70 p-4 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5 lg:p-6">
+          <div
+            aria-hidden
+            className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${gradient} opacity-[0.06] transition-opacity duration-300 group-hover/card:opacity-[0.12]`}
+          />
+
+          <div className="relative">
+            <p className="text-sm text-muted-foreground md:text-base">
+              {experience.description}
+            </p>
+
+            {experience.projects.length > 0 && (
+              <div className="mt-4">
+                <p className="mb-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
+                  <Briefcase className="size-3" /> Key Projects
                 </p>
-
-                <div className="space-y-4">
-                  <div>
-                    <h6 className="font-medium text-sm md:text-base text-foreground mb-2">
-                      Key Responsibilities:
-                    </h6>
-                    <ul className="space-y-2 text-sm md:text-base text-muted-foreground">
-                      {experience.responsibilities.map((resp, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <span className="text-primary mt-1">•</span>
-                          <span className="leading-relaxed">{resp}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {experience.projects && experience.projects.length > 0 && (
-                    <div>
-                      <h6 className="font-medium text-sm md:text-base text-foreground mb-2">
-                        Key Projects:
-                      </h6>
-                      <ul className="space-y-2 text-sm md:text-base text-muted-foreground">
-                        {experience.projects.map((project, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <span className="text-accent mt-1">•</span>
-                            <span className="leading-relaxed">{project}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <div>
-                    <h6 className="font-medium text-sm md:text-base text-foreground mb-2">
-                      Tech Stack:
-                    </h6>
-                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                      {experience.techStack}
-                    </p>
-                  </div>
-                </div>
+                <ul className="space-y-1.5">
+                  {experience.projects.map((project) => (
+                    <li
+                      key={project}
+                      className="flex items-start gap-2 text-sm text-foreground/80"
+                    >
+                      <span
+                        className={`mt-1.5 size-1.5 shrink-0 rounded-full bg-gradient-to-br ${gradient}`}
+                      />
+                      {project}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </div>
+            )}
+
+            <p className="mt-4 border-t border-border/50 pt-3 text-xs leading-relaxed text-muted-foreground">
+              {experience.techStack}
+            </p>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };

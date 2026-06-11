@@ -60,13 +60,16 @@ export const traitColors: TraitColors = {
   },
 };
 
-export const scene3DColors = {
-  dark: {
-    text: "#00E5FF", // cyan neon
-    cubes: ["#A3FF12", "#FF1F8F", "#FFD60A", "#7C4DFF"],
-  },
-  light: {
-    text: "#2563EB", // sky blue pastel
-    cubes: ["#34D399", "#F87171", "#A78BFA", "#FBBF24"],
-  },
-};
+/**
+ * Vivid gradient pairs for project tiles (and experience timeline accents),
+ * cycled per index. These are intentionally always-vivid (white text rides on
+ * top of a dark scrim), so they read the same on light and dark themes.
+ */
+export const projectTileGradients = [
+  "from-fuchsia-500 via-purple-500 to-indigo-500",
+  "from-cyan-400 via-sky-500 to-blue-500",
+  "from-amber-400 via-orange-500 to-rose-500",
+  "from-emerald-400 via-teal-500 to-cyan-500",
+  "from-violet-500 via-fuchsia-500 to-pink-500",
+  "from-rose-500 via-red-500 to-orange-500",
+] as const;

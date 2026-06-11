@@ -6,9 +6,12 @@ Project-specific Claude skills that codify recurring workflows in this repo. The
 | --------------------- | ----------------------------------------------------------------------- |
 | `add-content-model`   | Adding a new DB-backed content type (model + types + seed + query)      |
 | `add-section`         | Adding a new visible landing-page section                               |
+| `commit-messages`     | Writing commit messages — conventional-commit format, scopes, examples  |
 | `optimize-images`     | New image assets dropped, or asked to re-process WebP                   |
+| `pr-review`           | Reviewing PRs, self-reviewing before push, writing PR descriptions      |
 | `refactor-to-rsc`     | Modernizing a legacy `useEffect + fetch` section                        |
 | `update-cv`           | Replacing the downloadable CV PDF                                       |
+| `visual-craft`        | Any UI/visual/animation/3D work — craft standards & review checklist    |
 
 ## Adding a new skill
 
