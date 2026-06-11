@@ -9,9 +9,11 @@ import { useThemeContext } from "@/app/providers/ThemeProvider";
 import { skillCategoryColors } from "@/constants/colors";
 import { SKILL_CATEGORIES, type SkillCategoryFilter } from "@/constants/config";
 import { Skill } from "@/types";
+import { Rotate3d } from "lucide-react";
 import { SkillCard } from "@/components/molecules/SkillCard";
+import { SkillInfo } from "@/components/molecules/SkillInfo";
 import { SectionContainer } from "@/components/atoms/SectionContainer";
-import { SectionHeading } from "@/components/atoms/SectionHeading";
+import { GradientText } from "@/components/atoms/GradientText";
 
 // Lazy-load the R3F + drei + three bundle (~600 KB) — only fetched when
 // the Skills section actually renders. ssr:false because Three.js needs
@@ -54,28 +56,50 @@ export const SkillsList = ({ initialData }: SkillsListProps) => {
   return (
     <SectionContainer
       id="skills"
-      className="max-w-6xl px-4 md:px-6 py-2 relative overflow-hidden space-y-8 !mx-auto"
+      className="max-w-6xl px-6 py-16 relative overflow-hidden space-y-8 !mx-auto"
     >
-      <SectionHeading
-        subtitle={
-          <>
-            Explore <span className="text-accent font-semibold">3D orbit</span> of skills
-            and browse through categorized cards{" "}
-          </>
-        }
-        withDivider
-      >
-        Experiments{" "}
-      </SectionHeading>
+      <div className="text-right">
+        <span className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          Toolbelt
+        </span>
+        <h2 className="font-heading mt-2 text-4xl font-bold tracking-tight text-foreground md:text-6xl">
+          <GradientText>Experiments</GradientText>
+        </h2>
+        <p className="mt-2 text-muted-foreground md:text-lg">
+          Explore the{" "}
+          <span className="font-semibold text-foreground">3D orbit</span> of
+          skills and browse the categorized cards.
+        </p>
+      </div>
 
-      <div className="flex flex-col !justify-center md:grid md:grid-cols-2 gap-6 md:gap-8 items-center mx-auto">
-        <div className="flex-1 h-[50vh] md:h-[calc(100dvh-12rem)] relative rounded-xl flex items-center justify-center">
-          <div className="w-full h-[300px] lg:h-full transition-all duration-500 ease-in-out animate-fadeIn">
-            <SkillCanvas skill={selectedSkill} theme={theme} />
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
+        <div className="relative w-full">
+          {/* 3D stage */}
+          <div className="relative flex h-[50vh] items-center justify-center rounded-xl lg:h-[calc(100dvh-12rem)]">
+            {/* Aurora glow stage so the 3D model reads with depth on both themes. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 top-1/2 size-2/3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-aurora-1/15 via-aurora-2/10 to-aurora-3/15 blur-3xl"
+            />
+            {/* Discoverability hint — the canvas is drag-to-rotate. */}
+            <span className="pointer-events-none absolute top-3 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-border/50 bg-background/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
+              <Rotate3d className="size-3.5" />
+              Drag to rotate
+            </span>
+
+            <div className="relative z-10 w-full h-[300px] lg:h-full animate-fadeIn">
+              <SkillCanvas skill={selectedSkill} theme={theme} />
+            </div>
+          </div>
+
+          {/* Selected-skill stats — below the stage on mobile (no overlap with
+              the model), overlaid on the stage on desktop. */}
+          <div className="relative z-20 mt-3 lg:absolute lg:inset-x-3 lg:bottom-3 lg:mt-0">
+            <SkillInfo skill={selectedSkill} />
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-4">
           <div className="flex gap-2 mb-2 flex-wrap justify-start">
             {SKILL_CATEGORIES.map((cat) => (
               <Button
@@ -84,7 +108,7 @@ export const SkillsList = ({ initialData }: SkillsListProps) => {
                 className={`cursor-pointer px-3 py-1 rounded-full text-sm font-medium transition-all duration-300
                   ${
                     filter === cat
-                      ? "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 hover:shadow-md scale-105"
+                      ? "scale-105 border-0 bg-gradient-to-r from-aurora-1 to-aurora-2 text-white shadow-md shadow-aurora-2/30 hover:shadow-lg"
                       : theme === "dark"
                       ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
                       : "bg-gray-300 text-gray-700 hover:bg-gray-400"
@@ -97,7 +121,7 @@ export const SkillsList = ({ initialData }: SkillsListProps) => {
 
           <div
             key={animatingKey}
-            className="grid grid-cols-2 xl:grid-cols-3 gap-4 pr-0 md:pr-2 items-start"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4 items-start"
           >
             {filteredSkills.map((skill, index) => {
               const isActive = selectedSkill.name === skill.name;

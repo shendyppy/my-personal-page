@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { ExperienceCard } from "@/components/molecules/ExperienceCard";
 import { SectionContainer } from "@/components/atoms/SectionContainer";
-import { SectionHeading } from "@/components/atoms/SectionHeading";
+import { GradientText } from "@/components/atoms/GradientText";
+import { projectTileGradients } from "@/constants/colors";
 import type { ExperienceDto } from "@/server/queries/experiences";
 import type { Experience, EmploymentType } from "@/types";
 
@@ -30,39 +31,37 @@ type ExperiencesListProps = {
 
 export const ExperiencesList = ({ initialData }: ExperiencesListProps) => {
   const experiences = useMemo(() => mapToExperience(initialData), [initialData]);
-  const [expandedExperiences, setExpandedExperiences] = useState<number[]>([1, 2, 3]);
-
-  const toggleExperience = (id: number) => {
-    setExpandedExperiences((prev) =>
-      prev.includes(id) ? prev.filter((eid) => eid !== id) : [...prev, id]
-    );
-  };
 
   return (
     <SectionContainer
       id="experiences"
-      className="relative max-w-6xl flex flex-col justify-center items-center py-16 px-6 mx-auto"
+      className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6"
     >
-      <div className="flex flex-col items-center space-y-8 w-full relative z-20">
-        <SectionHeading>Experiences</SectionHeading>
+      <div className="mb-14">
+        <span className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          Career
+        </span>
+        <h2 className="font-heading mt-2 text-4xl font-bold tracking-tight text-foreground md:text-6xl">
+          <GradientText>Experiences</GradientText>
+        </h2>
+      </div>
 
-        <div className="relative w-full md:w-4/5 px-1">
-          {/* Timeline rail — gradient line behind all cards */}
-          <div
-            aria-hidden
-            className="absolute left-3 sm:left-4 top-2 bottom-2 w-0.5 bg-linear-to-b from-transparent via-border to-transparent"
-          />
+      <div className="relative">
+        {/* Centre rail — gradient line behind all rows. */}
+        <div
+          aria-hidden
+          className="absolute left-4 top-0 bottom-0 w-1 -translate-x-1/2 rounded-full bg-gradient-to-b from-aurora-1/70 via-aurora-2/60 to-aurora-3/70 lg:left-1/2"
+        />
 
-          <div className="relative space-y-4">
-            {experiences.map((exp) => (
-              <ExperienceCard
-                key={exp.id}
-                experience={exp}
-                isExpanded={expandedExperiences.includes(exp.id)}
-                onToggle={() => toggleExperience(exp.id)}
-              />
-            ))}
-          </div>
+        <div className="space-y-12 lg:space-y-16">
+          {experiences.map((exp, i) => (
+            <ExperienceCard
+              key={exp.id}
+              experience={exp}
+              index={i}
+              gradient={projectTileGradients[i % projectTileGradients.length]}
+            />
+          ))}
         </div>
       </div>
     </SectionContainer>

@@ -1,18 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-import { useThemeContext } from "@/app/providers/ThemeProvider";
+import { SplineScene } from "@/components/ui/splite";
 import { useMediaQuery } from "@/hooks/useResponsive";
-import type { Theme } from "@/types";
 
-// 3D scene streams in client-side; SSR is skipped entirely.
-const HeroScene = dynamic(() => import("@/components/molecules/HeroScene"), {
-  ssr: false,
-  loading: () => null,
-});
+/** Hosted Spline robot scene (follows the cursor). */
+const HERO_SPLINE_SCENE =
+  "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 
 /**
  * Inner component that owns the ref + scroll-driven parallax. Only mounts
@@ -20,7 +16,7 @@ const HeroScene = dynamic(() => import("@/components/molecules/HeroScene"), {
  * `useScroll` always finds a hydrated target and doesn't throw the
  * "Target ref is defined but not hydrated" warning.
  */
-const HeroSceneInner = ({ theme, isSmUp }: { theme: Theme; isSmUp: boolean }) => {
+const HeroSceneInner = () => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -31,21 +27,20 @@ const HeroSceneInner = ({ theme, isSmUp }: { theme: Theme; isSmUp: boolean }) =>
 
   return (
     <motion.div ref={ref} style={{ opacity, y }} className="absolute inset-0 z-0">
-      <HeroScene theme={theme} isSmUp={isSmUp} />
+      <SplineScene scene={HERO_SPLINE_SCENE} className="h-full w-full" />
     </motion.div>
   );
 };
 
 /**
- * Client island for the 3D hero scene. Skipped outright on touch /
- * small viewports — saves the entire R3F + drei + three bundle and the
- * canvas's continuous rAF on mobile.
+ * Client island for the 3D hero scene. Skipped outright on touch / small
+ * viewports — the Spline runtime + hosted scene are heavy, so mobile gets the
+ * static headline over the aurora wash instead.
  */
 export const HeroSceneIsland = () => {
-  const { theme } = useThemeContext();
   const isSmUp = useMediaQuery({ min: 640 });
 
   if (!isSmUp) return null;
 
-  return <HeroSceneInner theme={theme} isSmUp={isSmUp} />;
+  return <HeroSceneInner />;
 };

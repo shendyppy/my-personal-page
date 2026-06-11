@@ -29,7 +29,7 @@ export const SkillCard = ({
         cursor-pointer transition-all duration-300 h-25
         ${
           isActive
-            ? "ring-2 ring-offset-2 ring-secondary scale-[1.05] shadow-xl"
+            ? "ring-2 ring-offset-2 ring-offset-background ring-aurora-2 scale-[1.05] shadow-xl shadow-aurora-2/20"
             : "hover:scale-[1.02] hover:shadow-lg"
         }
       `}
@@ -45,14 +45,14 @@ export const SkillCard = ({
         <div>
           <h4
             className={`font-semibold text-sm xl:text-base ${
-              isActive ? "text-accent" : "text-foreground"
+              isActive ? "text-aurora-2" : "text-foreground"
             }`}
           >
             {skill.name}
           </h4>
           <p
             className={`text-xs lg:text-sm ${
-              isActive ? "text-accent/80" : "text-muted-foreground"
+              isActive ? "text-aurora-2/80" : "text-muted-foreground"
             }`}
           >
             {getLevelLabel(skill.level)}
