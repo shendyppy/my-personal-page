@@ -2,8 +2,20 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
 
+// `pg-connection-string` warns when the URL carries `sslmode=require|prefer|
+// verify-ca` (their meaning changes in pg v9). TLS is governed by the `ssl`
+// option below, so strip the redundant param to silence the deprecation warning.
+function getDatabaseUrl() {
+  const url = process.env.DATABASE_URL;
+  if (!url) return url;
+  return url
+    .replace(/[?&]sslmode=[^&]*/i, (m) => (m[0] === "?" ? "?" : ""))
+    .replace(/\?&/, "?")
+    .replace(/[?&]$/, "");
+}
+
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: getDatabaseUrl(),
   ssl: { rejectUnauthorized: false },
 });
 const prisma = new PrismaClient({ adapter });
@@ -390,6 +402,104 @@ async function main() {
     ],
   });
 
+  // Acelents — now released. Moved from the Incoming project and merged with the
+  // public acelents.com landing page into a single Acelents highlight.
+  const acelents = await prisma.projectHighlight.create({
+    data: {
+      projectId: ddiReleased.id,
+      highlightId: "acelents",
+      title: "Acelents",
+      description:
+        "Acelents is DDI's data-driven platform for talent growth, productivity, and retention — now released. The public landing page (acelents.com) pitches the value proposition and the wider product ecosystem (Klob, Engauge, Odyssey), while the app (apps.acelents.com) delivers the experience: succession planning, development-gap analysis, and connected employee data that turn HR decisions from instinct into measurable insight.",
+      impact: [
+        "Released data-driven HR platform",
+        "Marketing landing + product app",
+        "Succession & development-gap analysis",
+      ],
+      link: "https://acelents.com/",
+      order: 6,
+    },
+  });
+
+  await prisma.projectImage.createMany({
+    data: [
+      // Landing page — acelents.com
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents-landing/01-hero.webp",
+        isScrollable: false,
+        order: 1,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents-landing/02-connected-data.webp",
+        isScrollable: false,
+        order: 2,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents-landing/03-succession.webp",
+        isScrollable: false,
+        order: 3,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents-landing/04-development.webp",
+        isScrollable: false,
+        order: 4,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents-landing/05-ecosystem.webp",
+        isScrollable: false,
+        order: 5,
+      },
+      // Product app — apps.acelents.com
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents/cms-1.webp",
+        isScrollable: true,
+        order: 6,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents/cms-2.webp",
+        isScrollable: false,
+        order: 7,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents/cms-3.webp",
+        isScrollable: false,
+        order: 8,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents/cms-4-1.webp",
+        isScrollable: false,
+        order: 9,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents/cms-4-2.webp",
+        isScrollable: false,
+        order: 10,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents/cms-5.webp",
+        isScrollable: false,
+        order: 11,
+      },
+      {
+        highlightId: acelents.id,
+        link: "/assets/img/projects/acelents/cms-6.webp",
+        isScrollable: false,
+        order: 12,
+      },
+    ],
+  });
+
   // DDI Incoming Project
   const ddiIncoming = await prisma.project.create({
     data: {
@@ -406,70 +516,6 @@ async function main() {
     },
   });
 
-  // ACELENTS
-  const acelents = await prisma.projectHighlight.create({
-    data: {
-      projectId: ddiIncoming.id,
-      highlightId: "acelents",
-      title: "Acelents",
-      description:
-        "Acelents seems like a strong asset for DDI because psychometric/assessment platforms are highly valuable in HR consulting. It provides recurring value, could help differentiate them, and possibly generate reliable revenue (via clients subscribing).",
-      impact: [
-        "Scale code to be maintainable",
-        "Initiate a new project",
-        "Software as a Service (SaaS)",
-      ],
-      order: 1,
-    },
-  });
-
-  await prisma.projectImage.createMany({
-    data: [
-      {
-        highlightId: acelents.id,
-        link: "/assets/img/projects/acelents/cms-1.webp",
-        isScrollable: true,
-        order: 1,
-      },
-      {
-        highlightId: acelents.id,
-        link: "/assets/img/projects/acelents/cms-2.webp",
-        isScrollable: false,
-        order: 2,
-      },
-      {
-        highlightId: acelents.id,
-        link: "/assets/img/projects/acelents/cms-3.webp",
-        isScrollable: false,
-        order: 3,
-      },
-      {
-        highlightId: acelents.id,
-        link: "/assets/img/projects/acelents/cms-4-1.webp",
-        isScrollable: false,
-        order: 4,
-      },
-      {
-        highlightId: acelents.id,
-        link: "/assets/img/projects/acelents/cms-4-2.webp",
-        isScrollable: false,
-        order: 5,
-      },
-      {
-        highlightId: acelents.id,
-        link: "/assets/img/projects/acelents/cms-5.webp",
-        isScrollable: false,
-        order: 6,
-      },
-      {
-        highlightId: acelents.id,
-        link: "/assets/img/projects/acelents/cms-6.webp",
-        isScrollable: false,
-        order: 7,
-      },
-    ],
-  });
-
   // PortrAI
   const portrai = await prisma.projectHighlight.create({
     data: {
@@ -483,7 +529,7 @@ async function main() {
         "New Codes Environment",
         "Software as a Service (SaaS)",
       ],
-      order: 2,
+      order: 1,
     },
   });
 
@@ -628,19 +674,229 @@ async function main() {
     },
   });
 
-  // EB-PLT Project (In Development)
+  // EB-PLT Project (Released)
   const ebplt = await prisma.project.create({
     data: {
       slug: "ebplt",
-      title: "EB-PLT - Pharmacist Administration Platform [IN DEVELOPMENT]",
+      title: "EB-PLT - Pharmacist Administration Platform [RELEASED PROJECT]",
       description:
         "Web application for pharmacist administration including notifications, submissions, store transfers, name changes, and other management workflows.",
-      image: "/assets/img/content/80&company-logo.webp",
+      image: "/assets/img/projects/ebplt/01-dashboard.webp",
       company: "80&Company/OCT-PATH",
       overview:
-        "EB-PLT is a comprehensive web-based platform designed to streamline pharmaceutical administration processes. The platform enables pharmacists to handle various administrative tasks efficiently, including form submissions, notifications, store transfers, and name change requests.",
+        "EB-PLT (薬剤師免許届出支援システム) is a comprehensive web-based platform that streamlines pharmacist license notification submissions to Japanese health centers. It automates a traditionally paper-heavy workflow — generating statutory change-notification forms (変更届書) as print-ready documents, tracking submission deadlines, and managing the full jurisdiction hierarchy from regional bureaus down to individual health centers. Built as a hybrid monorepo: a Next.js App Router web app and a FastAPI PDF microservice.",
       scope: "Project Manager & Fullstack Engineer",
       industry: "Healthcare",
+    },
+  });
+
+  // EB-PLT — Highlight 1: Store & Employment Management
+  const ebpltStores = await prisma.projectHighlight.create({
+    data: {
+      projectId: ebplt.id,
+      highlightId: "store-employment",
+      title: "Store & Employment Management",
+      description:
+        "A role-based admin dashboard surfaces system-wide stats and live deadline alerts, while stores and their pharmacist assignments are managed in one place. Each store tracks active, scheduled, and historical staff, with overdue-change badges that escalate by color as statutory deadlines approach.",
+      impact: [
+        "Centralized store & employment data",
+        "Real-time deadline alerts",
+        "Role-based access control (5 roles)",
+      ],
+      order: 1,
+    },
+  });
+
+  await prisma.projectImage.createMany({
+    data: [
+      {
+        highlightId: ebpltStores.id,
+        link: "/assets/img/projects/ebplt/02-stores-list.webp",
+        isScrollable: false,
+        order: 1,
+      },
+      {
+        highlightId: ebpltStores.id,
+        link: "/assets/img/projects/ebplt/03-store-detail.webp",
+        isScrollable: true,
+        order: 2,
+      },
+      {
+        highlightId: ebpltStores.id,
+        link: "/assets/img/projects/ebplt/04-store-assignments.webp",
+        isScrollable: false,
+        order: 3,
+      },
+    ],
+  });
+
+  // EB-PLT — Highlight 2: Change-Notification Confirmation & PDF Generation
+  const ebpltConfirm = await prisma.projectHighlight.create({
+    data: {
+      projectId: ebplt.id,
+      highlightId: "change-notification",
+      title: "変更届 Confirmation & PDF Generation",
+      description:
+        "The flagship workflow: a split-pane confirmation screen lets staff review pending changes and edit the live preview inline, then generates statutory change-notification documents (変更届書, 様式第六) as print-ready forms. The engine handles multiple official layouts, auto-splits overflowing content onto attached sheets (別紙), and validates missing fields before output.",
+      impact: [
+        "HTML→PDF 変更届書 generation",
+        "Inline-editable print preview",
+        "Auto 別紙 overflow & multi-layout support",
+      ],
+      order: 2,
+    },
+  });
+
+  await prisma.projectImage.createMany({
+    data: [
+      {
+        highlightId: ebpltConfirm.id,
+        link: "/assets/img/projects/ebplt/05-confirmation-editor.webp",
+        isScrollable: false,
+        order: 1,
+      },
+      {
+        highlightId: ebpltConfirm.id,
+        link: "/assets/img/projects/ebplt/06-change-notification-print.webp",
+        isScrollable: true,
+        order: 2,
+      },
+    ],
+  });
+
+  // EB-PLT — Highlight 3: Pharmacist & License Management
+  const ebpltPharmacist = await prisma.projectHighlight.create({
+    data: {
+      projectId: ebplt.id,
+      highlightId: "pharmacist-license",
+      title: "Pharmacist & License Management",
+      description:
+        "Pharmacist records consolidate personal details, employment history across stores, and license information with verification status. Licenses are stored with Japanese-era (和暦) issue dates and feed directly into generated notification forms.",
+      impact: [
+        "Pharmacist & license records",
+        "Assignment history tracking",
+        "Japanese-era (和暦) date support",
+      ],
+      order: 3,
+    },
+  });
+
+  await prisma.projectImage.createMany({
+    data: [
+      {
+        highlightId: ebpltPharmacist.id,
+        link: "/assets/img/projects/ebplt/07-pharmacists-list.webp",
+        isScrollable: false,
+        order: 1,
+      },
+      {
+        highlightId: ebpltPharmacist.id,
+        link: "/assets/img/projects/ebplt/08-pharmacist-detail.webp",
+        isScrollable: true,
+        order: 2,
+      },
+    ],
+  });
+
+  // EB-PLT — Highlight 4: Admin & Submission Tracking
+  const ebpltAdmin = await prisma.projectHighlight.create({
+    data: {
+      projectId: ebplt.id,
+      highlightId: "admin-submissions",
+      title: "Admin & Submission Tracking",
+      description:
+        "Submissions are tracked end-to-end with status, urgency, and deadline indicators. Administrators manage the full jurisdiction master — regional bureaus, prefectures, and health centers — plus per-health-center required-document rules that drive which forms each submission needs.",
+      impact: [
+        "Submission status & deadline tracking",
+        "Jurisdiction master (厚生局→保健所)",
+        "Per-health-center document rules",
+      ],
+      order: 4,
+    },
+  });
+
+  await prisma.projectImage.createMany({
+    data: [
+      {
+        highlightId: ebpltAdmin.id,
+        link: "/assets/img/projects/ebplt/09-submissions.webp",
+        isScrollable: false,
+        order: 1,
+      },
+      {
+        highlightId: ebpltAdmin.id,
+        link: "/assets/img/projects/ebplt/10-admin-jurisdictions.webp",
+        isScrollable: false,
+        order: 2,
+      },
+      {
+        highlightId: ebpltAdmin.id,
+        link: "/assets/img/projects/ebplt/11-admin-requirements.webp",
+        isScrollable: false,
+        order: 3,
+      },
+    ],
+  });
+
+  // Stevana & Zulfikar — Digital Wedding Invitation (Side Project)
+  const wedding = await prisma.project.create({
+    data: {
+      slug: "wedding-stevana-zulfikar",
+      title: "Stevana & Zulfikar - Digital Wedding Invitation",
+      description:
+        "An elegant, mobile-first digital wedding invitation with an animated cover, countdown, couple story, event details, and RSVP.",
+      image: "/assets/img/projects/wedding/01-cover.webp",
+      company: "Personal Project",
+      overview:
+        "A bespoke digital wedding invitation built for Stevana & Zulfikar. Designed as a mobile-first single-page experience: a guest opens an animated cover, and the invitation gently reveals the couple's story, a live countdown, ceremony and reception details, a venue map, and an RSVP with wishes — all wrapped in a soft, editorial aesthetic with scroll-triggered animations and a background-music toggle.",
+      scope: "Designer & Front End Developer",
+      industry: "Digital Invitation",
+    },
+  });
+
+  await prisma.projectHighlight.create({
+    data: {
+      projectId: wedding.id,
+      highlightId: "wedding-invitation",
+      title: "Mobile-First Wedding Invitation",
+      description:
+        "A single-page invitation that opens from an animated cover into a guided scroll: the couple's introduction, a save-the-date countdown, ceremony & reception schedule, venue location, and an RSVP with personal wishes. Built around soft typography, scroll-reveal motion, and an intimate, editorial feel.",
+      impact: [
+        "Mobile-first single-page experience",
+        "Scroll-reveal animations & countdown",
+        "RSVP & wedding wishes",
+      ],
+      link: "https://weddingstevanazulfikar.web.id/",
+      order: 1,
+      images: {
+        create: [
+          {
+            link: "/assets/img/projects/wedding/01-cover.webp",
+            isScrollable: true,
+            order: 1,
+          },
+          {
+            link: "/assets/img/projects/wedding/02-save-the-date.webp",
+            isScrollable: true,
+            order: 2,
+          },
+          {
+            link: "/assets/img/projects/wedding/03-bride-groom.webp",
+            isScrollable: true,
+            order: 3,
+          },
+          {
+            link: "/assets/img/projects/wedding/04-event-details.webp",
+            isScrollable: true,
+            order: 4,
+          },
+          {
+            link: "/assets/img/projects/wedding/05-thank-you.webp",
+            isScrollable: true,
+            order: 5,
+          },
+        ],
+      },
     },
   });
 
