@@ -848,7 +848,7 @@ async function main() {
       image: "/assets/img/projects/wedding/01-cover.webp",
       company: "Personal Project",
       overview:
-        "A bespoke digital wedding invitation built for Stevana & Zulfikar. Designed as a mobile-first single-page experience: a guest opens an animated cover, and the invitation gently reveals the couple's story, a live countdown, ceremony and reception details, a venue map, and an RSVP with wishes — all wrapped in a soft, editorial aesthetic with scroll-triggered animations and a background-music toggle.",
+        "A bespoke digital wedding invitation built for Stevana & Zulfikar. Designed as a mobile-first single-page experience: a guest opens an animated cover, and the invitation gently reveals the couple's story, a live countdown, ceremony and reception details, a venue map, and an RSVP with wishes — all wrapped in a soft, editorial aesthetic with scroll-triggered animations and a background-music toggle. Behind it sits a password-protected admin panel for managing the guest list, tracking RSVPs, and reading incoming wishes.",
       scope: "Designer & Front End Developer",
       industry: "Digital Invitation",
     },
@@ -894,6 +894,46 @@ async function main() {
             link: "/assets/img/projects/wedding/05-thank-you.webp",
             isScrollable: true,
             order: 5,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.projectHighlight.create({
+    data: {
+      projectId: wedding.id,
+      highlightId: "wedding-admin",
+      title: "Admin & Guest Tracking",
+      description:
+        "A password-protected admin panel to run the day-of logistics: a dashboard with live guest-engagement stats (invites opened, RSVPs, expected attendees), a searchable guest list with per-invite quotas and statuses, end-to-end RSVP tracking, and an incoming wall of wedding wishes. (Guest names and contacts are blurred here for privacy.)",
+      impact: [
+        "Live guest-engagement dashboard",
+        "Guest list, quotas & RSVP tracking",
+        "Incoming wedding-wishes wall",
+      ],
+      order: 2,
+      images: {
+        create: [
+          {
+            link: "/assets/img/projects/wedding/admin-01-dashboard.webp",
+            isScrollable: false,
+            order: 1,
+          },
+          {
+            link: "/assets/img/projects/wedding/admin-02-guests.webp",
+            isScrollable: false,
+            order: 2,
+          },
+          {
+            link: "/assets/img/projects/wedding/admin-03-rsvps.webp",
+            isScrollable: false,
+            order: 3,
+          },
+          {
+            link: "/assets/img/projects/wedding/admin-04-wishes.webp",
+            isScrollable: false,
+            order: 4,
           },
         ],
       },
