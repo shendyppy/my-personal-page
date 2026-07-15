@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit } from "next/font/google";
+import { Syne, Space_Grotesk, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
 import { ThemeProvider } from "./providers/ThemeProvider";
@@ -8,9 +8,26 @@ import { TopProgressBar } from "@/components/atoms/TopProgressBar";
 import { EXTERNAL_LINKS, SITE_CONFIG } from "@/constants/config";
 import "./globals.css";
 
-const geistOutfit = Outfit({
-  variable: "--font-outfit",
+// Editorial type system for the revamp:
+// Syne — display headlines, Space Grotesk — body, Space Mono — terminal/labels.
+const fontDisplay = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const fontBody = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+const fontMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -82,6 +99,13 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+// Pre-paint theme + accent init. Runs synchronously as the first thing in
+// <body> so the correct `.dark` class and `--accent` value are set before the
+// first paint — no FOUC. Defaults match ThemeProvider (dark theme, lime
+// accent). The accent map is inlined (can't import TS pre-paint) and must be
+// kept in sync with ACCENTS in src/constants/config.ts.
+const themeInitScript = `(function(){try{var t=localStorage.getItem('theme')||'dark';var d=document.documentElement;if(t==='dark'){d.classList.add('dark')}else{d.classList.remove('dark')}var a=localStorage.getItem('accent')||'lime';var m={lime:{dark:'#D7FF3E',light:'#4D7A00'},orange:{dark:'#FF6B35',light:'#D9531E'},violet:{dark:'#7C6CFF',light:'#5A48E0'},teal:{dark:'#3EE0C8',light:'#0E9C86'}};var v=(m[a]&&m[a][t])||m.lime[t];d.style.setProperty('--accent',v)}catch(e){}})();`;
+
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -114,9 +138,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // `suppressHydrationWarning` on <html>: the pre-paint themeInitScript mutates
+  // <html>'s class + --accent before hydration, so the server ("<html lang='en'>")
+  // and client differ. This is the documented Next.js pattern for theme scripts —
+  // React skips the attribute warning for this element only; children still
+  // reconcile normally.
   return (
-    <html lang="en">
-      <body className={`${geistOutfit.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${fontDisplay.variable} ${fontBody.variable} ${fontMono.variable} font-body antialiased`}
+      >
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-accent-foreground focus:rounded-md"

@@ -1,129 +1,68 @@
 "use client";
 
-import { Calendar, Briefcase } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
-import type { Experience } from "@/types";
-
 interface ExperienceCardProps {
-  experience: Experience;
-  /** Row position — drives the left/right alternation on desktop. */
-  index: number;
-  /** Aurora gradient pair (from-via-to) for this row's node + company name. */
-  gradient: string;
+  period: string;
+  title: string;
+  company: string;
+  summary: string;
+  /** Employment type badge — e.g. "Full Time", "Freelance", "Contract". */
+  employmentType: string;
+  /** Current roles get the accent treatment on the period + badge. */
+  current: boolean;
 }
 
 /**
- * One row of the alternating experience timeline. On desktop the meta column
- * (period/role/company) hugs the centre rail and the detail card sits on the
- * opposite side, flipping each row — even rows put the meta on the RIGHT and
- * the card on the LEFT. On mobile everything collapses to a single left-railed
- * column. The detail card keeps its content left-aligned (tidy) while only the
- * column position alternates. Vivid accents come from the per-row aurora
- * `gradient`; everything else is token-based so it reads on both themes.
+ * One Career row in the editorial timeline: period · role+company · summary ·
+ * an employment-type badge. Current roles glow in the brand accent; the row
+ * eases in on scroll and nudges right on hover.
  */
 export const ExperienceCard = ({
-  experience,
-  index,
-  gradient,
+  period,
+  title,
+  company,
+  summary,
+  employmentType,
+  current,
 }: ExperienceCardProps) => {
   const reduceMotion = useReducedMotion();
-  // Even rows: meta on the right, descriptive card on the left.
-  const metaOnRight = index % 2 === 0;
 
   return (
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 40 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`relative lg:grid lg:grid-cols-2 lg:items-center gap-8 lg:gap-16 ${
-        metaOnRight ? "lg:[&>*:first-child]:order-2" : ""
-      }`}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="grid grid-cols-1 items-start gap-4 border-b border-border px-2 py-9 transition-[background,padding] duration-300 hover:bg-card hover:pl-6 md:grid-cols-4 md:gap-8"
     >
-      {/* Node on the rail (with a soft aurora glow). */}
       <span
-        aria-hidden
-        className="absolute left-4 top-7 z-10 -translate-x-1/2 lg:left-1/2"
+        className={`font-mono text-xs leading-relaxed tracking-[0.08em] md:pt-1 ${
+          current ? "text-accent" : "text-muted-foreground"
+        }`}
       >
-        <span
-          className={`absolute -inset-1 rounded-full bg-gradient-to-br ${gradient} opacity-60 blur-md ${
-            experience.current ? "animate-pulse motion-reduce:animate-none" : ""
-          }`}
-        />
-        <span
-          className={`relative block size-4 rounded-full bg-gradient-to-br ${gradient} ring-4 ring-background`}
-        />
+        {period}
       </span>
 
-      {/* Meta — hugs the rail. */}
-      <div
-        className={`min-w-0 pl-12 lg:pl-0 ${
-          metaOnRight ? "lg:pl-4 lg:text-left" : "lg:pr-4 lg:text-right"
-        }`}
-      >
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/5 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
-          <Calendar className="size-3" />
-          {experience.period}
-        </span>
-        <h3 className="mt-3 text-xl font-bold text-foreground md:text-2xl">
-          {experience.title}
+      <div>
+        <h3 className="font-heading text-2xl font-bold tracking-[-0.01em]">
+          {title}
         </h3>
-        <p
-          className={`mt-1 bg-gradient-to-r font-semibold ${gradient} bg-clip-text text-transparent`}
-        >
-          {experience.company}
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {experience.employmentType}
-          {experience.current ? " · Current" : ""}
-        </p>
+        <p className="mt-1.5 text-sm text-muted-foreground">{company}</p>
       </div>
 
-      {/* Detail card — always left-aligned content. */}
-      <div
-        className={`min-w-0 mt-4 pl-12 text-left lg:mt-0 lg:pl-0 ${
-          metaOnRight ? "lg:pr-4" : "lg:pl-4"
+      <p className="text-sm leading-[1.6] text-subtle md:pt-0.5">{summary}</p>
+
+      <span
+        className={`w-fit whitespace-nowrap rounded-full border px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] md:mt-1 ${
+          current
+            ? "border-accent/40 text-accent"
+            : "border-border text-muted-foreground"
         }`}
       >
-        <div className="group/card relative overflow-hidden rounded-2xl border border-border/50 bg-card/70 p-4 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-5 lg:p-6">
-          <div
-            aria-hidden
-            className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${gradient} opacity-[0.06] transition-opacity duration-300 group-hover/card:opacity-[0.12]`}
-          />
-
-          <div className="relative">
-            <p className="text-sm text-muted-foreground md:text-base">
-              {experience.description}
-            </p>
-
-            {experience.projects.length > 0 && (
-              <div className="mt-4">
-                <p className="mb-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
-                  <Briefcase className="size-3" /> Key Projects
-                </p>
-                <ul className="space-y-1.5">
-                  {experience.projects.map((project) => (
-                    <li
-                      key={project}
-                      className="flex items-start gap-2 text-sm text-foreground/80"
-                    >
-                      <span
-                        className={`mt-1.5 size-1.5 shrink-0 rounded-full bg-gradient-to-br ${gradient}`}
-                      />
-                      {project}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <p className="mt-4 border-t border-border/50 pt-3 text-xs leading-relaxed text-muted-foreground">
-              {experience.techStack}
-            </p>
-          </div>
-        </div>
-      </div>
+        {employmentType}
+        {current ? " · Current" : ""}
+      </span>
     </motion.div>
   );
 };

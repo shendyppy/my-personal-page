@@ -1,49 +1,73 @@
-import { HeroSceneIsland } from "@/components/molecules/HeroSceneIsland";
-import { HeroBodyIsland } from "@/components/molecules/HeroBodyIsland";
-import { GradientText } from "@/components/atoms/GradientText";
-import { Spotlight } from "@/components/ui/spotlight";
+import { HeroParticles } from "@/components/molecules/HeroParticles";
+import { HeroStatus, HeroSeeWork } from "@/components/molecules/HeroBodyIsland";
 
 /**
- * Server-rendered hero shell. The H1 (LCP element) is static HTML, so it
- * paints before any JS hydrates. The interactive 3D robot (Spline) streams
- * in behind the text via a client island that's skipped on mobile. The
- * aurora wash + spotlight are static server HTML and ride the LCP paint.
- *
- * Layering: backdrop/scene at z-0, text column at z-10. The text column is
- * `pointer-events-none` so the cursor reaches the robot canvas behind it;
- * the interactive bits (traits, scroll cue) re-enable events themselves.
+ * Editorial hero. The H1 (LCP element) is static server HTML so it paints
+ * before any JS hydrates; the pointer-reactive particle icosahedron streams in
+ * behind it via a client island, and the live-clock status line + magnetic
+ * "SEE WORK" cue hydrate as small islands. A faint accent radial + the animated
+ * scroll-line keep the composition alive.
  */
 export const Hero3D = () => (
   <section
     id="hero"
-    className="relative w-full min-h-[100svh] flex items-center justify-center overflow-hidden"
+    className="relative box-border flex min-h-[100svh] flex-col justify-center overflow-hidden px-6 md:px-10"
   >
-    {/* Aurora wash + spotlight sweep behind the 3D scene. The aurora backdrop
-        gently breathes (scale + opacity) so the hero never feels static. */}
-    <div aria-hidden className="aurora-radial animate-aurora-breathe pointer-events-none absolute inset-0 z-0" />
-    <Spotlight className="-top-40 left-0 md:-top-20 md:left-60 text-aurora-2 dark:text-white" />
+    <HeroParticles />
 
-    {/* Mobile-only aurora orbs — soft drifting glows that replace the (heavy)
-        Spline robot on phones. Uses aurora-drift for organic wandering motion
-        with staggered delays so each orb traces a different path. */}
+    {/* Soft accent halo centred behind the particle ball — an ambient glow
+        that lifts the 3D form off the background. Kept low-opacity and faded
+        well before the section edge so it never reads as a hard bottom band
+        (the old 50% 120% glow cut the composition at the hero/marquee seam). */}
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-0 z-0 overflow-hidden sm:hidden"
-    >
-      <div className="absolute left-[8%] top-[34%] size-56 rounded-full bg-aurora-1/30 blur-3xl animate-aurora-drift" />
-      <div className="absolute right-[2%] top-[52%] size-64 rounded-full bg-aurora-3/25 blur-3xl animate-aurora-drift [animation-delay:-6s]" />
-      <div className="absolute bottom-[18%] left-[30%] size-60 rounded-full bg-aurora-2/25 blur-3xl animate-aurora-drift [animation-delay:-12s]" />
-    </div>
+      className="pointer-events-none absolute inset-0 z-[1]"
+      style={{
+        background:
+          "radial-gradient(ellipse 65% 50% at 50% 46%, color-mix(in oklab, var(--accent) 9%, transparent), transparent 70%)",
+      }}
+    />
 
-    <HeroSceneIsland />
+    <div className="pointer-events-none relative z-[2] mx-auto w-full max-w-[1400px] pt-24">
+      <HeroStatus />
 
-    <div className="pointer-events-none flex flex-col justify-center text-center z-10 px-4 max-w-6xl mx-auto sm:mt-auto pt-20 pb-12 sm:py-20">
-      <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl mb-6 text-foreground">
-        Shendy&apos;s{" "}
-        <GradientText className="animate-gradient-x">here!</GradientText>
+      <h1 className="font-heading m-0 mt-5 text-[clamp(40px,7.8vw,112px)] font-extrabold uppercase leading-[0.92] tracking-[-0.03em]">
+        <span className="block overflow-hidden">
+          <span className="block animate-rise [animation-delay:0.25s]">
+            Software
+          </span>
+        </span>
+        <span className="block overflow-hidden">
+          <span
+            className="block animate-rise text-transparent [animation-delay:0.4s]"
+            style={{ WebkitTextStroke: "2px var(--foreground)" }}
+          >
+            Engineer
+            <span className="text-accent" style={{ WebkitTextStroke: "0" }}>
+              .
+            </span>
+          </span>
+        </span>
       </h1>
 
-      <HeroBodyIsland />
+      <div className="mt-9 flex flex-wrap items-end justify-between gap-10">
+        <p className="m-0 max-w-[420px] animate-fade-up text-[17px] leading-[1.65] text-subtle [animation-delay:0.6s]">
+          I&apos;m <b className="text-foreground">Shendy</b> — a software
+          engineer shipping products end-to-end for 4+ years. Enterprise
+          assessment platforms, cross-border banking systems, and full-stack
+          apps from database schema to the last pixel.
+        </p>
+        <div className="pointer-events-auto animate-fade-up [animation-delay:0.7s]">
+          <HeroSeeWork />
+        </div>
+      </div>
+    </div>
+
+    <div
+      aria-hidden
+      className="absolute bottom-7 left-1/2 z-[2] h-14 w-px -translate-x-1/2 overflow-hidden bg-border"
+    >
+      <div className="h-full w-full bg-accent animate-scroll-line motion-reduce:animate-none" />
     </div>
   </section>
 );

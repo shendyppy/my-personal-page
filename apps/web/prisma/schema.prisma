@@ -17,7 +17,16 @@ model Project {
   overview    String?
   scope       String?
   industry    String?
+  // Editorial "Selected Work" card fields.
+  year        String?
+  tags        String[]
+  // Narrative case-study fields for the detail page.
+  timeline    String?
+  status      String?
+  stack       String[]
+  storyBlocks Json?               // [{ title, body }] — problem / role / shipped / learned
   isPublished Boolean             @default(true)
+  order       Int                 @default(0)
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
   highlights  ProjectHighlight[]
@@ -125,8 +134,6 @@ model Skill {
   level     Int      // 1-100
   category  String   // "Frontend", "Backend", "DevOps", "Database"
   logo      String   // Path to logo image
-  model     String   // Path to 3D model .glb file
-  color     String   // Hex color code
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
