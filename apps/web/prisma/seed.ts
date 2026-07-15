@@ -90,7 +90,7 @@ async function main() {
         ],
         techStack:
           "Next.js, shadcn UI, Tailwind CSS, TypeScript, Prisma, PostgreSQL (Neon), Gotenberg, Vercel Blob, Zod, GitHub Projects (Agile Management - ticketing, roadmap, milestones), CI/CD (Vercel), Error Logging (Sentry)",
-        employmentType: "Part Time",
+        employmentType: "Freelance",
         order: 2,
       },
       {
@@ -131,6 +131,38 @@ async function main() {
       description:
         "Building assessment platform for HR consultants to evaluate candidates, also manage clients and reports.",
       image: "/assets/img/content/bg-released-ddi.webp",
+      year: "2022—NOW",
+      tags: ["React", "TypeScript", "Redux", "SaaS"],
+      timeline: "Feb 2022 — Present",
+      status: "Released — internal use",
+      order: 3,
+      stack: [
+        "REACT",
+        "TYPESCRIPT",
+        "REDUX",
+        "AXIOS",
+        "ANT DESIGN",
+        "FIREBASE",
+        "VITE",
+      ],
+      storyBlocks: [
+        {
+          title: "The problem",
+          body: "DDI's HR consultants needed a suite of assessment and learning products to evaluate thousands of candidates, manage clients, and produce reports — reliably, at enterprise scale, and behind a secure login.",
+        },
+        {
+          title: "My role",
+          body: "As a front-end developer I helped ship and iterate on 7 HR-tech products — EnGauge, Learning Hub, TPOP, DASH SaaS, WISH, Acelents, PortrAI — building 80+ features from face recognition and video conferencing to dynamic org charts and real-time communication.",
+        },
+        {
+          title: "What shipped",
+          body: "Released, in-production assessment and learning platforms used by enterprise HR teams — with revamped UI/UX and a codebase refactored to stay maintainable as the product family grew.",
+        },
+        {
+          title: "What I learned",
+          body: "Shipping into a live enterprise suite taught me to balance velocity with quality reviews, and to design components that survive years of iteration rather than one release.",
+        },
+      ],
       company: "Daya Dimensi Indonesia",
       overview:
         "Daya Dimensi Indonesia (DDI) is an Indonesian consulting firm that has been around for quite some time. They're known mainly in the HR and talent management space, helping companies with leadership assessments, organizational development, and workforce capability building.",
@@ -508,6 +540,30 @@ async function main() {
       description:
         "Building assessment platform for HR consultants to evaluate candidates, also manage clients and reports.",
       image: "/assets/img/content/bg-incoming-ddi.webp",
+      year: "2024—NOW",
+      tags: ["React", "AI", "SaaS"],
+      timeline: "2024 — Present",
+      status: "In development",
+      order: 6,
+      stack: ["REACT", "TYPESCRIPT", "REDUX", "AI/LLM", "FIREBASE"],
+      storyBlocks: [
+        {
+          title: "The problem",
+          body: "Having digitized assessments to cut paperwork, DDI's next step is bigger: an AI-driven assessment platform that consolidates every application into a single product.",
+        },
+        {
+          title: "My role",
+          body: "Front-end developer on the next-generation build — standing up a fresh, maintainable code environment and integrating AI-driven flows into the assessment experience.",
+        },
+        {
+          title: "What's shipping",
+          body: "PortrAI and the consolidated platform: AI-assisted assessment, unified navigation across products, and a rebuilt foundation designed for scale from day one.",
+        },
+        {
+          title: "What I'm learning",
+          body: "Bringing LLM-driven features into a regulated HR product means treating AI output as something to validate and constrain — not blindly trust.",
+        },
+      ],
       company: "Daya Dimensi Indonesia",
       overview:
         "After developing assessment platforms to minimize paperwork and increase efficiency, Daya Dimensi Indonesia (DDI) is now focusing on building an AI-driven assessment platform and consolidating all applications into a single platform.",
@@ -570,6 +626,38 @@ async function main() {
       description:
         "A banking platform for UOB customers to manage accounts, transfer funds, pay bills, and access financial services.",
       image: "/assets/img/content/bg-uob-infinity.webp",
+      year: "2021—25",
+      tags: ["React", "Banking", "Jest", "Sonar"],
+      timeline: "Oct 2021 — Aug 2025",
+      status: "Released — production",
+      order: 2,
+      stack: [
+        "REACT",
+        "JAVASCRIPT",
+        "REDUX",
+        "MATERIAL UI",
+        "JENKINS",
+        "SONAR",
+        "JEST",
+      ],
+      storyBlocks: [
+        {
+          title: "The problem",
+          body: "UOB — one of the world's top-rated banks — needed cross-border corporate banking features that met strict quality and compliance bars across Southeast Asia.",
+        },
+        {
+          title: "My role",
+          body: "Front-end developer on UOB Infinity: I built BI-FAST interbank transfers for Indonesia and Vietnam eTax payment flows, working alongside a Big-4 consulting team on the retail/consumer banking platform.",
+        },
+        {
+          title: "What shipped",
+          body: "20+ production-ready features for single and bulk transactions, delivered through Jenkins pipelines with Sonar quality gates and Jest coverage — responsive, accessible banking interfaces.",
+        },
+        {
+          title: "What I learned",
+          body: "Banking work rewired how I think about quality: every edge case is a real transaction, so tests, reviews, and static analysis stop being optional and become the way you move fast safely.",
+        },
+      ],
       company: "United Overseas Bank (UOB)",
       overview:
         "UOB is rated as one of the world's top banks, ranked 'Aa1' by Moody's Investors Service and 'AA-' by both S&P Global and Fitch Ratings. With a global network of 500 branches and offices across 19 countries in Asia Pacific, Europe and North America. In Asia, we operate through our head office in Singapore and banking subsidiaries in China, Indonesia, Malaysia, Thailand and Vietnam, as well as branches and offices throughout the region.",
@@ -634,6 +722,30 @@ async function main() {
       description:
         "A personal branding website to showcase portfolio, services, contact information, and can be used as aspiration tracker.",
       image: "/assets/img/content/bg-bandung-makin-juara.webp",
+      year: "2023",
+      tags: ["React", "DevOps", "Side Project"],
+      timeline: "2023",
+      status: "Released",
+      order: 5,
+      stack: ["REACT", "FIREBASE", "CPANEL", "CI/CD"],
+      storyBlocks: [
+        {
+          title: "The problem",
+          body: "As President Director of Bandung's municipal water utility, Sonny Salimi needed public exposure and a channel to hear from citizens — a personal-branding site that doubled as an aspiration tracker.",
+        },
+        {
+          title: "My role",
+          body: "Front-end developer and DevOps engineer: I built the site end-to-end and handled deployment to production myself.",
+        },
+        {
+          title: "What shipped",
+          body: "A live personal-branding site promoting his profile and achievements, plus an aspiration tracker letting Bandung citizens submit and follow their voices.",
+        },
+        {
+          title: "What I learned",
+          body: "Owning both the build and the deploy taught me the DevOps half of the job — and how satisfying it is to ship something all the way to a real domain.",
+        },
+      ],
       company: "Dr. H. Sonny Salimi, S.ST., MT.",
       overview:
         "Sonny Salimi is Direktur Utama (President Director / CEO) of Perumda Tirtawening Kota Bandung — the municipal water utility company in Bandung. He at that time, need to gain personal branding or exposure to the public, so he created this website.",
@@ -682,6 +794,42 @@ async function main() {
       description:
         "Web application for pharmacist administration including notifications, submissions, store transfers, name changes, and other management workflows.",
       image: "/assets/img/projects/ebplt/01-dashboard.webp",
+      year: "2025—26",
+      tags: ["Next.js", "Prisma", "PostgreSQL", "Fullstack"],
+      timeline: "Nov 2025 — Present",
+      status: "Released — in production",
+      order: 1,
+      stack: [
+        "NEXT.JS",
+        "TYPESCRIPT",
+        "TAILWIND",
+        "SHADCN UI",
+        "PRISMA",
+        "POSTGRESQL (NEON)",
+        "ZOD",
+        "GOTENBERG",
+        "VERCEL CI/CD",
+        "SENTRY",
+        "GITHUB PROJECTS",
+      ],
+      storyBlocks: [
+        {
+          title: "The problem",
+          body: "Pharmacist administration in Japan ran on paper and email: license submissions, store transfers, name changes — every workflow slow, error-prone, and invisible to managers. The client needed one platform that could digitize all of it without losing regulatory rigor.",
+        },
+        {
+          title: "My role",
+          body: "I wore two hats. As PM: roadmap, milestones, ticketing, and agile rituals on GitHub Projects. As engineer: system architecture, the Next.js app itself, Prisma data models on PostgreSQL, PDF generation via Gotenberg, and the CI/CD pipeline on Vercel with Sentry monitoring.",
+        },
+        {
+          title: "What shipped",
+          body: "A released production platform covering notifications, submissions, store transfers, and name-change workflows — with role-based dashboards, automated 変更届書 document generation, and full audit trails. Zero-downtime deploys, typed end-to-end with Zod at every boundary.",
+        },
+        {
+          title: "What I learned",
+          body: "Owning delivery and code at once forces honest scoping — you can't over-promise to yourself. It also completed my transition story: from front-end specialist to someone comfortable across the whole stack, database to DevOps.",
+        },
+      ],
       company: "80&Company/OCT-PATH",
       overview:
         "EB-PLT (薬剤師免許届出支援システム) is a comprehensive web-based platform that streamlines pharmacist license notification submissions to Japanese health centers. It automates a traditionally paper-heavy workflow — generating statutory change-notification forms (変更届書) as print-ready documents, tracking submission deadlines, and managing the full jurisdiction hierarchy from regional bureaus down to individual health centers. Built as a hybrid monorepo: a Next.js App Router web app and a FastAPI PDF microservice.",
@@ -846,6 +994,30 @@ async function main() {
       description:
         "An elegant, mobile-first digital wedding invitation with an animated cover, countdown, couple story, event details, and RSVP.",
       image: "/assets/img/projects/wedding/01-cover.webp",
+      year: "2025",
+      tags: ["Motion", "Mobile-First", "Side Project"],
+      timeline: "2025",
+      status: "Released",
+      order: 4,
+      stack: ["NEXT.JS", "MOTION", "TAILWIND", "FIREBASE"],
+      storyBlocks: [
+        {
+          title: "The problem",
+          body: "Stevana & Zulfikar wanted a wedding invitation that felt personal and alive — not a static template — and a way to run the day-of guest logistics behind the scenes.",
+        },
+        {
+          title: "My role",
+          body: "Designer and front-end developer: I designed the mobile-first single-page experience and built both the guest-facing invitation and a password-protected admin panel.",
+        },
+        {
+          title: "What shipped",
+          body: "An animated cover reveal, save-the-date countdown, couple story, event details, venue map, and RSVP with wishes — plus an admin dashboard for guest lists, quotas, RSVP tracking, and an incoming wishes wall.",
+        },
+        {
+          title: "What I learned",
+          body: "Side projects deserve polish too. Sweating the scroll-reveal motion and micro-interactions proved how much craft shows up in something people actually open on their phones.",
+        },
+      ],
       company: "Personal Project",
       overview:
         "A bespoke digital wedding invitation built for Stevana & Zulfikar. Designed as a mobile-first single-page experience: a guest opens an animated cover, and the invitation gently reveals the couple's story, a live countdown, ceremony and reception details, a venue map, and an RSVP with wishes — all wrapped in a soft, editorial aesthetic with scroll-triggered animations and a background-music toggle. Behind it sits a password-protected admin panel for managing the guest list, tracking RSVPs, and reading incoming wishes.",
@@ -949,8 +1121,6 @@ async function main() {
         level: 90,
         category: "Frontend",
         logo: "/assets/img/content/typescript.webp",
-        model: "/assets/models/typescript.glb",
-        color: "#3178C6",
         order: 1,
       },
       {
@@ -958,8 +1128,6 @@ async function main() {
         level: 95,
         category: "Frontend",
         logo: "/assets/img/content/javascript.webp",
-        model: "/assets/models/javascript.glb",
-        color: "#F7DF1E",
         order: 2,
       },
       {
@@ -967,8 +1135,6 @@ async function main() {
         level: 50,
         category: "Frontend",
         logo: "/assets/img/content/vue.webp",
-        model: "/assets/models/vue.glb",
-        color: "#42B883",
         order: 3,
       },
       {
@@ -976,8 +1142,6 @@ async function main() {
         level: 95,
         category: "Frontend",
         logo: "/assets/img/content/react.webp",
-        model: "/assets/models/react.glb",
-        color: "#61DAFB",
         order: 4,
       },
       {
@@ -985,8 +1149,6 @@ async function main() {
         level: 75,
         category: "Frontend",
         logo: "/assets/img/content/nextjs.webp",
-        model: "/assets/models/nextjs.glb",
-        color: "#000000",
         order: 5,
       },
       {
@@ -994,8 +1156,6 @@ async function main() {
         level: 90,
         category: "Frontend",
         logo: "/assets/img/content/axios.webp",
-        model: "/assets/models/axios.glb",
-        color: "#5A29E4",
         order: 6,
       },
       {
@@ -1003,8 +1163,6 @@ async function main() {
         level: 80,
         category: "Frontend",
         logo: "/assets/img/content/redux.webp",
-        model: "/assets/models/redux.glb",
-        color: "#764ABC",
         order: 7,
       },
       {
@@ -1012,8 +1170,6 @@ async function main() {
         level: 70,
         category: "Frontend",
         logo: "/assets/img/content/jest.webp",
-        model: "/assets/models/jest.glb",
-        color: "#C21325",
         order: 8,
       },
       {
@@ -1021,8 +1177,6 @@ async function main() {
         level: 40,
         category: "Backend",
         logo: "/assets/img/content/python.webp",
-        model: "/assets/models/python.glb",
-        color: "#3776AB",
         order: 8,
       },
       {
@@ -1030,8 +1184,6 @@ async function main() {
         level: 60,
         category: "Backend",
         logo: "/assets/img/content/nodejs.webp",
-        model: "/assets/models/nodejs.glb",
-        color: "#339933",
         order: 9,
       },
       {
@@ -1039,8 +1191,6 @@ async function main() {
         level: 50,
         category: "Backend",
         logo: "/assets/img/content/nestjs.webp",
-        model: "/assets/models/nestjs.glb",
-        color: "#E0234E",
         order: 10,
       },
       {
@@ -1048,8 +1198,6 @@ async function main() {
         level: 50,
         category: "Backend",
         logo: "/assets/img/content/sequelize.webp",
-        model: "/assets/models/sequelize.glb",
-        color: "#52B0E7",
         order: 11,
       },
       {
@@ -1057,8 +1205,6 @@ async function main() {
         level: 60,
         category: "DevOps",
         logo: "/assets/img/content/github-actions.webp",
-        model: "/assets/models/github-actions.glb",
-        color: "#2088FF",
         order: 11,
       },
       {
@@ -1066,8 +1212,6 @@ async function main() {
         level: 80,
         category: "DevOps",
         logo: "/assets/img/content/vercel.webp",
-        model: "/assets/models/vercel.glb",
-        color: "#000000",
         order: 12,
       },
       {
@@ -1075,8 +1219,6 @@ async function main() {
         level: 50,
         category: "DevOps",
         logo: "/assets/img/content/aws.webp",
-        model: "/assets/models/aws.glb",
-        color: "#FF9900",
         order: 13,
       },
       {
@@ -1084,8 +1226,6 @@ async function main() {
         level: 50,
         category: "DevOps",
         logo: "/assets/img/content/cPanel.webp",
-        model: "/assets/models/cPanel.glb",
-        color: "#FF6C2C",
         order: 14,
       },
       {
@@ -1093,8 +1233,6 @@ async function main() {
         level: 75,
         category: "DevOps",
         logo: "/assets/img/content/firebase.webp",
-        model: "/assets/models/firebase.glb",
-        color: "#FFCA28",
         order: 15,
       },
       {
@@ -1102,8 +1240,6 @@ async function main() {
         level: 60,
         category: "Database",
         logo: "/assets/img/content/postgresql.webp",
-        model: "/assets/models/postgresql.glb",
-        color: "#336791",
         order: 16,
       },
       {
@@ -1111,8 +1247,6 @@ async function main() {
         level: 65,
         category: "Database",
         logo: "/assets/img/content/neon-tech.webp",
-        model: "/assets/models/neon-tech.glb",
-        color: "#0095FF",
         order: 17,
       },
       {
@@ -1120,8 +1254,6 @@ async function main() {
         level: 50,
         category: "Database",
         logo: "/assets/img/content/prisma.webp",
-        model: "/assets/models/prisma.glb",
-        color: "#0C344B",
         order: 18,
       },
       {
@@ -1129,8 +1261,6 @@ async function main() {
         level: 60,
         category: "Project Management",
         logo: "/assets/img/content/github-project.webp",
-        model: "/assets/models/github-project.glb",
-        color: "#1f6feb",
         order: 19,
       },
       {
@@ -1138,9 +1268,86 @@ async function main() {
         level: 80,
         category: "Project Management",
         logo: "/assets/img/content/jira.webp",
-        model: "/assets/models/jira.glb",
-        color: "#0052CC",
         order: 20,
+      },
+      {
+        name: "Java",
+        level: 45,
+        category: "Backend",
+        logo: "/assets/img/content/java.webp",
+        order: 21,
+      },
+      {
+        name: "Expo",
+        level: 40,
+        category: "Frontend",
+        logo: "/assets/img/content/expo.webp",
+        order: 22,
+      },
+      {
+        name: "Supabase",
+        level: 45,
+        category: "Backend",
+        logo: "/assets/img/content/supabase.webp",
+        order: 23,
+      },
+      {
+        name: "Railway",
+        level: 55,
+        category: "DevOps",
+        logo: "/assets/img/content/railway.webp",
+        order: 24,
+      },
+      {
+        name: "Claude Code",
+        level: 85,
+        category: "AI",
+        logo: "/assets/img/content/claude.webp",
+        order: 25,
+      },
+      {
+        name: "GitHub Copilot",
+        level: 75,
+        category: "AI",
+        logo: "https://cdn.simpleicons.org/githubcopilot",
+        order: 26,
+      },
+      {
+        name: "Perplexity",
+        level: 70,
+        category: "AI",
+        logo: "https://cdn.simpleicons.org/perplexity",
+        order: 27,
+      },
+      {
+        name: "NotebookLM",
+        level: 65,
+        category: "AI",
+        logo: "https://cdn.simpleicons.org/notebooklm",
+        order: 28,
+      },
+      // No theme-safe brand logo on any CDN — ToolboxCell renders a thematic
+      // lucide fallback glyph for these (empty logo).
+      {
+        name: "ChatGPT",
+        level: 70,
+        category: "AI",
+        logo: "",
+        order: 29,
+      },
+      {
+        name: "Codex",
+        level: 65,
+        category: "AI",
+        logo: "",
+        order: 30,
+      },
+      {
+        name: "Antigravity",
+        level: 60,
+        category: "AI",
+        logo: "",
+        order: 31,
       },
     ],
   });
@@ -1242,8 +1449,9 @@ async function main() {
     data: {
       title: "Curriculum Vitae",
       previewImage: "/assets/Screenshot_CV.webp",
-      downloadPath:
-        "/assets/CV_Shendy Putra Perdana Yohansah_17 Mar 2026.pdf",
+      // Canonical clean filename — no date suffix. The downloaded file name
+      // follows this path's basename (see AboutSection `download` attr).
+      downloadPath: "/assets/CV_Shendy Putra Perdana Yohansah.pdf",
     },
   });
 

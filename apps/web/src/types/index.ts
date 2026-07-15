@@ -14,6 +14,11 @@ export interface ProjectHighlight {
   link?: string;
 }
 
+export interface StoryBlock {
+  title: string;
+  body: string;
+}
+
 export interface ProjectDetail {
   slug: string;
   company: string;
@@ -21,6 +26,12 @@ export interface ProjectDetail {
   overview: string;
   scope: string;
   industry: string;
+  image: string;
+  year: string;
+  timeline: string;
+  status: string;
+  stack: string[];
+  storyBlocks: StoryBlock[];
   highlights: ProjectHighlight[];
 }
 
@@ -31,20 +42,29 @@ export interface ProjectCard {
   image: string;
 }
 
-export type SkillCategory = "Frontend" | "Backend" | "DevOps" | "Database" | "Project Management";
+export type SkillCategory =
+  | "Frontend"
+  | "Backend"
+  | "DevOps"
+  | "Database"
+  | "Project Management"
+  | "AI";
 
 export interface Skill {
   name: string;
   level: number;
   category: SkillCategory;
   logo: string;
-  model: string;
-  color: string;
 }
 
 export type SkillLevel = "Beginner" | "Intermediate" | "Advanced" | "Expert";
 
-export type EmploymentType = "Full Time" | "Part Time" | "Contract" | "Internship";
+export type EmploymentType =
+  | "Full Time"
+  | "Part Time"
+  | "Freelance"
+  | "Contract"
+  | "Internship";
 
 export interface Experience {
   id: number;
