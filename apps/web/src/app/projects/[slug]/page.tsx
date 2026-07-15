@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { ProjectPageContent } from "@/components/organisms/ProjectPageContent";
 import { getProjectBySlug, getProjects } from "@/server/queries/projects";
 import { SITE_CONFIG } from "@/constants/config";
-import type { ProjectDetail, ProjectHighlight } from "@/types";
+import type { ProjectDetail, ProjectHighlight, StoryBlock } from "@/types";
 
 // Re-render once per hour at most. Content rarely changes; ISR gives us
 // near-static performance while still picking up DB edits.
@@ -64,6 +64,17 @@ export const generateMetadata = async ({
   };
 };
 
+const parseStoryBlocks = (value: unknown): StoryBlock[] => {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (b): b is StoryBlock =>
+      !!b &&
+      typeof b === "object" &&
+      typeof (b as StoryBlock).title === "string" &&
+      typeof (b as StoryBlock).body === "string"
+  );
+};
+
 const mapProjectToDetail = (data: ProjectWithHighlights): ProjectDetail => ({
   slug: data.slug,
   company: data.company ?? "",
@@ -71,6 +82,12 @@ const mapProjectToDetail = (data: ProjectWithHighlights): ProjectDetail => ({
   overview: data.overview ?? "",
   scope: data.scope ?? "",
   industry: data.industry ?? "",
+  image: data.image,
+  year: data.year ?? "",
+  timeline: data.timeline ?? "",
+  status: data.status ?? "",
+  stack: data.stack ?? [],
+  storyBlocks: parseStoryBlocks(data.storyBlocks),
   highlights: data.highlights.map(
     (h): ProjectHighlight => ({
       id: h.highlightId,
@@ -92,10 +109,29 @@ const ProjectPage = async ({
   params: Promise<{ slug: string }>;
 }) => {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const [project, allProjects] = await Promise.all([
+    getProjectBySlug(slug),
+    getProjects(),
+  ]);
   if (!project) return notFound();
 
-  return <ProjectPageContent project={mapProjectToDetail(project)} />;
+  // Ordered neighbours for the prev/next pagination at the bottom of the page.
+  // `getProjects` orders by `order asc, createdAt desc` — index 0 is "first",
+  // last index is "latest", matching the Selected Work grid.
+  const index = allProjects.findIndex((p) => p.slug === slug);
+  const prev = index > 0 ? (allProjects[index - 1] ?? null) : null;
+  const next =
+    index >= 0 && index < allProjects.length - 1
+      ? (allProjects[index + 1] ?? null)
+      : null;
+
+  return (
+    <ProjectPageContent
+      project={mapProjectToDetail(project)}
+      prev={prev}
+      next={next}
+    />
+  );
 };
 
 export default ProjectPage;

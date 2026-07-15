@@ -1,43 +1,72 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900");
-
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
-  --background: #f9fafb; /* near white (gray-50) */
-  --foreground: #1f2937; /* slate-800 */
-  --card: #ffffff; /* white card */
-  --card-foreground: #374151; /* slate-700 */
-  --popover: #ffffff;
-  --popover-foreground: #111827; /* slate-900 */
-  --primary: #111827; /* strong dark */
-  --primary-foreground: #ffffff;
-  --secondary: #4b5563; /* gray-600 */
-  --secondary-foreground: #ffffff;
-  --muted: #e5e7eb; /* gray-200 */
-  --muted-foreground: #6b7280; /* gray-500 */
-  --accent: #9ca3af; /* gray-400 */
-  --accent-foreground: #111827;
-  --destructive: #b91c1c; /* red-700 */
-  --destructive-foreground: #ffffff;
-  --border: #d1d5db; /* gray-300 */
-  --input: #f3f4f6; /* gray-100 */
-  --ring: #374151; /* slate-700 */
+/* Register --accent as a real <color> so it can be transitioned. ThemeProvider
+   sets it on :root; with this registration + the :root transition below, every
+   var(--accent) usage (text, bg, border, shadow, ::selection) smoothly
+   interpolates when the accent picker changes colour OR when the theme toggles
+   (light/dark carry different accent values). Falls back to an instant snap in
+   browsers without @property support. */
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #d7ff3e;
+}
 
-  --chart-1: #111827;
+:root {
+  transition: --accent 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    transition: none;
+  }
+}
+
+/* ============================================================================
+   Portfolio Reimagined — editorial palette.
+   Light is a crafted warm-paper counterpart to the dark editorial base so the
+   same brutalist look reads on both themes. `--accent` is the brand accent and
+   is overridden live by the accent picker (default lime #D7FF3E).
+   ============================================================================ */
+:root {
+  --background: #f4f2ec; /* warm paper */
+  --foreground: #0a0a0b; /* near-black ink */
+  --card: #ffffff; /* clean card */
+  --card-foreground: #1a1a1c;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0b;
+  --primary: #0a0a0b;
+  --primary-foreground: #f4f2ec;
+  --secondary: #55534c; /* warm gray */
+  --secondary-foreground: #ffffff;
+  --muted: #e7e4db; /* paper-muted */
+  --muted-foreground: #6b6b66; /* warm gray-500 */
+  --accent: #d7ff3e; /* brand accent — overridden by picker */
+  --accent-foreground: #0a0a0b;
+  --destructive: #b91c1c;
+  --destructive-foreground: #ffffff;
+  --border: #e0ddd3; /* soft paper border */
+  --input: #eceae2;
+  --ring: #0a0a0b;
+
+  /* Editorial neutrals — subtle text/surface steps used across sections. */
+  --subtle: #4a4a45; /* secondary body copy on light */
+  --surface: #eceae2; /* raised surface (grid cells) */
+
+  --chart-1: #0a0a0b;
   --chart-2: #374151;
   --chart-3: #6b7280;
   --chart-4: #9ca3af;
   --chart-5: #d1d5db;
 
-  /* Aurora accent palette — softened mid-tones that whisper rather than shout.
-     Deep enough for contrast on the near-white base, but never neon. */
-  --aurora-1: #a21caf; /* fuchsia-700 — muted fuchsia */
-  --aurora-2: #6d28d9; /* violet-700 — deep violet */
-  --aurora-3: #0e7490; /* cyan-800 — tempered teal */
-  --aurora-4: #b45309; /* amber-700 — warm amber */
+  /* Aurora tokens kept for any untouched surfaces; the revamp leans on --accent. */
+  --aurora-1: #a21caf;
+  --aurora-2: #6d28d9;
+  --aurora-3: #0e7490;
+  --aurora-4: #b45309;
 
   --radius: 0.5rem;
 
@@ -50,41 +79,48 @@
   --sidebar-border: #e5e7eb;
   --sidebar-ring: #374151;
 
-  overflow-x: hidden;
+  /* `clip` (not `hidden`) so the root never becomes a scroll container — that
+     coercion (overflow-x:hidden → overflow-y:auto) silently breaks every
+     `position: sticky` descendant (e.g. the pinned Toolbox). */
+  overflow-x: clip;
 }
 
 .dark {
-  --background: #0f172a; /* slate-900 */
-  --foreground: #f3f4f6; /* gray-100 */
-  --card: #1e293b; /* slate-800 */
-  --card-foreground: #f9fafb; /* gray-50 */
-  --popover: #1e293b;
-  --popover-foreground: #f3f4f6;
-  --primary: #f9fafb; /* light text */
-  --primary-foreground: #111827;
-  --secondary: #374151; /* gray-700 */
-  --secondary-foreground: #f9fafb;
-  --muted: #334155; /* slate-700 */
-  --muted-foreground: #9ca3af; /* gray-400 */
-  --accent: #6b7280; /* gray-500 */
-  --accent-foreground: #f9fafb;
-  --destructive: #ef4444; /* red-500 */
+  --background: #0a0a0b; /* editorial near-black */
+  --foreground: #f2f0ea; /* warm off-white */
+  --card: #111113; /* raised panel */
+  --card-foreground: #f2f0ea;
+  --popover: #111113;
+  --popover-foreground: #f2f0ea;
+  --primary: #f2f0ea;
+  --primary-foreground: #0a0a0b;
+  --secondary: #1e1e21;
+  --secondary-foreground: #f2f0ea;
+  --muted: #161618;
+  --muted-foreground: #8a8a85; /* mono/label gray */
+  --accent: #d7ff3e; /* brand accent — overridden by picker */
+  --accent-foreground: #0a0a0b;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #475569; /* slate-600 */
-  --input: #1e293b;
-  --ring: #f3f4f6; /* light ring */
+  --border: #1e1e21; /* hairline */
+  --input: #161618;
+  --ring: #f2f0ea;
 
-  --chart-1: #f9fafb;
+  /* Editorial neutrals — dark variants. */
+  --subtle: #b9b7b0; /* secondary body copy on dark */
+  --surface: #161618; /* raised surface (grid cells) */
+
+  --chart-1: #f2f0ea;
   --chart-2: #9ca3af;
   --chart-3: #6b7280;
   --chart-4: #ef4444;
-  --chart-5: #1e293b;
+  --chart-5: #1e1e21;
 
-  /* Aurora accent palette — soft luminous tones on the dark base, not neon. */
-  --aurora-1: #d946ef; /* fuchsia-500 — softened fuchsia */
-  --aurora-2: #8b5cf6; /* violet-500 — calm violet */
-  --aurora-3: #06b6d4; /* cyan-500 — clear teal */
-  --aurora-4: #f59e0b; /* amber-500 — mellow gold */
+  /* Aurora tokens kept for any untouched surfaces; the revamp leans on --accent. */
+  --aurora-1: #d946ef;
+  --aurora-2: #8b5cf6;
+  --aurora-3: #06b6d4;
+  --aurora-4: #f59e0b;
 
   --sidebar: #1e293b;
   --sidebar-foreground: #f3f4f6;
@@ -95,7 +131,7 @@
   --sidebar-border: #334155;
   --sidebar-ring: #9ca3af;
 
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 @theme inline {
@@ -127,6 +163,8 @@
   --color-aurora-2: var(--aurora-2);
   --color-aurora-3: var(--aurora-3);
   --color-aurora-4: var(--aurora-4);
+  --color-subtle: var(--subtle);
+  --color-surface: var(--surface);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -139,8 +177,11 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-heading: "Outfit", sans-serif;
-  --font-subheading: "Outfit", sans-serif;
+  --font-body: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-syne), "Syne", sans-serif;
+  --font-mono: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
+  --font-heading: var(--font-syne), "Syne", sans-serif;
+  --font-subheading: var(--font-syne), "Syne", sans-serif;
 }
 
 @layer base {
@@ -149,19 +190,138 @@
   }
   body {
     @apply bg-background text-foreground;
-    @apply overflow-x-hidden;
+    @apply overflow-x-clip;
   }
 }
 
 @layer utilities {
   .font-heading {
-    font-family: "Outfit", sans-serif;
-    font-weight: 900;
+    font-family: var(--font-syne), "Syne", sans-serif;
+    font-weight: 800;
   }
 
   .font-subheading {
-    font-family: "Outfit", sans-serif;
+    font-family: var(--font-syne), "Syne", sans-serif;
     font-weight: 600;
+  }
+
+  .font-mono {
+    font-family: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
+  }
+}
+
+/* ---- Portfolio Reimagined — editorial motion + accents ---- */
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+@keyframes blink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+  48.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes scroll-line {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+.animate-blink {
+  animation: blink 1.1s steps(1, end) infinite;
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-dur, 22s) linear infinite;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s infinite;
+}
+
+.animate-scroll-line {
+  animation: scroll-line 2.2s ease-in-out infinite;
+}
+
+.animate-rise {
+  animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.9s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blink,
+  .animate-marquee,
+  .animate-pulse-dot,
+  .animate-scroll-line,
+  .animate-rise,
+  .animate-fade-up {
+    animation: none !important;
   }
 }
 

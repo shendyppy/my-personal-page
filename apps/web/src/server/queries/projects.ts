@@ -7,6 +7,8 @@ export type ProjectListItem = {
   title: string;
   description: string;
   image: string;
+  year: string | null;
+  tags: string[];
 };
 
 export const getProjects = (): Promise<ProjectListItem[]> =>
@@ -18,8 +20,10 @@ export const getProjects = (): Promise<ProjectListItem[]> =>
       title: true,
       description: true,
       image: true,
+      year: true,
+      tags: true,
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
 
 export const getProjectBySlug = (slug: string) =>

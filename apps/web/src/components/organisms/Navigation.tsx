@@ -1,21 +1,20 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import {
-  Box,
-  BriefcaseBusiness,
-  ClipboardList,
-  FlaskConical,
-  HatGlasses,
-  Menu,
-  Moon,
-  Sun,
-  X,
-} from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { TerminalLogo } from "@/components/atoms/TerminalLogo";
+import { AccentPicker } from "@/components/atoms/AccentPicker";
 import { useThemeContext } from "@/app/providers/ThemeProvider";
-import Image from "next/image";
+import { EXTERNAL_LINKS } from "@/constants/config";
+
+// Editorial nav labels → in-page section ids.
+const NAV_ITEMS = [
+  { id: "projects", label: "WORK" },
+  { id: "about", label: "ABOUT" },
+  { id: "experiences", label: "CAREER" },
+  { id: "skills", label: "TOOLBOX" },
+] as const;
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +31,7 @@ export function Navigation() {
       const currentY = window.scrollY;
       const scrollPosition = currentY + 100;
 
-      const sections = ["hero", "about", "projects", "experiences", "skills"];
+      const sections = ["hero", "projects", "about", "experiences", "skills"];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -48,7 +47,6 @@ export function Navigation() {
       }
 
       setScrolled(currentY > 8);
-      // Only hide past a small threshold so the bar doesn't flicker near the top.
       if (currentY > lastScrollY.current && currentY > 96) {
         setHidden(true);
       } else if (currentY < lastScrollY.current) {
@@ -63,179 +61,130 @@ export function Navigation() {
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
-
     if (element) {
-      const yOffset = sectionId === "hero" ? -1000 : -64;
+      const yOffset = -72;
       const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-
       window.scrollTo({ top: y, behavior: "smooth" });
     }
-
     setIsOpen(false);
   };
 
-  const navItems = [
-    { id: "hero", label: <Box className="!size-8 p-1 inline my-1" /> },
-    {
-      id: "projects",
-      label: <BriefcaseBusiness className="!size-8 p-1 inline my-1" />,
-    },
-    { id: "about", label: <HatGlasses className="!size-8 p-1 inline my-1" /> },
-    {
-      id: "experiences",
-      label: <ClipboardList className="!size-8 p-1 inline my-1" />,
-    },
-    {
-      id: "skills",
-      label: <FlaskConical className="!size-8 p-1 inline my-1" />,
-    },
-  ];
-
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 will-change-transform ${
+      className={`fixed left-0 right-0 top-0 z-50 transition-transform duration-300 will-change-transform ${
         hidden && !isOpen ? "-translate-y-full" : "translate-y-0"
       } ${
         isOpen
           ? "h-screen bg-background/95 backdrop-blur-md"
           : scrolled
-            ? "bg-background/70 backdrop-blur-md border-b border-border/40"
+            ? "border-b border-border/60 bg-background/70 backdrop-blur-md"
             : ""
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Image
-            src={
-              theme === "light"
-                ? "/assets/img/content/font-logo.webp"
-                : "/assets/img/content/font-logo-white.webp"
-            }
-            alt="Shendy — Software Engineer"
-            width={100}
-            height={100}
-            priority
-            className="flex w-32 h-auto transition-colors duration-400"
-          />
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        <div className="flex h-[68px] items-center justify-between">
+          <TerminalLogo href="/" />
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
-            {navItems.map((item) => (
-              <Button
+          {/* Desktop */}
+          <div className="hidden items-center gap-7 font-mono text-xs tracking-[0.08em] md:flex">
+            {NAV_ITEMS.map((item) => (
+              <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`!size-10 text-sm font-medium cursor-pointer 
-      transition-all duration-300 ease-in-out
-      hover:scale-105 active:scale-95 hover:text-white
-      ${activeSection === item.id ? "text-accent" : "text-muted-foreground"}`}
-                variant="ghost"
+                className={`cursor-pointer transition-colors hover:text-accent ${
+                  activeSection === item.id ? "text-accent" : "text-foreground"
+                }`}
               >
                 {item.label}
-              </Button>
+              </button>
             ))}
 
-            <div className="w-[2px] h-10 bg-border" />
+            <AccentPicker className="ml-1" />
 
-            {/* Theme toggle */}
-            <Button
+            <button
               onClick={toggleTheme}
-              className="!size-10 cursor-pointer hover:text-white relative flex items-center justify-center"
-              variant="ghost"
+              aria-label="Toggle theme"
+              className="relative flex size-8 cursor-pointer items-center justify-center text-foreground transition-colors hover:text-accent"
             >
-              {/* Moon */}
               <Moon
-                className={`absolute !size-6 transition-all duration-500 ease-in-out
-        ${
-          theme === "light"
-            ? "opacity-0 -rotate-90 scale-50"
-            : "opacity-100 rotate-0 scale-100"
-        }`}
+                className={`absolute size-5 transition-all duration-500 ${
+                  theme === "light"
+                    ? "scale-50 -rotate-90 opacity-0"
+                    : "scale-100 rotate-0 opacity-100"
+                }`}
               />
-
-              {/* Sun */}
               <Sun
-                className={`absolute !size-6 transition-all duration-500 ease-in-out
-        ${
-          theme === "dark"
-            ? "opacity-0 rotate-90 scale-50"
-            : "opacity-100 rotate-0 scale-100"
-        }`}
+                className={`absolute size-5 transition-all duration-500 ${
+                  theme === "dark"
+                    ? "scale-50 rotate-90 opacity-0"
+                    : "scale-100 rotate-0 opacity-100"
+                }`}
               />
-            </Button>
+            </button>
+
+            <a
+              href={`mailto:${EXTERNAL_LINKS.email}`}
+              className="rounded-full bg-foreground px-4 py-2 font-mono text-xs font-bold tracking-[0.08em] text-background transition-all duration-200 hover:scale-105 hover:bg-accent hover:text-accent-foreground"
+            >
+              LET&apos;S TALK
+            </a>
           </div>
 
-          {/* Mobile Navigation Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden relative z-[60]"
+          {/* Mobile toggle */}
+          <button
+            aria-label="Toggle menu"
+            className="relative z-[60] flex size-9 items-center justify-center text-foreground md:hidden"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <div
-              className={`transform transition-transform duration-300 ${
-                isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
-              } absolute`}
-            >
-              <Menu className="!size-8 p-1 inline my-1" />
-            </div>
-            <div
-              className={`transform transition-transform duration-300 ${
-                isOpen ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"
-              }`}
-            >
-              <X className="!size-8 p-1 inline my-1" />
-            </div>
-          </Button>
+            {isOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Mobile menu */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-border">
-            <div className="flex flex-col justify-center items-center space-y-2">
-              {navItems.map((item) => (
-                <Button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`text-left px-4 py-2 text-sm font-medium transition-colors hover:text-white ${
-                    activeSection === item.id
-                      ? "text-accent"
-                      : "text-muted-foreground"
-                  }`}
-                  variant="ghost"
-                >
-                  {item.label}
-                </Button>
-              ))}
-
-              <div className="w-full h-[2px] rounded-xl bg-border" />
-
-              {/* Theme toggle (mobile) */}
-              <Button
-                onClick={toggleTheme}
-                className="!size-10 cursor-pointer hover:text-white relative"
-                variant="ghost"
+          <div className="flex flex-col items-start gap-6 border-t border-border/60 px-2 py-8 font-mono">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`text-2xl tracking-[0.06em] transition-colors hover:text-accent ${
+                  activeSection === item.id ? "text-accent" : "text-foreground"
+                }`}
               >
-                {/* Moon */}
-                <Moon
-                  className={`absolute !size-6 transition-all duration-500 ease-in-out
-        ${
-          theme === "light"
-            ? "opacity-0 -rotate-90 scale-50"
-            : "opacity-100 rotate-0 scale-100"
-        }`}
-                />
+                {item.label}
+              </button>
+            ))}
 
-                {/* Sun */}
-                <Sun
-                  className={`absolute !size-6 transition-all duration-500 ease-in-out
-        ${
-          theme === "dark"
-            ? "opacity-0 rotate-90 scale-50"
-            : "opacity-100 rotate-0 scale-100"
-        }`}
+            <div className="mt-4 flex w-full items-center justify-between">
+              <AccentPicker />
+              <button
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="relative flex size-9 items-center justify-center text-foreground"
+              >
+                <Moon
+                  className={`absolute size-6 transition-all duration-500 ${
+                    theme === "light"
+                      ? "scale-50 -rotate-90 opacity-0"
+                      : "scale-100 rotate-0 opacity-100"
+                  }`}
                 />
-              </Button>
+                <Sun
+                  className={`absolute size-6 transition-all duration-500 ${
+                    theme === "dark"
+                      ? "scale-50 rotate-90 opacity-0"
+                      : "scale-100 rotate-0 opacity-100"
+                  }`}
+                />
+              </button>
             </div>
+
+            <a
+              href={`mailto:${EXTERNAL_LINKS.email}`}
+              className="mt-2 rounded-full bg-foreground px-5 py-3 text-sm font-bold tracking-[0.08em] text-background"
+            >
+              LET&apos;S TALK
+            </a>
           </div>
         )}
       </div>
