@@ -2,7 +2,15 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Code2, MessageCircle, Orbit, Sparkles, type LucideIcon } from "lucide-react";
+import {
+  Code2,
+  KeyRound,
+  MessageCircle,
+  Orbit,
+  Route,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
 
 import { useTilt } from "@/hooks/useTilt";
 
@@ -11,13 +19,15 @@ interface ToolboxCellProps {
   logo: string;
 }
 
-// Thematic, theme-safe stand-ins for AI tools that have no clean, theme-safe
-// brand logo on any CDN (OpenAI's mark is black → invisible on the dark theme;
-// Codex / Antigravity have no icon at all). Keyed by skill name.
+// Thematic, theme-safe stand-ins for tools whose only brand mark is
+// black/monochrome (invisible on the dark theme) or missing from every CDN.
+// Keyed by skill name.
 const FALLBACK_ICONS: Record<string, LucideIcon> = {
   ChatGPT: MessageCircle,
   Codex: Code2,
   Antigravity: Orbit,
+  Express: Route,
+  JWT: KeyRound,
 };
 
 // Shared motion: sits dimmed until the cell is hovered (or always on touch),

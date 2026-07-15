@@ -1287,7 +1287,7 @@ async function main() {
       {
         name: "Supabase",
         level: 45,
-        category: "Backend",
+        category: "Database",
         logo: "/assets/img/content/supabase.webp",
         order: 23,
       },
@@ -1348,6 +1348,43 @@ async function main() {
         category: "AI",
         logo: "",
         order: 31,
+      },
+      {
+        name: "TanStack Query",
+        level: 80,
+        category: "Frontend",
+        logo: "https://cdn.simpleicons.org/reactquery",
+        order: 32,
+      },
+      {
+        name: "Express",
+        level: 70,
+        category: "Backend",
+        // Black brand mark → invisible on dark; ToolboxCell renders a lucide
+        // fallback (empty logo).
+        logo: "",
+        order: 33,
+      },
+      {
+        name: "JWT",
+        level: 75,
+        category: "Backend",
+        logo: "",
+        order: 34,
+      },
+      {
+        name: "Redis",
+        level: 55,
+        category: "Database",
+        logo: "https://cdn.simpleicons.org/redis",
+        order: 35,
+      },
+      {
+        name: "Trello",
+        level: 70,
+        category: "Project Management",
+        logo: "https://cdn.simpleicons.org/trello",
+        order: 36,
       },
     ],
   });
