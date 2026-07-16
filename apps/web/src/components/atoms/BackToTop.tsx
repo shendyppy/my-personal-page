@@ -34,7 +34,7 @@ export const BackToTop = ({ className, label = "BACK TO TOP" }: BackToTopProps) 
       onClick={handleClick}
       aria-label="Scroll back to top"
       className={cn(
-        "group inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.1em] text-muted-foreground transition-colors duration-300 hover:text-accent",
+        "group inline-flex cursor-pointer items-center gap-1.5 font-mono text-[11px] tracking-[0.1em] text-muted-foreground transition-colors duration-300 hover:text-accent",
         className,
       )}
     >
