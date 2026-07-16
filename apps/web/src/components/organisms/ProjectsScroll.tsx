@@ -94,7 +94,7 @@ export const ProjectsScroll = ({ projects }: ProjectsScrollProps) => {
               onClick={() => scrollByCard(dir)}
               disabled={dir === -1 ? !canPrev : !canNext}
               aria-label={dir === -1 ? "Previous project" : "Next project"}
-              className="flex size-11 items-center justify-center rounded-full border border-border text-subtle transition-colors duration-300 hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+              className="flex size-11 items-center justify-center rounded-full border border-border text-subtle transition-colors duration-300 enabled:cursor-pointer enabled:hover:border-accent enabled:hover:text-accent disabled:cursor-not-allowed disabled:opacity-30"
             >
               {dir === -1 ? (
                 <ArrowLeft className="size-4" />

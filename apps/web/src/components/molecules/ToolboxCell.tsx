@@ -2,15 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import {
-  Code2,
-  KeyRound,
-  MessageCircle,
-  Orbit,
-  Route,
-  Sparkles,
-  type LucideIcon,
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import { useTilt } from "@/hooks/useTilt";
 
@@ -18,17 +10,6 @@ interface ToolboxCellProps {
   name: string;
   logo: string;
 }
-
-// Thematic, theme-safe stand-ins for tools whose only brand mark is
-// black/monochrome (invisible on the dark theme) or missing from every CDN.
-// Keyed by skill name.
-const FALLBACK_ICONS: Record<string, LucideIcon> = {
-  ChatGPT: MessageCircle,
-  Codex: Code2,
-  Antigravity: Orbit,
-  Express: Route,
-  JWT: KeyRound,
-};
 
 // Shared motion: sits dimmed until the cell is hovered (or always on touch),
 // then brightens, lifts on Z and spins a full turn.
@@ -41,9 +22,9 @@ const LOGO_CLASS = `size-[42px] object-contain grayscale group-hover:grayscale-0
  * One tool in the Toolbox grid. The whole cell tilts toward the cursor in 3D
  * (useTilt), while the icon itself lifts off the card on the Z axis, spins a
  * full turn and — for real logos — blooms from desaturated grey to full brand
- * colour on hover. Tools without a theme-safe logo fall back to a thematic
- * lucide glyph in the foreground colour. Tilt + spin auto-disable on touch /
- * reduced-motion; on touch, logos stay full-colour so the grid isn't dead.
+ * colour on hover. A tool with no logo falls back to a generic Sparkles glyph in
+ * the foreground colour. Tilt + spin auto-disable on touch / reduced-motion; on
+ * touch, logos stay full-colour so the grid isn't dead.
  */
 export const ToolboxCell = ({ name, logo }: ToolboxCellProps) => {
   const { ref, rotateX, rotateY } = useTilt<HTMLDivElement>({ max: 14 });
@@ -52,7 +33,7 @@ export const ToolboxCell = ({ name, logo }: ToolboxCellProps) => {
   // next/image's SVG restriction without loosening the config. Local WebP
   // assets keep next/image's optimization.
   const isRemote = logo.startsWith("http");
-  const FallbackIcon = logo ? null : FALLBACK_ICONS[name] ?? Sparkles;
+  const FallbackIcon = logo ? null : Sparkles;
 
   return (
     <div className="group flex aspect-square cursor-default items-center justify-center bg-background transition-colors duration-300 [perspective:640px] hover:bg-surface">
