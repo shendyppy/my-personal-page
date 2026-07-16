@@ -532,60 +532,23 @@ async function main() {
     ],
   });
 
-  // DDI Incoming Project
-  const ddiIncoming = await prisma.project.create({
-    data: {
-      slug: "ddi-incoming",
-      title: "Daya Dimensi Indonesia - HR Consultant [INCOMING PROJECT]",
-      description:
-        "Building assessment platform for HR consultants to evaluate candidates, also manage clients and reports.",
-      image: "/assets/img/content/bg-incoming-ddi.webp",
-      year: "2024—NOW",
-      tags: ["React", "AI", "SaaS"],
-      timeline: "2024 — Present",
-      status: "In development",
-      order: 6,
-      stack: ["REACT", "TYPESCRIPT", "REDUX", "AI/LLM", "FIREBASE"],
-      storyBlocks: [
-        {
-          title: "The problem",
-          body: "Having digitized assessments to cut paperwork, DDI's next step is bigger: an AI-driven assessment platform that consolidates every application into a single product.",
-        },
-        {
-          title: "My role",
-          body: "Front-end developer on the next-generation build — standing up a fresh, maintainable code environment and integrating AI-driven flows into the assessment experience.",
-        },
-        {
-          title: "What's shipping",
-          body: "PortrAI and the consolidated platform: AI-assisted assessment, unified navigation across products, and a rebuilt foundation designed for scale from day one.",
-        },
-        {
-          title: "What I'm learning",
-          body: "Bringing LLM-driven features into a regulated HR product means treating AI output as something to validate and constrain — not blindly trust.",
-        },
-      ],
-      company: "Daya Dimensi Indonesia",
-      overview:
-        "After developing assessment platforms to minimize paperwork and increase efficiency, Daya Dimensi Indonesia (DDI) is now focusing on building an AI-driven assessment platform and consolidating all applications into a single platform.",
-      scope: "Front End Developer",
-      industry: "Human Resources",
-    },
-  });
-
-  // PortrAI
+  // PortrAI — the former DDI "Incoming Project" has since shipped, so its work
+  // is folded into the released DDI platform as another highlight (same pattern
+  // as the Acelents move above).
   const portrai = await prisma.projectHighlight.create({
     data: {
-      projectId: ddiIncoming.id,
+      projectId: ddiReleased.id,
       highlightId: "portrai",
       title: "PortrAI",
       description:
-        "PortrAI is a learning platform for employees to learn and grow. It provides a convenient way for employees to access educational content, resources, and tools to improve their skills and knowledge. Have multiple learning paths, learning modules, and quizzes.",
+        "PortrAI is a learning platform for employees to learn and grow — now released. It gives employees a convenient way to access educational content, resources, and tools to improve their skills, with multiple learning paths, modules, and quizzes, built on a fresh, maintainable, AI-assisted foundation.",
       impact: [
-        "Scale code to be maintainable",
-        "New Codes Environment",
+        "Released, in production",
+        "Scalable, maintainable codebase",
+        "AI-assisted learning",
         "Software as a Service (SaaS)",
       ],
-      order: 1,
+      order: 7,
     },
   });
 
@@ -615,6 +578,100 @@ async function main() {
         isScrollable: true,
         order: 4,
       },
+    ],
+  });
+
+  // Nabunk — personal learning build (Java/Spring full-stack banking demo).
+  const nabunk = await prisma.project.create({
+    data: {
+      slug: "nabunk",
+      title: "Nabunk — Java Full-Stack Banking Demo",
+      description:
+        "A learning build to go deep on Java & Spring Boot: a mobile-first digital-banking demo with a typed web dashboard and a native-feel mobile app, backed by a real transactional core.",
+      image: "/assets/img/projects/nabunk/web-dashboard.webp",
+      year: "2025",
+      tags: ["Java", "Spring Boot", "Expo", "Next.js", "Fullstack"],
+      timeline: "2025 — Present",
+      status: "In development — learning build",
+      order: 6,
+      stack: [
+        "JAVA 17",
+        "SPRING BOOT 3",
+        "JWT",
+        "NEXT.JS",
+        "REACT NATIVE",
+        "EXPO",
+        "H2 / MYSQL",
+      ],
+      storyBlocks: [
+        {
+          title: "Why I built it",
+          body: "To learn Java and Spring Boot properly by building something real end-to-end — not a toy CRUD, but a banking-shaped domain with the concepts banks actually ask about: ACID transfers, double-entry ledgers, JWT auth, and audit logging.",
+        },
+        {
+          title: "The build",
+          body: "A Spring Boot 3 backend (JPA/Hibernate, Spring Security + JWT, OTP-gated transfers) serving both a Next.js web dashboard and an Expo/React Native mobile app from one shared API. Pessimistic locking and idempotency keep transfers correct under contention.",
+        },
+        {
+          title: "What I'm learning",
+          body: "Layered architecture and DTO↔entity boundaries in Java, transactional integrity (pessimistic locks, idempotency keys, double-entry accounting), and sharing one typed contract across a web and a native client.",
+        },
+        {
+          title: "Status",
+          body: "Actively in development as a learning project — running locally end-to-end (backend + web + mobile), not yet deployed to production.",
+        },
+      ],
+      company: "Personal project",
+      overview:
+        "Nabunk is a mobile-first digital-banking demo I'm building to learn Java and Spring Boot in depth. One Spring Boot API powers both a Next.js web dashboard and an Expo React Native app — covering auth, accounts, pockets, transfers with OTP, QRIS, bills, and transaction history over a real double-entry ledger.",
+      scope: "Full-Stack (Java · Next.js · React Native)",
+      industry: "Banking / Fintech (learning)",
+    },
+  });
+
+  const nabunkWeb = await prisma.projectHighlight.create({
+    data: {
+      projectId: nabunk.id,
+      highlightId: "nabunk-web",
+      title: "Web dashboard (Next.js)",
+      description:
+        "A typed Next.js dashboard for the full banking surface: balances across accounts and pockets, a debit-card view, insights, transfers, bill splitting, and time-deposit (deposito) flows — all talking to the Spring Boot API.",
+      impact: ["Next.js 14 App Router", "Typed API contract", "Charts & insights"],
+      order: 1,
+    },
+  });
+
+  await prisma.projectImage.createMany({
+    data: [
+      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-dashboard.webp", isScrollable: false, order: 1 },
+      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-transactions.webp", isScrollable: false, order: 2 },
+      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-insights.webp", isScrollable: false, order: 3 },
+      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-kartu.webp", isScrollable: false, order: 4 },
+      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-split.webp", isScrollable: false, order: 5 },
+      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-deposito.webp", isScrollable: false, order: 6 },
+    ],
+  });
+
+  const nabunkMobile = await prisma.projectHighlight.create({
+    data: {
+      projectId: nabunk.id,
+      highlightId: "nabunk-mobile",
+      title: "Mobile app (Expo / React Native)",
+      description:
+        "A native-feel Expo app sharing the same API: home with balance and pockets, transaction history, savings pockets, a debit card, notifications, and profile — with biometric login on device.",
+      impact: ["Expo SDK 54", "Shared REST contract", "Biometric login"],
+      order: 2,
+    },
+  });
+
+  await prisma.projectImage.createMany({
+    data: [
+      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-home.webp", isScrollable: true, order: 1 },
+      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-riwayat.webp", isScrollable: true, order: 2 },
+      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-pocket.webp", isScrollable: true, order: 3 },
+      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-kartu.webp", isScrollable: true, order: 4 },
+      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-notifications.webp", isScrollable: true, order: 5 },
+      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-profile.webp", isScrollable: true, order: 6 },
     ],
   });
 
@@ -790,12 +847,12 @@ async function main() {
   const ebplt = await prisma.project.create({
     data: {
       slug: "ebplt",
-      title: "EB-PLT - Pharmacist Administration Platform [RELEASED PROJECT]",
+      title: "EB-PLT - Pharmacist Administration Platform",
       description:
         "Web application for pharmacist administration including notifications, submissions, store transfers, name changes, and other management workflows.",
       image: "/assets/img/projects/ebplt/01-dashboard.webp",
       year: "2025—26",
-      tags: ["Next.js", "Prisma", "PostgreSQL", "Fullstack"],
+      tags: ["Next.js", "Prisma", "PostgreSQL", "Fullstack", "Python"],
       timeline: "Nov 2025 — Present",
       status: "Released — in production",
       order: 1,
@@ -1173,6 +1230,13 @@ async function main() {
         order: 8,
       },
       {
+        name: "Playwright",
+        level: 70,
+        category: "Frontend",
+        logo: "/assets/img/content/playwright.webp",
+        order: 9,
+      },
+      {
         name: "Python",
         level: 40,
         category: "Backend",
@@ -1246,7 +1310,7 @@ async function main() {
         name: "Neon Tech",
         level: 65,
         category: "Database",
-        logo: "/assets/img/content/neon-tech.webp",
+        logo: "https://cdn.simpleicons.org/neon",
         order: 17,
       },
       {
@@ -1326,27 +1390,27 @@ async function main() {
         logo: "https://cdn.simpleicons.org/notebooklm",
         order: 28,
       },
-      // No theme-safe brand logo on any CDN — ToolboxCell renders a thematic
-      // lucide fallback glyph for these (empty logo).
       {
         name: "ChatGPT",
         level: 70,
         category: "AI",
-        logo: "",
+        // OpenAI blossom (LobeHub, mono) tinted the ChatGPT green so it stays
+        // legible when the grid desaturates it on both themes.
+        logo: "/assets/img/content/chatgpt.webp",
         order: 29,
       },
       {
         name: "Codex",
         level: 65,
         category: "AI",
-        logo: "",
+        logo: "/assets/img/content/codex.webp",
         order: 30,
       },
       {
         name: "Antigravity",
         level: 60,
         category: "AI",
-        logo: "",
+        logo: "/assets/img/content/antigravity.webp",
         order: 31,
       },
       {
@@ -1360,16 +1424,16 @@ async function main() {
         name: "Express",
         level: 70,
         category: "Backend",
-        // Black brand mark → invisible on dark; ToolboxCell renders a lucide
-        // fallback (empty logo).
-        logo: "",
+        // Express mark is monochrome black (invisible on dark); Simple Icons'
+        // colour override tints it a Node-ish green so it reads on both themes.
+        logo: "https://cdn.simpleicons.org/express/68A063",
         order: 33,
       },
       {
         name: "JWT",
         level: 75,
         category: "Backend",
-        logo: "",
+        logo: "/assets/img/content/jwt.webp",
         order: 34,
       },
       {
