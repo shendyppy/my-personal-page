@@ -40,7 +40,12 @@ export const ImageModal = ({
       return () => {
         document.removeEventListener("keydown", handleEscapeKey);
         document.removeEventListener("click", handleClickOutside);
-        document.body.style.overflow = "auto";
+        // Clear the inline lock instead of forcing `auto` — an explicit overflow
+        // on <body> makes it a scroll container, which silently kills every
+        // `position: sticky` descendant (the gallery panels here, and the pinned
+        // Toolbox after a client-side nav back). Empty string restores the
+        // stylesheet's sticky-safe `overflow-x: clip`.
+        document.body.style.overflow = "";
       };
     }
   }, [isOpen, onClose]);

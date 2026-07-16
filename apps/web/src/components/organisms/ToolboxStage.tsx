@@ -9,8 +9,6 @@ import {
 } from "framer-motion";
 
 import { ToolboxCell } from "@/components/molecules/ToolboxCell";
-import { useMediaQuery } from "@/hooks/useResponsive";
-import { BREAKPOINTS } from "@/constants/config";
 import type { Skill, SkillCategory } from "@/types";
 
 export type ToolGroup = { category: SkillCategory; tools: Skill[] };
@@ -23,19 +21,12 @@ type ToolboxStageProps = {
 const gridClass =
   "grid grid-cols-3 gap-px overflow-hidden rounded-[16px] border border-border bg-border sm:grid-cols-4 md:grid-cols-6";
 
-function CategoryHeader({ label, count }: { label: string; count: number }) {
-  return (
-    <div className="mb-4 flex items-baseline gap-3">
-      <h3 className="font-mono text-xs uppercase tracking-[0.14em] text-accent">
-        {label}
-      </h3>
-      <span className="font-mono text-[11px] tracking-[0.1em] text-muted-foreground">
-        {String(count).padStart(2, "0")}
-      </span>
-      <span aria-hidden className="h-px flex-1 bg-border" />
-    </div>
-  );
-}
+// Vertical scroll (in vh) that advances the pinned stage by one category. Less
+// than a full screen on purpose: at 100vh each panel needed half a viewport of
+// scrolling to flip, so proximity-snap kept dragging you back and the stage felt
+// "stuck". The section height and the snap anchors are both derived from this so
+// they always stay in sync — tune this one number to make paging feel lighter.
+const SCROLL_PER_PANEL_VH = 62;
 
 function ToolGrid({ tools }: { tools: Skill[] }) {
   return (
@@ -48,10 +39,11 @@ function ToolGrid({ tools }: { tools: Skill[] }) {
 }
 
 /**
- * Pinned horizontal stage — only mounted on desktop with motion enabled, so its
- * scroll ref is always hydrated (keeping `useScroll` happy). The section is
+ * Pinned horizontal stage — the signature Toolbox interaction on every width
+ * (only reduced-motion falls back to {@link VerticalGroups}). The section is
  * tall; its inner panel sticks to the viewport and vertical scroll progress
- * drives the category panels sideways, one screen per category.
+ * drives the category panels sideways, one screen per category. Panel content
+ * scales down on mobile so nothing spills off the narrow viewport.
  */
 function PinnedGroups({
   groups,
@@ -71,12 +63,33 @@ function PinnedGroups({
     ["0vw", `-${(groups.length - 1) * 100}vw`]
   );
 
+  // Sticky panel is one viewport (100vh); every extra category adds
+  // SCROLL_PER_PANEL_VH of scroll room to page it into view.
+  const sectionHeight = 100 + (groups.length - 1) * SCROLL_PER_PANEL_VH;
+
   return (
     <div
       ref={sectionRef}
-      style={{ height: `${groups.length * 100}vh` }}
+      style={{ height: `${sectionHeight}vh` }}
       className="relative"
     >
+      {/* Snap anchors — one marker per category, each SCROLL_PER_PANEL_VH tall,
+          stacked from the top. Their `start` edges land exactly on the scroll
+          offsets where a category sits fully centered (scroll drives the
+          horizontal transform 1:1), so the stage settles one panel at a time. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 flex flex-col"
+      >
+        {groups.map(({ category }) => (
+          <div
+            key={category}
+            style={{ height: `${SCROLL_PER_PANEL_VH}vh` }}
+            className="w-full snap-start"
+          />
+        ))}
+      </div>
+
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <motion.div style={{ x }} className="flex">
           {groups.map(({ category, tools }, i) => (
@@ -87,25 +100,25 @@ function PinnedGroups({
               {/* Label on top, grid below — and the pair flips top↔bottom every
                   other panel so scrolling sideways has an alternating rhythm. */}
               <div
-                className={`mx-auto flex w-full max-w-[1040px] flex-col items-center justify-center gap-10 text-center ${
+                className={`mx-auto flex w-full max-w-[1040px] flex-col items-center justify-center gap-7 text-center md:gap-10 ${
                   i % 2 === 1 ? "flex-col-reverse" : ""
                 }`}
               >
                 <div>
-                  <span className="font-mono text-xs tracking-[0.14em] text-muted-foreground">
+                  <span className="font-mono text-[11px] tracking-[0.14em] text-muted-foreground md:text-xs">
                     {String(i + 1).padStart(2, "0")} /{" "}
                     {String(groups.length).padStart(2, "0")}
                   </span>
-                  <h3 className="font-heading mt-4 text-[clamp(40px,5vw,80px)] font-extrabold uppercase leading-[0.95] tracking-[-0.03em]">
+                  <h3 className="font-heading mt-3 text-balance text-[clamp(26px,7vw,42px)] font-extrabold uppercase leading-[0.95] tracking-[-0.03em] md:mt-4 md:text-[clamp(40px,5vw,80px)]">
                     {label(category)}
                     <span className="text-accent">.</span>
                   </h3>
-                  <p className="mt-3 font-mono text-xs tracking-[0.12em] text-muted-foreground">
+                  <p className="mt-2.5 font-mono text-[11px] tracking-[0.12em] text-muted-foreground md:mt-3 md:text-xs">
                     {String(tools.length).padStart(2, "0")} TOOLS — KEEP
                     SCROLLING
                   </p>
                 </div>
-                <div className="w-full max-w-[760px]">
+                <div className="w-full max-w-[320px] md:max-w-[760px]">
                   <ToolGrid tools={tools} />
                 </div>
               </div>
@@ -125,12 +138,34 @@ function VerticalGroups({
   label: (category: SkillCategory) => string;
 }) {
   return (
-    <div className="mx-auto box-border flex max-w-[1400px] flex-col gap-12 px-6 md:px-10">
-      {groups.map(({ category, tools }) => (
-        <div key={category}>
-          <CategoryHeader label={label(category)} count={tools.length} />
-          <ToolGrid tools={tools} />
-        </div>
+    <div className="flex flex-col">
+      {groups.map(({ category, tools }, i) => (
+        // Each category is its own viewport-tall panel (`min-h-svh`) with the
+        // content centered, mirroring the desktop pinned stage — so `snap-start`
+        // settles one whole category per screen instead of landing mid-list.
+        // `svh` keeps the panel stable against mobile browser-chrome resize;
+        // `py-24` keeps the label clear of the fixed 68px nav.
+        <section
+          key={category}
+          className="flex min-h-svh snap-start flex-col items-center justify-center gap-9 px-6 py-24"
+        >
+          <div className="text-center">
+            <span className="font-mono text-[11px] tracking-[0.14em] text-muted-foreground">
+              {String(i + 1).padStart(2, "0")} /{" "}
+              {String(groups.length).padStart(2, "0")}
+            </span>
+            <h3 className="font-heading mt-3 text-[clamp(34px,10vw,56px)] font-extrabold uppercase leading-[0.95] tracking-[-0.03em]">
+              {label(category)}
+              <span className="text-accent">.</span>
+            </h3>
+            <p className="mt-2.5 font-mono text-[11px] tracking-[0.12em] text-muted-foreground">
+              {String(tools.length).padStart(2, "0")} TOOLS
+            </p>
+          </div>
+          <div className="w-full max-w-[360px]">
+            <ToolGrid tools={tools} />
+          </div>
+        </section>
       ))}
     </div>
   );
@@ -139,23 +174,22 @@ function VerticalGroups({
 /**
  * Chooses how to render the grouped Toolbox:
  *
- * - **Desktop** (≥ lg, motion allowed): the pinned "scroll sideways through the
- *   stack" stage ({@link PinnedGroups}).
- * - **Mobile / reduced-motion**: a plain vertical run of grouped grids, so no
- *   scroll is hijacked and the content stays linear.
+ * - **Default (all widths, motion allowed)**: the pinned "scroll sideways
+ *   through the stack" stage ({@link PinnedGroups}) — the same horizontal slide
+ *   on mobile and desktop, just with mobile-scaled panels.
+ * - **Reduced-motion**: a static vertical run of full-screen category panels
+ *   ({@link VerticalGroups}), so no scroll is hijacked.
  *
- * SSR renders the vertical version (media query resolves to false first), then
- * upgrades to the pinned stage on desktop after mount. `useScroll` lives inside
- * `PinnedGroups` so its ref is only wired when that branch is actually mounted.
+ * SSR renders the pinned stage (reduced-motion resolves to false first);
+ * `useScroll` lives inside `PinnedGroups` so its ref is wired once mounted.
  */
 export const ToolboxStage = ({ groups, labels }: ToolboxStageProps) => {
-  const isDesktop = useMediaQuery({ min: BREAKPOINTS.lg });
   const reduceMotion = useReducedMotion();
   const label = (category: SkillCategory) => labels[category] ?? category;
 
-  return isDesktop && !reduceMotion ? (
-    <PinnedGroups groups={groups} label={label} />
-  ) : (
+  return reduceMotion ? (
     <VerticalGroups groups={groups} label={label} />
+  ) : (
+    <PinnedGroups groups={groups} label={label} />
   );
 };

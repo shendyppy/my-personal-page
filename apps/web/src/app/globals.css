@@ -192,6 +192,14 @@
     @apply bg-background text-foreground;
     @apply overflow-x-clip;
   }
+  /* Gentle vertical snapping for the page scroller. `proximity` (not
+     `mandatory`) means the page only settles when the user comes to rest near a
+     snap point — every other section scrolls freely. Only elements that opt in
+     with `scroll-snap-align` participate, so this is scoped to the Toolbox
+     stage (pinned desktop panels + the mobile vertical grids). */
+  html {
+    scroll-snap-type: y proximity;
+  }
 }
 
 @layer utilities {
@@ -211,6 +219,21 @@
 }
 
 /* ---- Portfolio Reimagined — editorial motion + accents ---- */
+
+/* Syne Extrabold (800) gives the display headings their wide, punchy look on
+   desktop — but that weight, plus Syne's inherently extended glyphs, reads as
+   heavy and "stretched" on a phone. Below Tailwind's `md` (768px) we (1) drop to
+   a slimmer 600 and (2) pull the tracking tighter than the per-heading defaults
+   (~-0.02/-0.03em): tighter letter-spacing packs each word so it stops looking
+   spread out, which mostly-uppercase display type carries well. Left unlayered
+   on purpose so this outclasses Tailwind's layered `font-extrabold`/`font-bold`
+   and `tracking-*` utilities without `!important`. Desktop is untouched. */
+@media (max-width: 767px) {
+  .font-heading {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}
 
 ::selection {
   background: var(--accent);
