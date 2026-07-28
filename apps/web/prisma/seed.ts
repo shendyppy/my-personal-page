@@ -70,30 +70,6 @@ async function main() {
         order: 1,
       },
       {
-        company: "80&Company/OCT-PATH",
-        companyLogo: "/assets/img/content/80&company-logo.webp",
-        title: "Brain Manager (Project Manager & Fullstack Engineer)",
-        location: "Jakarta, Indonesia",
-        period: "November 2025 - Present",
-        current: true,
-        description:
-          "Lead strategic planning, execution, and delivery of multi-layered digital products while contributing directly to system architecture, development, and DevOps.",
-        responsibilities: [
-          "Managed end-to-end delivery across multiple workstreams including business flow design, workflow automation, and technical architecture.",
-          "Built full-stack features involving PDF automation, assessment engines, secure authentication flows, and content platforms.",
-          "Contributed to DevOps processes including environment setup, CI/CD, deployment, and performance optimization.",
-          "Acted as both project manager and technical contributor, ensuring balance between execution speed and product quality.",
-        ],
-        projects: [
-          "EB-PLT – Pharmacist Administration Platform (Released)",
-          "Various workflow automation and internal tools",
-        ],
-        techStack:
-          "Next.js, shadcn UI, Tailwind CSS, TypeScript, Prisma, PostgreSQL (Neon), Gotenberg, Vercel Blob, Zod, GitHub Projects (Agile Management - ticketing, roadmap, milestones), CI/CD (Vercel), Error Logging (Sentry)",
-        employmentType: "Freelance",
-        order: 2,
-      },
-      {
         company: "PT. Mahardika Solusi Teknologi (IDE Asia)",
         companyLogo: "/assets/img/content/ide-logo.webp",
         title: "Front End Developer",
@@ -636,19 +612,53 @@ async function main() {
       title: "Web dashboard (Next.js)",
       description:
         "A typed Next.js dashboard for the full banking surface: balances across accounts and pockets, a debit-card view, insights, transfers, bill splitting, and time-deposit (deposito) flows — all talking to the Spring Boot API.",
-      impact: ["Next.js 14 App Router", "Typed API contract", "Charts & insights"],
+      impact: [
+        "Next.js 14 App Router",
+        "Typed API contract",
+        "Charts & insights",
+      ],
       order: 1,
     },
   });
 
   await prisma.projectImage.createMany({
     data: [
-      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-dashboard.webp", isScrollable: false, order: 1 },
-      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-transactions.webp", isScrollable: false, order: 2 },
-      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-insights.webp", isScrollable: false, order: 3 },
-      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-kartu.webp", isScrollable: false, order: 4 },
-      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-split.webp", isScrollable: false, order: 5 },
-      { highlightId: nabunkWeb.id, link: "/assets/img/projects/nabunk/web-deposito.webp", isScrollable: false, order: 6 },
+      {
+        highlightId: nabunkWeb.id,
+        link: "/assets/img/projects/nabunk/web-dashboard.webp",
+        isScrollable: false,
+        order: 1,
+      },
+      {
+        highlightId: nabunkWeb.id,
+        link: "/assets/img/projects/nabunk/web-transactions.webp",
+        isScrollable: false,
+        order: 2,
+      },
+      {
+        highlightId: nabunkWeb.id,
+        link: "/assets/img/projects/nabunk/web-insights.webp",
+        isScrollable: false,
+        order: 3,
+      },
+      {
+        highlightId: nabunkWeb.id,
+        link: "/assets/img/projects/nabunk/web-kartu.webp",
+        isScrollable: false,
+        order: 4,
+      },
+      {
+        highlightId: nabunkWeb.id,
+        link: "/assets/img/projects/nabunk/web-split.webp",
+        isScrollable: false,
+        order: 5,
+      },
+      {
+        highlightId: nabunkWeb.id,
+        link: "/assets/img/projects/nabunk/web-deposito.webp",
+        isScrollable: false,
+        order: 6,
+      },
     ],
   });
 
@@ -666,12 +676,42 @@ async function main() {
 
   await prisma.projectImage.createMany({
     data: [
-      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-home.webp", isScrollable: true, order: 1 },
-      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-riwayat.webp", isScrollable: true, order: 2 },
-      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-pocket.webp", isScrollable: true, order: 3 },
-      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-kartu.webp", isScrollable: true, order: 4 },
-      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-notifications.webp", isScrollable: true, order: 5 },
-      { highlightId: nabunkMobile.id, link: "/assets/img/projects/nabunk/mobile-profile.webp", isScrollable: true, order: 6 },
+      {
+        highlightId: nabunkMobile.id,
+        link: "/assets/img/projects/nabunk/mobile-home.webp",
+        isScrollable: true,
+        order: 1,
+      },
+      {
+        highlightId: nabunkMobile.id,
+        link: "/assets/img/projects/nabunk/mobile-riwayat.webp",
+        isScrollable: true,
+        order: 2,
+      },
+      {
+        highlightId: nabunkMobile.id,
+        link: "/assets/img/projects/nabunk/mobile-pocket.webp",
+        isScrollable: true,
+        order: 3,
+      },
+      {
+        highlightId: nabunkMobile.id,
+        link: "/assets/img/projects/nabunk/mobile-kartu.webp",
+        isScrollable: true,
+        order: 4,
+      },
+      {
+        highlightId: nabunkMobile.id,
+        link: "/assets/img/projects/nabunk/mobile-notifications.webp",
+        isScrollable: true,
+        order: 5,
+      },
+      {
+        highlightId: nabunkMobile.id,
+        link: "/assets/img/projects/nabunk/mobile-profile.webp",
+        isScrollable: true,
+        order: 6,
+      },
     ],
   });
 
@@ -753,11 +793,7 @@ async function main() {
       title: "UOB Infinity - Vietnam",
       description:
         "Vietnam ETax implementation for UOB Vietnam, for Single and Bulk Transactions (General Tax, Customs Tax, Customs Fee Payment)",
-      impact: [
-        "Scale code to be maintainable",
-        "Review code",
-        "Refactor code",
-      ],
+      impact: ["Scale code to be maintainable", "Review code", "Refactor code"],
       order: 2,
       images: {
         create: [
@@ -841,206 +877,6 @@ async function main() {
         ],
       },
     },
-  });
-
-  // EB-PLT Project (Released)
-  const ebplt = await prisma.project.create({
-    data: {
-      slug: "ebplt",
-      title: "EB-PLT - Pharmacist Administration Platform",
-      description:
-        "Web application for pharmacist administration including notifications, submissions, store transfers, name changes, and other management workflows.",
-      image: "/assets/img/projects/ebplt/01-dashboard.webp",
-      year: "2025—26",
-      tags: ["Next.js", "Prisma", "PostgreSQL", "Fullstack", "Python"],
-      timeline: "Nov 2025 — Present",
-      status: "Released — in production",
-      order: 1,
-      stack: [
-        "NEXT.JS",
-        "TYPESCRIPT",
-        "TAILWIND",
-        "SHADCN UI",
-        "PRISMA",
-        "POSTGRESQL (NEON)",
-        "ZOD",
-        "GOTENBERG",
-        "VERCEL CI/CD",
-        "SENTRY",
-        "GITHUB PROJECTS",
-      ],
-      storyBlocks: [
-        {
-          title: "The problem",
-          body: "Pharmacist administration in Japan ran on paper and email: license submissions, store transfers, name changes — every workflow slow, error-prone, and invisible to managers. The client needed one platform that could digitize all of it without losing regulatory rigor.",
-        },
-        {
-          title: "My role",
-          body: "I wore two hats. As PM: roadmap, milestones, ticketing, and agile rituals on GitHub Projects. As engineer: system architecture, the Next.js app itself, Prisma data models on PostgreSQL, PDF generation via Gotenberg, and the CI/CD pipeline on Vercel with Sentry monitoring.",
-        },
-        {
-          title: "What shipped",
-          body: "A released production platform covering notifications, submissions, store transfers, and name-change workflows — with role-based dashboards, automated 変更届書 document generation, and full audit trails. Zero-downtime deploys, typed end-to-end with Zod at every boundary.",
-        },
-        {
-          title: "What I learned",
-          body: "Owning delivery and code at once forces honest scoping — you can't over-promise to yourself. It also completed my transition story: from front-end specialist to someone comfortable across the whole stack, database to DevOps.",
-        },
-      ],
-      company: "80&Company/OCT-PATH",
-      overview:
-        "EB-PLT (薬剤師免許届出支援システム) is a comprehensive web-based platform that streamlines pharmacist license notification submissions to Japanese health centers. It automates a traditionally paper-heavy workflow — generating statutory change-notification forms (変更届書) as print-ready documents, tracking submission deadlines, and managing the full jurisdiction hierarchy from regional bureaus down to individual health centers. Built as a hybrid monorepo: a Next.js App Router web app and a FastAPI PDF microservice.",
-      scope: "Project Manager & Fullstack Engineer",
-      industry: "Healthcare",
-    },
-  });
-
-  // EB-PLT — Highlight 1: Store & Employment Management
-  const ebpltStores = await prisma.projectHighlight.create({
-    data: {
-      projectId: ebplt.id,
-      highlightId: "store-employment",
-      title: "Store & Employment Management",
-      description:
-        "A role-based admin dashboard surfaces system-wide stats and live deadline alerts, while stores and their pharmacist assignments are managed in one place. Each store tracks active, scheduled, and historical staff, with overdue-change badges that escalate by color as statutory deadlines approach.",
-      impact: [
-        "Centralized store & employment data",
-        "Real-time deadline alerts",
-        "Role-based access control (5 roles)",
-      ],
-      order: 1,
-    },
-  });
-
-  await prisma.projectImage.createMany({
-    data: [
-      {
-        highlightId: ebpltStores.id,
-        link: "/assets/img/projects/ebplt/02-stores-list.webp",
-        isScrollable: false,
-        order: 1,
-      },
-      {
-        highlightId: ebpltStores.id,
-        link: "/assets/img/projects/ebplt/03-store-detail.webp",
-        isScrollable: true,
-        order: 2,
-      },
-      {
-        highlightId: ebpltStores.id,
-        link: "/assets/img/projects/ebplt/04-store-assignments.webp",
-        isScrollable: false,
-        order: 3,
-      },
-    ],
-  });
-
-  // EB-PLT — Highlight 2: Change-Notification Confirmation & PDF Generation
-  const ebpltConfirm = await prisma.projectHighlight.create({
-    data: {
-      projectId: ebplt.id,
-      highlightId: "change-notification",
-      title: "変更届 Confirmation & PDF Generation",
-      description:
-        "The flagship workflow: a split-pane confirmation screen lets staff review pending changes and edit the live preview inline, then generates statutory change-notification documents (変更届書, 様式第六) as print-ready forms. The engine handles multiple official layouts, auto-splits overflowing content onto attached sheets (別紙), and validates missing fields before output.",
-      impact: [
-        "HTML→PDF 変更届書 generation",
-        "Inline-editable print preview",
-        "Auto 別紙 overflow & multi-layout support",
-      ],
-      order: 2,
-    },
-  });
-
-  await prisma.projectImage.createMany({
-    data: [
-      {
-        highlightId: ebpltConfirm.id,
-        link: "/assets/img/projects/ebplt/05-confirmation-editor.webp",
-        isScrollable: false,
-        order: 1,
-      },
-      {
-        highlightId: ebpltConfirm.id,
-        link: "/assets/img/projects/ebplt/06-change-notification-print.webp",
-        isScrollable: true,
-        order: 2,
-      },
-    ],
-  });
-
-  // EB-PLT — Highlight 3: Pharmacist & License Management
-  const ebpltPharmacist = await prisma.projectHighlight.create({
-    data: {
-      projectId: ebplt.id,
-      highlightId: "pharmacist-license",
-      title: "Pharmacist & License Management",
-      description:
-        "Pharmacist records consolidate personal details, employment history across stores, and license information with verification status. Licenses are stored with Japanese-era (和暦) issue dates and feed directly into generated notification forms.",
-      impact: [
-        "Pharmacist & license records",
-        "Assignment history tracking",
-        "Japanese-era (和暦) date support",
-      ],
-      order: 3,
-    },
-  });
-
-  await prisma.projectImage.createMany({
-    data: [
-      {
-        highlightId: ebpltPharmacist.id,
-        link: "/assets/img/projects/ebplt/07-pharmacists-list.webp",
-        isScrollable: false,
-        order: 1,
-      },
-      {
-        highlightId: ebpltPharmacist.id,
-        link: "/assets/img/projects/ebplt/08-pharmacist-detail.webp",
-        isScrollable: true,
-        order: 2,
-      },
-    ],
-  });
-
-  // EB-PLT — Highlight 4: Admin & Submission Tracking
-  const ebpltAdmin = await prisma.projectHighlight.create({
-    data: {
-      projectId: ebplt.id,
-      highlightId: "admin-submissions",
-      title: "Admin & Submission Tracking",
-      description:
-        "Submissions are tracked end-to-end with status, urgency, and deadline indicators. Administrators manage the full jurisdiction master — regional bureaus, prefectures, and health centers — plus per-health-center required-document rules that drive which forms each submission needs.",
-      impact: [
-        "Submission status & deadline tracking",
-        "Jurisdiction master (厚生局→保健所)",
-        "Per-health-center document rules",
-      ],
-      order: 4,
-    },
-  });
-
-  await prisma.projectImage.createMany({
-    data: [
-      {
-        highlightId: ebpltAdmin.id,
-        link: "/assets/img/projects/ebplt/09-submissions.webp",
-        isScrollable: false,
-        order: 1,
-      },
-      {
-        highlightId: ebpltAdmin.id,
-        link: "/assets/img/projects/ebplt/10-admin-jurisdictions.webp",
-        isScrollable: false,
-        order: 2,
-      },
-      {
-        highlightId: ebpltAdmin.id,
-        link: "/assets/img/projects/ebplt/11-admin-requirements.webp",
-        isScrollable: false,
-        order: 3,
-      },
-    ],
   });
 
   // Stevana & Zulfikar — Digital Wedding Invitation (Side Project)
@@ -1171,286 +1007,291 @@ async function main() {
 
   // ============ SKILLS ============
   console.log("🛠️  Seeding skills...");
+  const skills = [
+    {
+      name: "TypeScript",
+      level: 90,
+      category: "Frontend",
+      logo: "/assets/img/content/typescript.webp",
+      order: 1,
+    },
+    {
+      name: "JavaScript",
+      level: 95,
+      category: "Frontend",
+      logo: "/assets/img/content/javascript.webp",
+      order: 2,
+    },
+    {
+      name: "Vue.js",
+      level: 50,
+      category: "Frontend",
+      logo: "/assets/img/content/vue.webp",
+      order: 3,
+    },
+    {
+      name: "React.js",
+      level: 95,
+      category: "Frontend",
+      logo: "/assets/img/content/react.webp",
+      order: 4,
+    },
+    {
+      name: "Next.js",
+      level: 75,
+      category: "Frontend",
+      logo: "/assets/img/content/nextjs.webp",
+      order: 5,
+    },
+    {
+      name: "AXIOS",
+      level: 90,
+      category: "Frontend",
+      logo: "/assets/img/content/axios.webp",
+      order: 6,
+    },
+    {
+      name: "Redux",
+      level: 80,
+      category: "Frontend",
+      logo: "/assets/img/content/redux.webp",
+      order: 7,
+    },
+    {
+      name: "Jest",
+      level: 70,
+      category: "Frontend",
+      logo: "/assets/img/content/jest.webp",
+      order: 8,
+    },
+    {
+      name: "Playwright",
+      level: 70,
+      category: "Frontend",
+      logo: "/assets/img/content/playwright.webp",
+      order: 9,
+    },
+    {
+      name: "Python",
+      level: 40,
+      category: "Backend",
+      logo: "/assets/img/content/python.webp",
+      order: 8,
+    },
+    {
+      name: "Node.js",
+      level: 60,
+      category: "Backend",
+      logo: "/assets/img/content/nodejs.webp",
+      order: 9,
+    },
+    {
+      name: "NestJS",
+      level: 50,
+      category: "Backend",
+      logo: "/assets/img/content/nestjs.webp",
+      order: 10,
+    },
+    {
+      name: "Sequelize",
+      level: 50,
+      category: "Backend",
+      logo: "/assets/img/content/sequelize.webp",
+      order: 11,
+    },
+    {
+      name: "Github Actions",
+      level: 60,
+      category: "DevOps",
+      logo: "/assets/img/content/github-actions.webp",
+      order: 11,
+    },
+    {
+      name: "Vercel",
+      level: 80,
+      category: "DevOps",
+      logo: "/assets/img/content/vercel.webp",
+      order: 12,
+    },
+    {
+      name: "AWS",
+      level: 50,
+      category: "DevOps",
+      logo: "/assets/img/content/aws.webp",
+      order: 13,
+    },
+    {
+      name: "cPanel",
+      level: 50,
+      category: "DevOps",
+      logo: "/assets/img/content/cPanel.webp",
+      order: 14,
+    },
+    {
+      name: "Firebase",
+      level: 75,
+      category: "DevOps",
+      logo: "/assets/img/content/firebase.webp",
+      order: 15,
+    },
+    {
+      name: "PostgreSQL",
+      level: 60,
+      category: "Database",
+      logo: "/assets/img/content/postgresql.webp",
+      order: 16,
+    },
+    {
+      name: "Neon Tech",
+      level: 65,
+      category: "Database",
+      logo: "https://cdn.simpleicons.org/neon",
+      order: 17,
+    },
+    {
+      name: "Prisma",
+      level: 50,
+      category: "Database",
+      logo: "/assets/img/content/prisma.webp",
+      order: 18,
+    },
+    {
+      name: "GitHub Projects",
+      level: 60,
+      category: "Project Management",
+      logo: "/assets/img/content/github-project.webp",
+      order: 19,
+    },
+    {
+      name: "Jira",
+      level: 80,
+      category: "Project Management",
+      logo: "/assets/img/content/jira.webp",
+      order: 20,
+    },
+    {
+      name: "Java",
+      level: 45,
+      category: "Backend",
+      logo: "/assets/img/content/java.webp",
+      order: 21,
+    },
+    {
+      name: "Expo",
+      level: 40,
+      category: "Frontend",
+      logo: "/assets/img/content/expo.webp",
+      order: 22,
+    },
+    {
+      name: "Supabase",
+      level: 45,
+      category: "Database",
+      logo: "/assets/img/content/supabase.webp",
+      order: 23,
+    },
+    {
+      name: "Railway",
+      level: 55,
+      category: "DevOps",
+      logo: "/assets/img/content/railway.webp",
+      order: 24,
+    },
+    {
+      name: "Claude Code",
+      level: 85,
+      category: "AI",
+      logo: "/assets/img/content/claude.webp",
+      order: 25,
+    },
+    {
+      name: "GitHub Copilot",
+      level: 75,
+      category: "AI",
+      logo: "https://cdn.simpleicons.org/githubcopilot",
+      order: 26,
+    },
+    {
+      name: "Perplexity",
+      level: 70,
+      category: "AI",
+      logo: "https://cdn.simpleicons.org/perplexity",
+      order: 27,
+    },
+    {
+      name: "NotebookLM",
+      level: 65,
+      category: "AI",
+      logo: "https://cdn.simpleicons.org/notebooklm",
+      order: 28,
+    },
+    {
+      name: "ChatGPT",
+      level: 70,
+      category: "AI",
+      // OpenAI blossom (LobeHub, mono) tinted the ChatGPT green so it stays
+      // legible when the grid desaturates it on both themes.
+      logo: "/assets/img/content/chatgpt.webp",
+      order: 29,
+    },
+    {
+      name: "Codex",
+      level: 65,
+      category: "AI",
+      logo: "/assets/img/content/codex.webp",
+      order: 30,
+    },
+    {
+      name: "Antigravity",
+      level: 60,
+      category: "AI",
+      logo: "/assets/img/content/antigravity.webp",
+      order: 31,
+    },
+    {
+      name: "TanStack Query",
+      level: 80,
+      category: "Frontend",
+      logo: "https://cdn.simpleicons.org/reactquery",
+      order: 32,
+    },
+    {
+      name: "Express",
+      level: 70,
+      category: "Backend",
+      // Express mark is monochrome black (invisible on dark); Simple Icons'
+      // colour override tints it a Node-ish green so it reads on both themes.
+      logo: "https://cdn.simpleicons.org/express/68A063",
+      order: 33,
+    },
+    {
+      name: "JWT",
+      level: 75,
+      category: "Backend",
+      logo: "/assets/img/content/jwt.webp",
+      order: 34,
+    },
+    {
+      name: "Redis",
+      level: 55,
+      category: "Database",
+      logo: "https://cdn.simpleicons.org/redis",
+      order: 35,
+    },
+    {
+      name: "Trello",
+      level: 70,
+      category: "Project Management",
+      logo: "https://cdn.simpleicons.org/trello",
+      order: 36,
+    },
+  ];
   await prisma.skill.createMany({
-    data: [
-      {
-        name: "TypeScript",
-        level: 90,
-        category: "Frontend",
-        logo: "/assets/img/content/typescript.webp",
-        order: 1,
-      },
-      {
-        name: "JavaScript",
-        level: 95,
-        category: "Frontend",
-        logo: "/assets/img/content/javascript.webp",
-        order: 2,
-      },
-      {
-        name: "Vue.js",
-        level: 50,
-        category: "Frontend",
-        logo: "/assets/img/content/vue.webp",
-        order: 3,
-      },
-      {
-        name: "React.js",
-        level: 95,
-        category: "Frontend",
-        logo: "/assets/img/content/react.webp",
-        order: 4,
-      },
-      {
-        name: "Next.js",
-        level: 75,
-        category: "Frontend",
-        logo: "/assets/img/content/nextjs.webp",
-        order: 5,
-      },
-      {
-        name: "AXIOS",
-        level: 90,
-        category: "Frontend",
-        logo: "/assets/img/content/axios.webp",
-        order: 6,
-      },
-      {
-        name: "Redux",
-        level: 80,
-        category: "Frontend",
-        logo: "/assets/img/content/redux.webp",
-        order: 7,
-      },
-      {
-        name: "Jest",
-        level: 70,
-        category: "Frontend",
-        logo: "/assets/img/content/jest.webp",
-        order: 8,
-      },
-      {
-        name: "Playwright",
-        level: 70,
-        category: "Frontend",
-        logo: "/assets/img/content/playwright.webp",
-        order: 9,
-      },
-      {
-        name: "Python",
-        level: 40,
-        category: "Backend",
-        logo: "/assets/img/content/python.webp",
-        order: 8,
-      },
-      {
-        name: "Node.js",
-        level: 60,
-        category: "Backend",
-        logo: "/assets/img/content/nodejs.webp",
-        order: 9,
-      },
-      {
-        name: "NestJS",
-        level: 50,
-        category: "Backend",
-        logo: "/assets/img/content/nestjs.webp",
-        order: 10,
-      },
-      {
-        name: "Sequelize",
-        level: 50,
-        category: "Backend",
-        logo: "/assets/img/content/sequelize.webp",
-        order: 11,
-      },
-      {
-        name: "Github Actions",
-        level: 60,
-        category: "DevOps",
-        logo: "/assets/img/content/github-actions.webp",
-        order: 11,
-      },
-      {
-        name: "Vercel",
-        level: 80,
-        category: "DevOps",
-        logo: "/assets/img/content/vercel.webp",
-        order: 12,
-      },
-      {
-        name: "AWS",
-        level: 50,
-        category: "DevOps",
-        logo: "/assets/img/content/aws.webp",
-        order: 13,
-      },
-      {
-        name: "cPanel",
-        level: 50,
-        category: "DevOps",
-        logo: "/assets/img/content/cPanel.webp",
-        order: 14,
-      },
-      {
-        name: "Firebase",
-        level: 75,
-        category: "DevOps",
-        logo: "/assets/img/content/firebase.webp",
-        order: 15,
-      },
-      {
-        name: "PostgreSQL",
-        level: 60,
-        category: "Database",
-        logo: "/assets/img/content/postgresql.webp",
-        order: 16,
-      },
-      {
-        name: "Neon Tech",
-        level: 65,
-        category: "Database",
-        logo: "https://cdn.simpleicons.org/neon",
-        order: 17,
-      },
-      {
-        name: "Prisma",
-        level: 50,
-        category: "Database",
-        logo: "/assets/img/content/prisma.webp",
-        order: 18,
-      },
-      {
-        name: "GitHub Projects",
-        level: 60,
-        category: "Project Management",
-        logo: "/assets/img/content/github-project.webp",
-        order: 19,
-      },
-      {
-        name: "Jira",
-        level: 80,
-        category: "Project Management",
-        logo: "/assets/img/content/jira.webp",
-        order: 20,
-      },
-      {
-        name: "Java",
-        level: 45,
-        category: "Backend",
-        logo: "/assets/img/content/java.webp",
-        order: 21,
-      },
-      {
-        name: "Expo",
-        level: 40,
-        category: "Frontend",
-        logo: "/assets/img/content/expo.webp",
-        order: 22,
-      },
-      {
-        name: "Supabase",
-        level: 45,
-        category: "Database",
-        logo: "/assets/img/content/supabase.webp",
-        order: 23,
-      },
-      {
-        name: "Railway",
-        level: 55,
-        category: "DevOps",
-        logo: "/assets/img/content/railway.webp",
-        order: 24,
-      },
-      {
-        name: "Claude Code",
-        level: 85,
-        category: "AI",
-        logo: "/assets/img/content/claude.webp",
-        order: 25,
-      },
-      {
-        name: "GitHub Copilot",
-        level: 75,
-        category: "AI",
-        logo: "https://cdn.simpleicons.org/githubcopilot",
-        order: 26,
-      },
-      {
-        name: "Perplexity",
-        level: 70,
-        category: "AI",
-        logo: "https://cdn.simpleicons.org/perplexity",
-        order: 27,
-      },
-      {
-        name: "NotebookLM",
-        level: 65,
-        category: "AI",
-        logo: "https://cdn.simpleicons.org/notebooklm",
-        order: 28,
-      },
-      {
-        name: "ChatGPT",
-        level: 70,
-        category: "AI",
-        // OpenAI blossom (LobeHub, mono) tinted the ChatGPT green so it stays
-        // legible when the grid desaturates it on both themes.
-        logo: "/assets/img/content/chatgpt.webp",
-        order: 29,
-      },
-      {
-        name: "Codex",
-        level: 65,
-        category: "AI",
-        logo: "/assets/img/content/codex.webp",
-        order: 30,
-      },
-      {
-        name: "Antigravity",
-        level: 60,
-        category: "AI",
-        logo: "/assets/img/content/antigravity.webp",
-        order: 31,
-      },
-      {
-        name: "TanStack Query",
-        level: 80,
-        category: "Frontend",
-        logo: "https://cdn.simpleicons.org/reactquery",
-        order: 32,
-      },
-      {
-        name: "Express",
-        level: 70,
-        category: "Backend",
-        // Express mark is monochrome black (invisible on dark); Simple Icons'
-        // colour override tints it a Node-ish green so it reads on both themes.
-        logo: "https://cdn.simpleicons.org/express/68A063",
-        order: 33,
-      },
-      {
-        name: "JWT",
-        level: 75,
-        category: "Backend",
-        logo: "/assets/img/content/jwt.webp",
-        order: 34,
-      },
-      {
-        name: "Redis",
-        level: 55,
-        category: "Database",
-        logo: "https://cdn.simpleicons.org/redis",
-        order: 35,
-      },
-      {
-        name: "Trello",
-        level: 70,
-        category: "Project Management",
-        logo: "https://cdn.simpleicons.org/trello",
-        order: 36,
-      },
-    ],
+    data: skills.map((skill) => ({
+      ...skill,
+      model: skill.name,
+      color: "#000000",
+    })),
   });
 
   // ============ TECH STACK ============
