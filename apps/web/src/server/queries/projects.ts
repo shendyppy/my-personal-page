@@ -26,9 +26,12 @@ export const getProjects = (): Promise<ProjectListItem[]> =>
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
 
+// `findFirst` rather than `findUnique` so unpublished projects are unreachable
+// by direct URL too — with `dynamicParams: true` on the detail route, a slug
+// that is merely hidden from the grid would otherwise still render on demand.
 export const getProjectBySlug = (slug: string) =>
-  prisma.project.findUnique({
-    where: { slug },
+  prisma.project.findFirst({
+    where: { slug, isPublished: true },
     include: {
       highlights: {
         orderBy: { order: "asc" },
