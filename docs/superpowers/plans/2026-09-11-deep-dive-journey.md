@@ -6,7 +6,7 @@
 
 **Architecture:** A module-level depth store is written by one GSAP ScrollTrigger over `<main>` and read by the R3F scene (`useFrame`) and the HUD (subscribe). Each chapter is a server component that renders content into a client `ChapterFrame`, which pins its stage and runs a per-chapter GSAP timeline looked up by chapter id. Lenis provides smooth scroll; Framer Motion stays only for hover/gesture springs.
 
-**Tech Stack:** Next.js 16 (App Router, RSC), React 19, Tailwind 4, GSAP 3.15 + ScrollTrigger + `@gsap/react`, Lenis 1.3, `@react-three/fiber` 9 + `three` 0.184 + `@react-three/drei` 10, Vitest 5, Prisma (read-only, unchanged).
+**Tech Stack:** Next.js 16 (App Router, RSC), React 19, Tailwind 4, GSAP 3.15 + ScrollTrigger + `@gsap/react`, Lenis 1.3, `@react-three/fiber` 9 + `three` 0.184 + `@react-three/drei` 10, Vitest 4, Prisma (read-only, unchanged).
 
 **Spec:** `docs/superpowers/specs/2026-09-11-deep-dive-journey-design.md`
 
@@ -95,7 +95,7 @@ git checkout development && git pull && git checkout -b feat/deep-dive
 ```bash
 cd apps/web
 npm i gsap@^3.15.0 @gsap/react@^2.1.2 lenis@^1.3.26
-npm i -D vitest@^5.0.0
+npm i -D vitest@^4.1.11
 ```
 
 - [ ] **Step 3: Add the test script**
