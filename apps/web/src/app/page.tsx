@@ -3,28 +3,31 @@
 // without a full redeploy.
 export const revalidate = 3600;
 
-import { PageWrapper } from "@/components/organisms/PageWrapper";
-import { Hero3D } from "@/components/sections/hero3d";
-import { Marquee } from "@/components/atoms/Marquee";
-import { Projects } from "@/components/sections/projects";
-import { About } from "@/components/sections/about";
-import { Experiences } from "@/components/sections/experiences";
-import { Skills } from "@/components/sections/skills";
-import { Playground } from "@/components/sections/playground";
+import { ChapterHead } from "@/components/atoms/ChapterHead";
+import { ChapterFrame } from "@/components/organisms/ChapterFrame";
+import { DiveHud } from "@/components/organisms/DiveHud";
+import { DiveShell } from "@/components/organisms/DiveShell";
+import { GrainOverlay } from "@/components/atoms/GrainOverlay";
+import { CHAPTERS } from "@/constants/dive";
 
 export default function Home() {
+  const beats = CHAPTERS.map((c) => c.beats);
   return (
-    <PageWrapper>
+    <>
+      <GrainOverlay />
+      <DiveHud />
       <main id="main-content" className="relative w-full">
-        <span id="top" className="absolute top-0" aria-hidden />
-        <Hero3D />
-        <Marquee />
-        <Projects />
-        <About />
-        <Experiences />
-        <Skills />
-        <Playground />
+        <DiveShell beats={beats}>
+          {CHAPTERS.map((c) => (
+            <ChapterFrame key={c.id} id={c.id} beats={c.beats}>
+              <ChapterHead index={c.index} category={c.category} label={c.label} />
+              <h2 className="font-heading text-[clamp(36px,5vw,72px)] uppercase leading-none">
+                {c.name}
+              </h2>
+            </ChapterFrame>
+          ))}
+        </DiveShell>
       </main>
-    </PageWrapper>
+    </>
   );
 }
