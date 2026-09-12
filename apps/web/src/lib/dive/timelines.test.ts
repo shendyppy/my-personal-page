@@ -48,11 +48,17 @@ describe("TIMELINES.reef", () => {
     // the stage blank at every point the user is snapped to.
     const n = 4;
     const { tl, sites } = build(n);
-    const opacity = () => sites.map((s) => Math.round(Number(gsap.getProperty(s, "opacity"))));
-    for (let i = 0; i < n; i += 1) {
+    const opacity = () => sites.map((s) => Number(gsap.getProperty(s, "opacity")));
+    // From beat 1 up. Beat 0 is deliberately not asserted here: the builder
+    // gives site 0 no entry tween, so at progress 0 its opacity comes from
+    // `.site[data-beat="0"] { opacity: 1 }` in globals.css, which jsdom never
+    // loads. Asserting it would pass on an unstyled default and stay green if
+    // that rule were deleted.
+    for (let i = 1; i < n; i += 1) {
       tl.progress(i / n);
-      const expected = sites.map((_, j) => (j === i ? 1 : 0));
-      expect(opacity(), `at progress ${i}/${n}`).toEqual(expected);
+      opacity().forEach((o, j) => {
+        expect(o, `site ${j} at progress ${i}/${n}`).toBeCloseTo(j === i ? 1 : 0, 5);
+      });
     }
   });
 

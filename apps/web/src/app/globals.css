@@ -606,14 +606,6 @@
   text-transform: uppercase;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .chapter { height: auto; }
-  .stage { height: auto; min-height: 100svh; }
-  .reef-stack { gap: 4rem; }
-  .site { grid-area: auto; opacity: 1; }
-  .log-entry { opacity: 1; }
-}
-
 /* Water colour behind the canvas and the full fallback when the canvas is
    absent (reduced motion / no WebGL). Stepped per chapter via <html data-chapter>. */
 body { background: #083352; transition: background-color 900ms ease; }
@@ -670,8 +662,16 @@ body { background: #083352; transition: background-color 900ms ease; }
 @media (max-height: 720px) {
   .stage { padding-block: calc(var(--hud-h) + 0.5rem) 0.75rem; }
   .chapter-head { margin-bottom: 0.75rem; }
-  .site { gap: 1rem; }
-  .site-image { aspect-ratio: 16 / 9; }
+  /* row-gap only: a 1366x650 laptop matches this AND the desktop 5/7 split, and
+     shrinking the shared `gap` there would drop the column gutter from 56px to
+     16px and run the description into the porthole. Only height is short. */
+  .site { row-gap: 1rem; }
+  /* Landscape phones are short AND wide, so the porthole is sized by a full
+     content width it has no vertical room for: at 844x390 a 16/9 ratio alone is
+     430px inside a ~330px stage, and neither .chapter nor .stage clips, so it
+     paints over the HUD and the next chapter. With aspect-ratio set, a
+     max-height shrinks the box rather than letterboxing it. */
+  .site-image { aspect-ratio: 16 / 9; max-height: 40svh; }
   .site-record p {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -679,4 +679,28 @@ body { background: #083352; transition: background-color 900ms ease; }
     line-clamp: 3;
     overflow: hidden;
   }
+}
+/* Landscape phones and small landscape tablets: short, but with width to
+   spare. Stacking here cannot fit — at 844x390 the stacked site is ~500px in a
+   390px stage even with the porthole capped — so spend the width instead and
+   put the record beside the porthole. The record takes the wider track because
+   text is what needs the room; the porthole is already height-capped above. */
+@media (max-height: 720px) and (min-width: 640px) and (max-width: 1023px) {
+  .site { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: 2rem; }
+  .site > .site-image { order: 0; }
+}
+
+/* Reduced motion, kept LAST in the file on purpose. These rules undo the
+   at-rest state that the pinned timelines animate away from, and they do it at
+   the same specificity as the rules they override — so cascade order is the
+   only thing deciding the winner. Anchored here, every chapter block a later
+   task appends lands above it and is correctly overridden. Moved out of the
+   middle of the file, where `.site { opacity: 0 }` was winning and hiding four
+   of the five dive sites from anyone browsing with reduce enabled. */
+@media (prefers-reduced-motion: reduce) {
+  .chapter { height: auto; }
+  .stage { height: auto; min-height: 100svh; }
+  .reef-stack { gap: 4rem; }
+  .site { grid-area: auto; opacity: 1; }
+  .log-entry { opacity: 1; }
 }
