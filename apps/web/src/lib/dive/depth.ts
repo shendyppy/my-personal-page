@@ -46,6 +46,7 @@ export const dive = {
   configure(beats: number[]) {
     ranges = chapterRanges(beats);
     state = { ...state, ranges, chapter: chapterAt(state.progress, ranges) };
+    listeners.forEach((l) => l(state));
   },
   set(progress: number) {
     const p = clamp01(progress);
