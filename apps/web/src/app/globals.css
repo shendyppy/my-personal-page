@@ -623,3 +623,19 @@ body { background: #083352; transition: background-color 900ms ease; }
 :root[data-chapter="descent"]  body { background: #020a10; }
 :root[data-chapter="midnight"] body { background: #010508; }
 :root[data-chapter="seafloor"] body { background: #000203; }
+
+.record-panel {
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--card) 60%, transparent);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.record-head { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--subtle); }
+.record-rule { flex: 1; height: 1px; background: var(--border); }
+.record-row { display: flex; justify-content: space-between; gap: 24px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.record-row:last-child { border-bottom: 0; }
+.record-row dt { margin: 0; color: var(--muted-foreground); }
+.record-row dd { margin: 0; text-align: right; color: var(--foreground); text-transform: none; letter-spacing: 0.02em; }

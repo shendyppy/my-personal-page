@@ -10,7 +10,10 @@ export type TimelineBuilder = (
 const noop: TimelineBuilder = () => {};
 
 export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
-  surface: noop,
+  surface: (tl, q) => {
+    tl.to(q("[data-hero-title]"), { y: -40, opacity: 0, duration: 0.6 }, 0)
+      .to(q("[data-reveal]"), { y: -24, opacity: 0, duration: 0.6, stagger: 0.03 }, 0.15);
+  },
   reef: noop,
   twilight: noop,
   descent: noop,
