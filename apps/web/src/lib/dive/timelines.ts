@@ -18,7 +18,31 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
     tl.to(q("[data-hero-title]"), { y: -40, opacity: 0, duration: 0.6 }, 0)
       .to(q("[data-reveal]"), { y: -24, opacity: 0, duration: 0.67, stagger: 0.03 }, 0.3);
   },
-  reef: noop,
+  reef: (tl, q) => {
+    const sites = q("[data-beat]") as HTMLElement[];
+    const n = sites.length;
+    if (n === 0) return;
+    sites.forEach((site, i) => {
+      const record = site.querySelector("[data-site-record]");
+      const image = site.querySelector("[data-site-image]");
+      const at = i; // one timeline unit per beat
+      if (i > 0) {
+        tl.fromTo(site, { opacity: 0 }, { opacity: 1, duration: 0.3 }, at)
+          .fromTo(record, { y: 40 }, { y: 0, duration: 0.3 }, at)
+          .fromTo(image, { scale: 1.06 }, { scale: 1, duration: 0.3 }, at);
+      }
+      if (i < n - 1) {
+        tl.to(site, { opacity: 0, duration: 0.2 }, at + 0.8)
+          .to(record, { y: -40, duration: 0.2 }, at + 0.8);
+      }
+    });
+    // Beats must map 1:1 to timeline units so beat i sits at progress i/n,
+    // exactly where ChapterFrame's `snapTo: 1 / beats` lands. `tl.duration(n)`
+    // cannot do that: on a timeline it only sets timeScale, and ScrollTrigger
+    // scrubs totalProgress (local time / duration), which timeScale never
+    // touches. An empty-target spacer stretches the timeline itself instead.
+    tl.to({}, { duration: n }, 0);
+  },
   twilight: noop,
   descent: noop,
   midnight: noop,

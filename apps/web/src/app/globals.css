@@ -639,3 +639,26 @@ body { background: #083352; transition: background-color 900ms ease; }
 .record-row:last-child { border-bottom: 0; }
 .record-row dt { margin: 0; color: var(--muted-foreground); }
 .record-row dd { margin: 0; text-align: right; color: var(--foreground); text-transform: none; letter-spacing: 0.02em; }
+
+/* ---- Reef: dive sites ---- */
+.reef-stack { position: relative; display: grid; }
+/* Every site shares one grid cell so the chapter cross-fades in place. */
+.site { grid-area: 1 / 1; display: grid; gap: 2rem; align-items: center; opacity: 0; }
+.site[data-beat="0"] { opacity: 1; }
+/* Single column: the porthole leads, the record reads underneath (spec 6.2). */
+.site > .site-image { order: -1; }
+/* An `fr` track never shrinks past its content's min-content width, which is
+   how the surface hero overflowed. minmax(0, …) lets both tracks give. */
+@media (min-width: 1024px) {
+  .site { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 3.5rem; }
+  .site > .site-image { order: 0; }
+}
+.site-record { min-width: 0; overflow-wrap: anywhere; }
+.site-image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid var(--border);
+}
+@media (min-width: 1024px) { .site-image { aspect-ratio: 4 / 3; } }

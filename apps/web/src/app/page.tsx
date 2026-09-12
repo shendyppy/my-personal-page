@@ -9,6 +9,7 @@ import { DiveHud } from "@/components/organisms/DiveHud";
 import { DiveScene } from "@/components/organisms/DiveScene";
 import { DiveShell } from "@/components/organisms/DiveShell";
 import { GrainOverlay } from "@/components/atoms/GrainOverlay";
+import { ReefChapter } from "@/components/sections/dive/ReefChapter";
 import { SurfaceChapter } from "@/components/sections/dive/SurfaceChapter";
 import { CHAPTERS } from "@/constants/dive";
 import { getExperiences } from "@/server/queries/experiences";
@@ -27,8 +28,9 @@ export default async function Home() {
       <main id="main-content" className="relative z-10 w-full">
         <DiveShell beats={beats}>
           <SurfaceChapter projectCount={projects.length} experiences={experiences} />
-          {CHAPTERS.slice(1).map((c, i) => (
-            <ChapterFrame key={c.id} id={c.id} beats={beats[i + 1]}>
+          <ReefChapter projects={projects} beats={beats[1]} />
+          {CHAPTERS.slice(2).map((c, i) => (
+            <ChapterFrame key={c.id} id={c.id} beats={beats[i + 2]}>
               <ChapterHead index={c.index + 1} category={c.category} label={c.label} />
               <h2 className="font-heading text-[clamp(36px,5vw,72px)] uppercase leading-none">
                 {c.name}
