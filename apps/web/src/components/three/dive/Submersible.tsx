@@ -71,7 +71,12 @@ export const Submersible = () => {
         <group key={z} position={[1.05, -0.1, z]}>
           <mesh>
             <sphereGeometry args={[0.11, 12, 12]} />
-            <meshBasicMaterial ref={i === 0 ? glowA : glowB} color={ACCENT} transparent />
+            <meshBasicMaterial
+              ref={i === 0 ? glowA : glowB}
+              color={ACCENT}
+              transparent
+              toneMapped={false}
+            />
           </mesh>
           <primitive object={targets[i]} position={[4, -2, 0]} />
           <spotLight
