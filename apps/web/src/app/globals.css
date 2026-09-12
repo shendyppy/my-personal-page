@@ -1,94 +1,15 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-/* Register --accent as a real <color> so it can be transitioned. ThemeProvider
-   sets it on :root; with this registration + the :root transition below, every
-   var(--accent) usage (text, bg, border, shadow, ::selection) smoothly
-   interpolates when the accent picker changes colour OR when the theme toggles
-   (light/dark carry different accent values). Falls back to an instant snap in
-   browsers without @property support. */
-@property --accent {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #d7ff3e;
-}
-
-:root {
-  transition: --accent 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    transition: none;
-  }
-}
-
 /* ============================================================================
-   Portfolio Reimagined — editorial palette.
-   Light is a crafted warm-paper counterpart to the dark editorial base so the
-   same brutalist look reads on both themes. `--accent` is the brand accent and
-   is overridden live by the accent picker (default lime #D7FF3E).
+   Deep Dive — single dark palette. The site is dark-only; the accent is a
+   constant lime that reads as bioluminescence against the water gradient.
    ============================================================================ */
 :root {
-  --background: #f4f2ec; /* warm paper */
-  --foreground: #0a0a0b; /* near-black ink */
-  --card: #ffffff; /* clean card */
-  --card-foreground: #1a1a1c;
-  --popover: #ffffff;
-  --popover-foreground: #0a0a0b;
-  --primary: #0a0a0b;
-  --primary-foreground: #f4f2ec;
-  --secondary: #55534c; /* warm gray */
-  --secondary-foreground: #ffffff;
-  --muted: #e7e4db; /* paper-muted */
-  --muted-foreground: #6b6b66; /* warm gray-500 */
-  --accent: #d7ff3e; /* brand accent — overridden by picker */
-  --accent-foreground: #0a0a0b;
-  --destructive: #b91c1c;
-  --destructive-foreground: #ffffff;
-  --border: #e0ddd3; /* soft paper border */
-  --input: #eceae2;
-  --ring: #0a0a0b;
-
-  /* Editorial neutrals — subtle text/surface steps used across sections. */
-  --subtle: #4a4a45; /* secondary body copy on light */
-  --surface: #eceae2; /* raised surface (grid cells) */
-
-  --chart-1: #0a0a0b;
-  --chart-2: #374151;
-  --chart-3: #6b7280;
-  --chart-4: #9ca3af;
-  --chart-5: #d1d5db;
-
-  /* Aurora tokens kept for any untouched surfaces; the revamp leans on --accent. */
-  --aurora-1: #a21caf;
-  --aurora-2: #6d28d9;
-  --aurora-3: #0e7490;
-  --aurora-4: #b45309;
-
-  --radius: 0.5rem;
-
-  --sidebar: #f9fafb;
-  --sidebar-foreground: #1f2937;
-  --sidebar-primary: #111827;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #6b7280;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #374151;
-
-  /* `clip` (not `hidden`) so the root never becomes a scroll container — that
-     coercion (overflow-x:hidden → overflow-y:auto) silently breaks every
-     `position: sticky` descendant (e.g. the pinned Toolbox). */
-  overflow-x: clip;
-}
-
-.dark {
-  --background: #0a0a0b; /* editorial near-black */
-  --foreground: #f2f0ea; /* warm off-white */
-  --card: #111113; /* raised panel */
+  color-scheme: dark;
+  --background: #0a0a0b;
+  --foreground: #f2f0ea;
+  --card: #111113;
   --card-foreground: #f2f0ea;
   --popover: #111113;
   --popover-foreground: #f2f0ea;
@@ -97,31 +18,26 @@
   --secondary: #1e1e21;
   --secondary-foreground: #f2f0ea;
   --muted: #161618;
-  --muted-foreground: #8a8a85; /* mono/label gray */
-  --accent: #d7ff3e; /* brand accent — overridden by picker */
+  --muted-foreground: #8a8a85;
+  --accent: #d7ff3e;
   --accent-foreground: #0a0a0b;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #1e1e21; /* hairline */
+  --border: rgba(242, 240, 234, 0.12);
   --input: #161618;
   --ring: #f2f0ea;
-
-  /* Editorial neutrals — dark variants. */
-  --subtle: #b9b7b0; /* secondary body copy on dark */
-  --surface: #161618; /* raised surface (grid cells) */
-
+  --subtle: #b9b7b0;
+  --surface: #161618;
   --chart-1: #f2f0ea;
   --chart-2: #9ca3af;
   --chart-3: #6b7280;
   --chart-4: #ef4444;
   --chart-5: #1e1e21;
-
-  /* Aurora tokens kept for any untouched surfaces; the revamp leans on --accent. */
   --aurora-1: #d946ef;
   --aurora-2: #8b5cf6;
   --aurora-3: #06b6d4;
   --aurora-4: #f59e0b;
-
+  --radius: 0.5rem;
   --sidebar: #1e293b;
   --sidebar-foreground: #f3f4f6;
   --sidebar-primary: #f9fafb;
@@ -131,6 +47,7 @@
   --sidebar-border: #334155;
   --sidebar-ring: #9ca3af;
 
+  /* `clip` (not `hidden`) so the root never becomes a scroll container. */
   overflow-x: clip;
 }
 
@@ -191,14 +108,6 @@
   body {
     @apply bg-background text-foreground;
     @apply overflow-x-clip;
-  }
-  /* Gentle vertical snapping for the page scroller. `proximity` (not
-     `mandatory`) means the page only settles when the user comes to rest near a
-     snap point — every other section scrolls freely. Only elements that opt in
-     with `scroll-snap-align` participate, so this is scoped to the Toolbox
-     stage (pinned desktop panels + the mobile vertical grids). */
-  html {
-    scroll-snap-type: y proximity;
   }
 }
 
@@ -465,24 +374,10 @@
   opacity: 1;
 }
 
-::-webkit-scrollbar {
-  width: 0.3em;
-  height: 0.3em;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
+::-webkit-scrollbar { width: 0.3em; height: 0.3em; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(242, 240, 234, 0.18); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(242, 240, 234, 0.32); }
 
 /* ---- Aurora visual language (ported & tokenised from the Lovable draft) ---- */
 

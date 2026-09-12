@@ -1,5 +1,3 @@
-export type Theme = "light" | "dark";
-
 export interface ProjectImage {
   link: string;
   isScrollable: boolean;

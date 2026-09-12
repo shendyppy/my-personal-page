@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Syne, Space_Grotesk, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
-import { ThemeProvider } from "./providers/ThemeProvider";
 import { QueryProvider } from "./providers/QueryProvider";
 import { TopProgressBar } from "@/components/atoms/TopProgressBar";
 import { EXTERNAL_LINKS, SITE_CONFIG } from "@/constants/config";
@@ -33,7 +32,7 @@ const fontMono = Space_Mono({
 
 const title = `${SITE_CONFIG.author} | Software Engineer`;
 const description =
-  "A personal space to sharpen my skills while exploring and experimenting with new tech stacks I haven't tried before — featuring projects, experiences, and an interactive 3D skills viewer.";
+  "A scroll-driven deep dive through my work, career and toolbox — software engineer shipping products end-to-end, from database schema to the last pixel.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_CONFIG.url),
@@ -91,20 +90,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  themeColor: "#0a0a0b",
   width: "device-width",
   initialScale: 1,
 };
-
-// Pre-paint theme + accent init. Runs synchronously as the first thing in
-// <body> so the correct `.dark` class and `--accent` value are set before the
-// first paint — no FOUC. Defaults match ThemeProvider (dark theme, lime
-// accent). The accent map is inlined (can't import TS pre-paint) and must be
-// kept in sync with ACCENTS in src/constants/config.ts.
-const themeInitScript = `(function(){try{var t=localStorage.getItem('theme')||'dark';var d=document.documentElement;if(t==='dark'){d.classList.add('dark')}else{d.classList.remove('dark')}var a=localStorage.getItem('accent')||'lime';var m={lime:{dark:'#D7FF3E',light:'#4D7A00'},orange:{dark:'#FF6B35',light:'#D9531E'},violet:{dark:'#7C6CFF',light:'#5A48E0'},teal:{dark:'#3EE0C8',light:'#0E9C86'}};var v=(m[a]&&m[a][t])||m.lime[t];d.style.setProperty('--accent',v)}catch(e){}})();`;
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -138,17 +127,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // `suppressHydrationWarning` on <html>: the pre-paint themeInitScript mutates
-  // <html>'s class + --accent before hydration, so the server ("<html lang='en'>")
-  // and client differ. This is the documented Next.js pattern for theme scripts —
-  // React skips the attribute warning for this element only; children still
-  // reconcile normally.
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark">
       <body
         className={`${fontDisplay.variable} ${fontBody.variable} ${fontMono.variable} font-body antialiased`}
       >
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-accent-foreground focus:rounded-md"
@@ -160,10 +143,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
         <QueryProvider>
-          <ThemeProvider>
-            <TopProgressBar />
-            {children}
-          </ThemeProvider>
+          <TopProgressBar />
+          {children}
         </QueryProvider>
         <Analytics />
       </body>

@@ -17,7 +17,7 @@ Shenks is an explorative developer with strong UI/UX instincts. Every visual cha
 
 - A change that works but looks flat is not done. Ask: does it have depth (shadow/gradient/glow), rhythm (stagger), and a focal point?
 - Color identity per row/category (Phase 6 direction: "Playful 3D Tilt") — reuse aurora gradients and per-category tints, don't invent new palettes per component.
-- Both themes always: every surface must be checked on light AND dark. Anything with a fixed color (white glow, dark canvas backdrop) needs a theme-aware variant or an explicit dark-on-both design (e.g. 3D scene cards).
+- **Dark-only, two backdrops:** the site has one palette, but the water behind a chapter ranges from `#0e4a6e` (surface) to `#000203` (seafloor). Check every surface at both extremes; hairlines use `--border` (alpha) so they read on any water shade.
 
 ## 3. Proportion over symmetry
 

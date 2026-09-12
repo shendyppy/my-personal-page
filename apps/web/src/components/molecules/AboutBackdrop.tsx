@@ -14,9 +14,9 @@ const ShaderBackground = dynamic(
 /**
  * Animated backdrop for the About section. On desktop the plasma flows
  * horizontally (existing look); on mobile/portrait it flows vertically so it
- * fits the tall viewport. Layered behind a theme wash so the cards/text stay
- * readable — softer on dark, stronger on the light base. Perf is guarded inside
- * the shader (DPR cap, off-screen pause, reduced-motion still-frame).
+ * fits the tall viewport. Layered behind a dark wash so the cards/text stay
+ * readable. Perf is guarded inside the shader (DPR cap, off-screen pause,
+ * reduced-motion still-frame).
  */
 export const AboutBackdrop = () => {
   const isMdUp = useMediaQuery({ min: 768 });
@@ -28,9 +28,9 @@ export const AboutBackdrop = () => {
     >
       <ShaderBackground
         vertical={!isMdUp}
-        className="absolute inset-0 h-full w-full opacity-50 dark:opacity-70"
+        className="absolute inset-0 h-full w-full opacity-70"
       />
-      <div className="absolute inset-0 bg-accent/50 dark:bg-background/30" />
+      <div className="absolute inset-0 bg-background/30" />
     </div>
   );
 };
