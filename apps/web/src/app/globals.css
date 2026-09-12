@@ -613,3 +613,13 @@
   .site { grid-area: auto; opacity: 1; }
   .log-entry { opacity: 1; }
 }
+
+/* Water colour behind the canvas and the full fallback when the canvas is
+   absent (reduced motion / no WebGL). Stepped per chapter via <html data-chapter>. */
+body { background: #083352; transition: background-color 900ms ease; }
+:root[data-chapter="surface"]  body { background: #083352; }
+:root[data-chapter="reef"]     body { background: #041a2c; }
+:root[data-chapter="twilight"] body { background: #020c14; }
+:root[data-chapter="descent"]  body { background: #020a10; }
+:root[data-chapter="midnight"] body { background: #010508; }
+:root[data-chapter="seafloor"] body { background: #000203; }

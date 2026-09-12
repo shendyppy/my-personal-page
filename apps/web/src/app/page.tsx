@@ -6,6 +6,7 @@ export const revalidate = 3600;
 import { ChapterHead } from "@/components/atoms/ChapterHead";
 import { ChapterFrame } from "@/components/organisms/ChapterFrame";
 import { DiveHud } from "@/components/organisms/DiveHud";
+import { DiveScene } from "@/components/organisms/DiveScene";
 import { DiveShell } from "@/components/organisms/DiveShell";
 import { GrainOverlay } from "@/components/atoms/GrainOverlay";
 import { CHAPTERS } from "@/constants/dive";
@@ -16,7 +17,8 @@ export default function Home() {
     <>
       <GrainOverlay />
       <DiveHud />
-      <main id="main-content" className="relative w-full">
+      <DiveScene />
+      <main id="main-content" className="relative z-10 w-full">
         <DiveShell beats={beats}>
           {CHAPTERS.map((c) => (
             <ChapterFrame key={c.id} id={c.id} beats={c.beats}>
