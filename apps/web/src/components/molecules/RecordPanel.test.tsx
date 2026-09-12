@@ -4,14 +4,19 @@ import { RecordPanel } from "@/components/molecules/RecordPanel";
 
 describe("RecordPanel", () => {
   test("renders the title and the code when given", () => {
-    render(<RecordPanel title="DIVER IDENTIFICATION" code="ID-01" rows={[]} />);
+    const { container } = render(
+      <RecordPanel title="DIVER IDENTIFICATION" code="ID-01" rows={[]} />
+    );
     expect(screen.getByText("DIVER IDENTIFICATION")).toBeInTheDocument();
     expect(screen.getByText("ID-01")).toBeInTheDocument();
+    expect(container.querySelector(".record-head")?.children).toHaveLength(3);
   });
 
   test("renders no code element when code is omitted", () => {
-    render(<RecordPanel title="DIVER IDENTIFICATION" rows={[]} />);
-    expect(screen.queryByText("ID-01")).not.toBeInTheDocument();
+    const { container } = render(<RecordPanel title="DIVER IDENTIFICATION" rows={[]} />);
+    // The head holds title + rule + code; without a code there must be no
+    // third child at all, not merely no "ID-01" text.
+    expect(container.querySelector(".record-head")?.children).toHaveLength(2);
   });
 
   test("renders one dt/dd pair per row, in order, with the given labels and values", () => {

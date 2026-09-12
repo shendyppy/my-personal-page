@@ -16,7 +16,7 @@ export const SurfaceChapter = ({ projectCount, experiences }: SurfaceChapterProp
   const years = since ? new Date().getFullYear() - since : null;
 
   return (
-    <ChapterFrame id="surface" beats={chapter.beats}>
+    <ChapterFrame id={chapter.id} beats={chapter.beats}>
       {/* The headline spans both columns. At 112px "SOFTWARE" is wider than a
           7fr column and an fr track never shrinks below its min-content, which
           pushed the panel off the right edge. Full-bleed headline first, then
@@ -44,7 +44,10 @@ export const SurfaceChapter = ({ projectCount, experiences }: SurfaceChapterProp
         <RecordPanel
           title="DIVER IDENTIFICATION"
           code="ID-01"
-          className="lg:justify-self-end lg:self-end lg:min-w-[320px]"
+          // Below lg the grid is one column, so without a cap the panel
+          // stretches the full stage width (943px at 1023) and strands each
+          // label metres from its value.
+          className="md:max-w-[420px] lg:max-w-none lg:min-w-[320px] lg:justify-self-end lg:self-end"
           rows={[
             { label: "SINCE", value: since ?? "—" },
             { label: "PATH", value: DIVE_COPY.path },

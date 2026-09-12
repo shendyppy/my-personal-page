@@ -11,7 +11,9 @@ export const ScrollCue = () => (
     data-reveal
   >
     <span className="animate-blink text-accent">[</span>
-    <span className="mx-2">{DIVE_COPY.scrollCue.slice(2, -2)}</span>
+    {/* The brackets are their own blinking spans, so strip whatever padding
+        the constant carries rather than slicing fixed indices off it. */}
+    <span className="mx-2">{DIVE_COPY.scrollCue.replace(/^\[\s*|\s*\]$/g, "")}</span>
     <span className="animate-blink text-accent">]</span>
   </button>
 );
