@@ -662,3 +662,21 @@ body { background: #083352; transition: background-color 900ms ease; }
   border: 1px solid var(--border);
 }
 @media (min-width: 1024px) { .site-image { aspect-ratio: 4 / 3; } }
+/* Short viewports. The stage is a hard 100svh while the chapter is pinned, so
+   a site taller than it is clipped rather than scrolled — and the CTA is the
+   last thing in the record, so it is the first thing to go. Trim the vertical
+   budget instead of the layout; the full description is on the project page.
+   Measured worst case (320x568) was 676px of content in a 568px stage. */
+@media (max-height: 720px) {
+  .stage { padding-block: calc(var(--hud-h) + 0.5rem) 0.75rem; }
+  .chapter-head { margin-bottom: 0.75rem; }
+  .site { gap: 1rem; }
+  .site-image { aspect-ratio: 16 / 9; }
+  .site-record p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+}

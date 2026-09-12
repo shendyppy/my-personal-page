@@ -27,9 +27,14 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
       const image = site.querySelector("[data-site-image]");
       const at = i; // one timeline unit per beat
       if (i > 0) {
-        tl.fromTo(site, { opacity: 0 }, { opacity: 1, duration: 0.3 }, at)
-          .fromTo(record, { y: 40 }, { y: 0, duration: 0.3 }, at)
-          .fromTo(image, { scale: 1.06 }, { scale: 1, duration: 0.3 }, at);
+        // Site i must be fully in AT time i, not starting to arrive there:
+        // time i is exactly where `snapTo: 1 / beats` settles. Entering over
+        // [i - 0.3, i] also overlaps the previous site's exit at [i - 0.2, i],
+        // which is what makes it a cross-fade rather than a cut.
+        const enter = at - 0.3;
+        tl.fromTo(site, { opacity: 0 }, { opacity: 1, duration: 0.3 }, enter)
+          .fromTo(record, { y: 40 }, { y: 0, duration: 0.3 }, enter)
+          .fromTo(image, { scale: 1.06 }, { scale: 1, duration: 0.3 }, enter);
       }
       if (i < n - 1) {
         tl.to(site, { opacity: 0, duration: 0.2 }, at + 0.8)

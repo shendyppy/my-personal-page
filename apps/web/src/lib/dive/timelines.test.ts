@@ -32,12 +32,39 @@ describe("TIMELINES.reef", () => {
   });
 
   test("beat boundaries land on the 1/n progress steps ChapterFrame snaps to", () => {
-    // ScrollTrigger scrubs totalProgress, so this is the contract that makes
-    // `snapTo: 1 / beats` settle on a site instead of mid-cross-fade.
+    // ScrollTrigger scrubs totalProgress, so this is half of what makes
+    // `snapTo: 1 / beats` settle on a beat at all.
     const { tl } = build(4);
     for (let i = 0; i <= 4; i += 1) {
       tl.progress(i / 4);
       expect(tl.time()).toBeCloseTo(i, 5);
+    }
+  });
+
+  test("exactly one site is on screen at every snap point", () => {
+    // The other half, and the one that matters: landing on a beat must show a
+    // site. Asserting tween start times cannot see this — a timeline whose
+    // cross-fades are offset by one beat has identical start times and leaves
+    // the stage blank at every point the user is snapped to.
+    const n = 4;
+    const { tl, sites } = build(n);
+    const opacity = () => sites.map((s) => Math.round(Number(gsap.getProperty(s, "opacity"))));
+    for (let i = 0; i < n; i += 1) {
+      tl.progress(i / n);
+      const expected = sites.map((_, j) => (j === i ? 1 : 0));
+      expect(opacity(), `at progress ${i}/${n}`).toEqual(expected);
+    }
+  });
+
+  test("the cross-fade between two beats never blanks the stage", () => {
+    const n = 3;
+    const { tl, sites } = build(n);
+    // Walk the whole handover from beat 0 to beat 1 in small steps; the sum of
+    // the two opacities must stay near 1 the whole way across.
+    for (let t = 0.7; t <= 1.0001; t += 0.05) {
+      tl.time(t);
+      const sum = sites.reduce((a, s) => a + Number(gsap.getProperty(s, "opacity")), 0);
+      expect(sum, `at t=${t.toFixed(2)}`).toBeGreaterThan(0.9);
     }
   });
 
@@ -55,11 +82,11 @@ describe("TIMELINES.reef", () => {
     expect(tweens[0].startTime()).toBe(0.8);
   });
 
-  test("a middle site fades in on its beat and back out late in it", () => {
+  test("a middle site is fully in by its beat and exits late in it", () => {
     const { tl, sites } = build(3);
     const tweens = tweensFor(tl, sites[1]) as gsap.core.Tween[];
     expect(tweens.map((t) => [t.startTime(), t.vars.opacity])).toEqual([
-      [1, 1],
+      [0.7, 1],
       [1.8, 0],
     ]);
     const record = sites[1].querySelector("[data-site-record]")!;
@@ -75,7 +102,7 @@ describe("TIMELINES.reef", () => {
     const tweens = tweensFor(tl, sites[2]) as gsap.core.Tween[];
     expect(tweens).toHaveLength(1);
     expect(tweens[0].vars.opacity).toBe(1);
-    expect(tweens[0].startTime()).toBe(2);
+    expect(tweens[0].startTime()).toBe(1.7);
   });
 
   test("a lone site neither enters nor exits, but still fills its beat", () => {
