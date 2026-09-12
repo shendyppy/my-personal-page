@@ -8,7 +8,7 @@ import { dive } from "@/lib/dive/depth";
 import { poseAt } from "@/lib/dive/pose";
 
 const ACCENT = "#d7ff3e";
-const HULL = "#1c2430";
+const HULL = "#232d3a";
 const TRIM = "#3b4756";
 
 // Ruling D: a SpotLight only aims at `target` once that Object3D is part of
@@ -26,7 +26,8 @@ export const Submersible = () => {
   const group = useRef<THREE.Group>(null);
   const lampA = useRef<THREE.SpotLight>(null);
   const lampB = useRef<THREE.SpotLight>(null);
-  const glow = useRef<THREE.MeshBasicMaterial>(null);
+  const glowA = useRef<THREE.MeshBasicMaterial>(null);
+  const glowB = useRef<THREE.MeshBasicMaterial>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const targets = useMemo(() => [new THREE.Object3D(), new THREE.Object3D()], []);
 
@@ -41,9 +42,12 @@ export const Submersible = () => {
     g.position.set(pose.x, pose.y + Math.sin(t * 0.8) * 0.08, 0);
     g.rotation.set(pointer.current.y * -0.07, pointer.current.x * 0.07, pose.rotZ + Math.sin(t * 0.5) * 0.02);
     g.scale.setScalar(pose.scale);
-    if (lampA.current) lampA.current.intensity = pose.lamp * 6;
-    if (lampB.current) lampB.current.intensity = pose.lamp * 6;
-    if (glow.current) glow.current.opacity = Math.min(1, 0.15 + pose.lamp * 0.3);
+    const lampIntensity = pose.lamp * 30;
+    const glowOpacity = Math.min(1, 0.15 + pose.lamp * 0.3);
+    if (lampA.current) lampA.current.intensity = lampIntensity;
+    if (lampB.current) lampB.current.intensity = lampIntensity;
+    if (glowA.current) glowA.current.opacity = glowOpacity;
+    if (glowB.current) glowB.current.opacity = glowOpacity;
   });
 
   return (
@@ -51,12 +55,12 @@ export const Submersible = () => {
       {/* hull */}
       <mesh rotation={[0, 0, Math.PI / 2]}>
         <capsuleGeometry args={[0.42, 1.5, 8, 24]} />
-        <meshStandardMaterial color={HULL} metalness={0.6} roughness={0.35} />
+        <meshStandardMaterial color={HULL} metalness={0.2} roughness={0.55} />
       </mesh>
       {/* porthole ring + glass */}
       <mesh position={[0.55, 0.08, 0.36]} rotation={[0, 0.6, 0]}>
         <torusGeometry args={[0.16, 0.035, 12, 32]} />
-        <meshStandardMaterial color={TRIM} metalness={0.8} roughness={0.3} />
+        <meshStandardMaterial color={TRIM} metalness={0.35} roughness={0.4} />
       </mesh>
       <mesh position={[0.55, 0.08, 0.36]} rotation={[0, 0.6, 0]}>
         <circleGeometry args={[0.14, 24]} />
@@ -66,8 +70,8 @@ export const Submersible = () => {
       {LAMP_Z.map((z, i) => (
         <group key={z} position={[1.05, -0.1, z]}>
           <mesh>
-            <sphereGeometry args={[0.07, 12, 12]} />
-            <meshBasicMaterial ref={i === 0 ? glow : undefined} color={ACCENT} transparent />
+            <sphereGeometry args={[0.11, 12, 12]} />
+            <meshBasicMaterial ref={i === 0 ? glowA : glowB} color={ACCENT} transparent />
           </mesh>
           <primitive object={targets[i]} position={[4, -2, 0]} />
           <spotLight
@@ -76,6 +80,7 @@ export const Submersible = () => {
             angle={0.5}
             penumbra={0.6}
             distance={9}
+            decay={1}
             position={[0, 0, 0]}
             target={targets[i]}
           />
@@ -84,7 +89,7 @@ export const Submersible = () => {
       {/* propeller guard */}
       <mesh position={[-1.05, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
         <torusGeometry args={[0.28, 0.03, 10, 28]} />
-        <meshStandardMaterial color={TRIM} metalness={0.7} roughness={0.4} />
+        <meshStandardMaterial color={TRIM} metalness={0.35} roughness={0.4} />
       </mesh>
       {/* antenna */}
       <mesh position={[-0.3, 0.55, 0]}>

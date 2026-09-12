@@ -31,8 +31,8 @@ export const DiveSceneImpl = () => {
         gl={{ antialias: false, powerPreference: "high-performance", alpha: false }}
       >
         <Water />
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[3, 6, 4]} intensity={1.4} />
+        <ambientLight intensity={1.2} />
+        <directionalLight position={[3, 6, 4]} intensity={3} />
         <Submersible />
       </Canvas>
     </div>
