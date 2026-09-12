@@ -1,0 +1,28 @@
+import { WATER_STOPS } from "@/constants/dive";
+
+export type Rgb = [number, number, number];
+
+export const hexToRgb = (hex: string): Rgb => {
+  const n = parseInt(hex.slice(1), 16);
+  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+};
+
+const mix = (a: Rgb, b: Rgb, t: number): Rgb => [
+  a[0] + (b[0] - a[0]) * t,
+  a[1] + (b[1] - a[1]) * t,
+  a[2] + (b[2] - a[2]) * t,
+];
+
+export function waterAt(p: number): { top: Rgb; bottom: Rgb; fog: number } {
+  const x = Math.min(1, Math.max(0, p));
+  let i = 0;
+  while (i < WATER_STOPS.length - 2 && x > WATER_STOPS[i + 1].at) i++;
+  const a = WATER_STOPS[i];
+  const b = WATER_STOPS[i + 1];
+  const t = (x - a.at) / (b.at - a.at);
+  return {
+    top: mix(hexToRgb(a.top), hexToRgb(b.top), t),
+    bottom: mix(hexToRgb(a.bottom), hexToRgb(b.bottom), t),
+    fog: a.fog + (b.fog - a.fog) * t,
+  };
+}
