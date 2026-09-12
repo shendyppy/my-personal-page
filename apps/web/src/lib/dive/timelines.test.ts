@@ -117,3 +117,75 @@ describe("TIMELINES.reef", () => {
     expect(tl.duration()).toBe(1);
   });
 });
+
+/** A twilight stage with `n` `[data-reveal]` elements. */
+const buildTwilight = (n: number) => {
+  const section = document.createElement("section");
+  section.innerHTML = Array.from({ length: n }, () => `<p data-reveal></p>`).join("");
+  const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
+  TIMELINES.twilight(tl, gsap.utils.selector(section), section);
+  return { tl, reveals: [...section.querySelectorAll<HTMLElement>("[data-reveal]")] };
+};
+
+const opacities = (els: HTMLElement[]) => els.map((e) => Number(gsap.getProperty(e, "opacity")));
+const ys = (els: HTMLElement[]) => els.map((e) => Number(gsap.getProperty(e, "y")));
+
+describe("TIMELINES.twilight", () => {
+  test("spans exactly one unit, so its numbers read as chapter progress", () => {
+    // Same reason as the reef spacer: ScrollTrigger scrubs totalProgress, so
+    // only the timeline's own duration makes 0.8 mean "80% down the chapter".
+    expect(buildTwilight(6).tl.duration()).toBe(1);
+    expect(buildTwilight(1).tl.duration()).toBe(1);
+  });
+
+  test("the record is fully legible across the whole hold, not for one instant", () => {
+    // The point of the chapter: a bio needs dwell, and twilight does not snap,
+    // so the hold is all the reader gets. Tween start times cannot see this.
+    const { tl, reveals } = buildTwilight(6);
+    for (let p = 0.3; p <= 0.8001; p += 0.05) {
+      tl.progress(p);
+      opacities(reveals).forEach((o, i) => {
+        expect(o, `reveal ${i} at ${p.toFixed(2)}`).toBeCloseTo(1, 5);
+      });
+      ys(reveals).forEach((y, i) => {
+        expect(y, `reveal ${i} at ${p.toFixed(2)}`).toBeCloseTo(0, 5);
+      });
+    }
+  });
+
+  test("the reveal staggers in rather than arriving as one block", () => {
+    const { tl, reveals } = buildTwilight(6);
+    tl.progress(0.21);
+    const o = opacities(reveals);
+    expect(o[0]).toBeCloseTo(1, 5);
+    expect(o[5]).toBeLessThan(1);
+    expect(o[5]).toBeGreaterThan(0);
+    // Monotonic: the first element is always at least as far along as the last.
+    expect(o).toEqual([...o].sort((a, b) => b - a));
+  });
+
+  test("the reveals are held out at the chapter start and gone by its end", () => {
+    const { tl, reveals } = buildTwilight(6);
+    tl.progress(0.5); // scrub off 0 first so setting it back forces a render
+    tl.progress(0);
+    expect(opacities(reveals)).toEqual(Array(6).fill(0));
+    expect(ys(reveals)).toEqual(Array(6).fill(32));
+    tl.progress(1);
+    expect(opacities(reveals)).toEqual(Array(6).fill(0));
+    expect(ys(reveals)).toEqual(Array(6).fill(-24));
+  });
+
+  test("a chapter with a single reveal still holds it across the same window", () => {
+    const { tl, reveals } = buildTwilight(1);
+    tl.progress(0.2);
+    expect(opacities(reveals)).toEqual([1]);
+    tl.progress(0.8);
+    expect(opacities(reveals)).toEqual([1]);
+  });
+
+  test("adds nothing at all when the stage has no reveals", () => {
+    const { tl } = buildTwilight(0);
+    expect(tl.getChildren()).toHaveLength(0);
+    expect(tl.duration()).toBe(0);
+  });
+});

@@ -48,7 +48,18 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
     // touches. An empty-target spacer stretches the timeline itself instead.
     tl.to({}, { duration: n }, 0);
   },
-  twilight: noop,
+  twilight: (tl, q) => {
+    const reveal = q("[data-reveal]");
+    if (reveal.length === 0) return;
+    // The spacer pins the total at 1, so every number below reads directly as
+    // a fraction of the chapter's scroll (see the reef note: `tl.duration()`
+    // only sets timeScale, which ScrollTrigger's totalProgress never sees).
+    // The record is fully legible from 30% to 80% — a bio needs dwell, and
+    // this chapter does not snap, so the hold is all the reader gets.
+    tl.from(reveal, { y: 32, opacity: 0, duration: 0.2, stagger: 0.02 }, 0)
+      .to(reveal, { y: -24, opacity: 0, duration: 0.15, stagger: 0.01 }, 0.8)
+      .to({}, { duration: 1 }, 0);
+  },
   descent: noop,
   midnight: noop,
   seafloor: noop,

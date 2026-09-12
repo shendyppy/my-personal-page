@@ -11,12 +11,18 @@ import { DiveShell } from "@/components/organisms/DiveShell";
 import { GrainOverlay } from "@/components/atoms/GrainOverlay";
 import { ReefChapter } from "@/components/sections/dive/ReefChapter";
 import { SurfaceChapter } from "@/components/sections/dive/SurfaceChapter";
+import { TwilightChapter } from "@/components/sections/dive/TwilightChapter";
 import { CHAPTERS } from "@/constants/dive";
+import { getAbout } from "@/server/queries/about";
 import { getExperiences } from "@/server/queries/experiences";
 import { getProjects } from "@/server/queries/projects";
 
 export default async function Home() {
-  const [projects, experiences] = await Promise.all([getProjects(), getExperiences()]);
+  const [projects, experiences, about] = await Promise.all([
+    getProjects(),
+    getExperiences(),
+    getAbout(),
+  ]);
   const beats = CHAPTERS.map((c) =>
     c.id === "reef" ? Math.max(1, projects.length) : c.id === "descent" ? Math.max(1, experiences.length) : c.beats
   );
@@ -29,8 +35,9 @@ export default async function Home() {
         <DiveShell beats={beats}>
           <SurfaceChapter projectCount={projects.length} experiences={experiences} />
           <ReefChapter projects={projects} beats={beats[1]} />
-          {CHAPTERS.slice(2).map((c, i) => (
-            <ChapterFrame key={c.id} id={c.id} beats={beats[i + 2]}>
+          <TwilightChapter about={about} />
+          {CHAPTERS.slice(3).map((c, i) => (
+            <ChapterFrame key={c.id} id={c.id} beats={beats[i + 3]}>
               <ChapterHead index={c.index + 1} category={c.category} label={c.label} />
               <h2 className="font-heading text-[clamp(36px,5vw,72px)] uppercase leading-none">
                 {c.name}

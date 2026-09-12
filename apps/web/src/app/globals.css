@@ -690,6 +690,71 @@ body { background: #083352; transition: background-color 900ms ease; }
   .site > .site-image { order: 0; }
 }
 
+/* ---- Twilight: diver record ---- */
+.porthole {
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 0 24px rgba(62, 224, 200, 0.25),
+    0 0 0 6px color-mix(in oklab, var(--card) 60%, transparent);
+}
+/* The record rows hold one long unbroken value (INSTRUMENTS is six names
+   joined by `·`), and a flex item defaults to `min-width: auto`, so the `dd`
+   refuses to shrink below it and widens the panel past its track. */
+.record-row dd { min-width: 0; overflow-wrap: anywhere; }
+/* The lead is the bio's first sentence, and the real copy runs 163 characters:
+   eight lines at spec 6.3's 48px, 415px of type. The stage is a hard 100svh
+   while pinned and nothing clips or scrolls it, so the briefed
+   `clamp(28px, 3.4vw, 48px)` + `max-w-[18ch]` overflowed a 1366x768 laptop by
+   ~110px. Two changes fix it without touching the copy: `min(…, 5.2svh)` makes
+   the display size answer to the height it actually has, and a 26ch measure
+   spends the 7fr track rather than stacking lines in it. The 48px ceiling
+   still lands on a tall desktop, which is where the spec set it.
+   Kept here rather than in a `text-[…]` utility because Tailwind's utilities
+   are layered and this rule is not — inline they would silently disagree. */
+.twilight-lead {
+  max-width: 26ch;
+  font-size: clamp(20px, min(3.4vw, 5.2svh), 48px);
+}
+/* Short viewports. Same problem as the reef, one chapter further down: the
+   stage is 100svh while pinned, so anything taller is painted over the HUD and
+   the next chapter rather than scrolled. Trim the vertical budget first —
+   density costs no content. */
+@media (max-height: 720px) {
+  .twilight-grid { row-gap: 1.5rem; }
+  .twilight-body, .twilight-grid .record-panel { margin-top: 1rem; }
+  .porthole { width: 64px; height: 64px; }
+  .record-head, .record-row { padding-block: 6px; }
+}
+/* Only then the copy, and only where density was not enough. A 1280x720
+   desktop is short but two-column and fits the bio whole with ~40px spare, so
+   clamping there would drop sentences into empty space; below 1280 the stage
+   is between 330px (844x390 landscape) and 580px (360x640) tall and the full
+   bio plus the learning line is ~1050px. The lead is never clamped — it is one
+   sentence, and truncating it mid-word is worse than the small type. */
+@media (max-height: 720px) and (max-width: 1279px) {
+  .twilight-body {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+}
+/* Landscape phones and small landscape tablets: short, with width to spare.
+   Stacking cannot fit at 844x390 — the single column is ~700px in a 330px
+   stage — so spend the width and put the record beside the bio, as the reef
+   does at the same sizes. */
+@media (max-height: 720px) and (min-width: 640px) and (max-width: 1023px) {
+  .twilight-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: 2rem;
+  }
+}
+
 /* Reduced motion, kept LAST in the file on purpose. These rules undo the
    at-rest state that the pinned timelines animate away from, and they do it at
    the same specificity as the rules they override — so cascade order is the
@@ -703,4 +768,8 @@ body { background: #083352; transition: background-color 900ms ease; }
   .reef-stack { gap: 4rem; }
   .site { grid-area: auto; opacity: 1; }
   .log-entry { opacity: 1; }
+  /* Twilight needs no opacity reset — its at-rest state is visible HTML and
+     the timeline `from`s away from it. It does need its clamp lifted: with the
+     pin gone the stage grows to fit, so there is no reason to withhold copy. */
+  .twilight-body { display: block; -webkit-line-clamp: none; line-clamp: none; }
 }
