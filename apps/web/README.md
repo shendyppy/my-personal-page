@@ -5,15 +5,15 @@ The main Next.js fullstack application for the personal portfolio.
 ## 🎯 About
 
 This is a modern, interactive portfolio website featuring:
-- 3D animated hero section with Three.js
-- Dark/light theme toggle
+- Scroll-driven deep-dive journey (GSAP + Lenis) with a persistent R3F ocean scene
+- A procedural research submersible you can drag to spin in every chapter
 - Dynamic content management via PostgreSQL
 - Responsive design for all devices
 - Server-side rendering for optimal performance
 
 ## 🏗️ Architecture
 
-This app follows Next.js 15 App Router architecture:
+This app follows Next.js 16 App Router architecture:
 
 ```
 apps/web/
@@ -27,11 +27,11 @@ apps/web/
 │   │   ├── ui/              # Base UI components (Button, Card, etc.)
 │   │   ├── molecules/       # Small composite components
 │   │   ├── organisms/       # Large composite components
-│   │   └── sections/        # Page sections (Hero, About, Projects, etc.)
-│   ├── data/                # Static data (to be migrated to API)
-│   ├── lib/                 # Utility functions
-│   ├── types/               # TypeScript definitions
-│   └── generated/prisma/    # Auto-generated Prisma Client
+│   │   ├── sections/dive/   # One server component per chapter (Surface … Seafloor)
+│   │   └── three/dive/      # R3F scene pieces (water, sub, particles, floor)
+│   ├── lib/dive/            # Pure journey maths (depth, pose, lanes, timelines)
+│   ├── server/queries/      # Server-only data access
+│   └── types/               # TypeScript definitions
 ├── prisma/
 │   └── schema.prisma        # Database schema
 └── public/
@@ -76,9 +76,9 @@ npm start
 
 ## 📂 Key Files
 
-- `src/app/page.tsx` - Home page with all sections
-- `src/app/layout.tsx` - Root layout with providers
-- `src/app/providers/ThemeProvider.tsx` - Theme context
+- `src/app/page.tsx` - Landing page: fetches content and composes the six chapters
+- `src/app/layout.tsx` - Root layout (dark-only)
+- `src/constants/dive.ts` - Chapter registry and journey copy
 - `prisma/schema.prisma` - Database schema
 - `next.config.ts` - Next.js configuration
 - `tailwind.config.js` - Tailwind CSS configuration
@@ -87,7 +87,7 @@ npm start
 
 Uses **Tailwind CSS 4** with custom configuration:
 - Custom color palette with CSS variables
-- Dark/light mode support
+- Dark-only palette with a fixed lime accent
 - Custom animations
 - Responsive breakpoints
 
@@ -129,8 +129,8 @@ Will be created in `src/app/api/`:
 ## 📱 Features
 
 - ✅ Responsive design (mobile-first)
-- ✅ Dark/light theme with persistence
-- ✅ 3D interactive hero section
+- ✅ Scroll-driven deep-dive journey with a persistent 3D scene
+- ✅ Reduced-motion fallback (no pins, no canvas, all content visible)
 - ✅ Dynamic project pages
 - ✅ Smooth animations
 - ✅ SEO optimized
@@ -145,6 +145,9 @@ npm run lint
 
 # Type check
 npx tsc --noEmit
+
+# Unit tests (Vitest)
+npm test
 ```
 
 ## 📦 Key Dependencies
@@ -153,6 +156,7 @@ npx tsc --noEmit
 - `react`, `react-dom` - UI library
 - `@prisma/client` - Database ORM
 - `three`, `@react-three/fiber`, `@react-three/drei` - 3D graphics
+- `gsap`, `lenis` - Scroll choreography and smooth scrolling
 - `tailwindcss` - Styling
 - `@radix-ui/react-*` - Accessible UI primitives
 - `lucide-react` - Icons
