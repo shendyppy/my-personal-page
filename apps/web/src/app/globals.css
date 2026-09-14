@@ -833,6 +833,68 @@ body { background: #083352; transition: background-color 900ms ease; }
   .log-period, .log-company { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
 
+/* ---- Midnight: sonar toolbox ---- */
+/* The readout sits beside (or under) the scope, never on it: centred on the
+   chart as briefed, a 360px panel covered every blip on the inner three rings.
+   The scope's size answers to height as well as width — the stage is a hard
+   100svh while pinned, and a 640px chart plus its head overflowed 1366x768.
+   Stacked, it also leaves room under it for the readout (~14rem). */
+.sonar {
+  --sonar-size: min(640px, 92vw, calc(100svh - var(--hud-h) - 22rem));
+  display: grid;
+  justify-items: center;
+  gap: 1.5rem;
+}
+.sonar-scope { position: relative; width: var(--sonar-size); aspect-ratio: 1; }
+.sonar-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.sonar-ring { fill: none; stroke: var(--border); stroke-width: 1; }
+.sonar-sweep { animation: sonar-sweep 6s linear infinite; }
+@keyframes sonar-sweep { to { transform: rotate(360deg); } }
+.sonar-blips { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.sonar-blips li { position: absolute; transform: translate(-50%, -50%); }
+/* The button is the dot plus its hit padding, so the <li>'s translate(-50%)
+   centres the dot itself on the contact point; the label hangs outside it. */
+.blip {
+  position: relative; display: block; padding: 8px;
+  cursor: pointer; color: var(--muted-foreground); background: none; border: 0;
+}
+.blip-dot { display: block; width: 10px; height: 10px; border-radius: 9999px; background: var(--hud); box-shadow: 0 0 10px var(--hud); transition: transform 200ms; }
+.blip-label {
+  position: absolute;
+  font-family: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+}
+.blip--center .blip-label { top: 100%; left: 50%; transform: translateX(-50%); }
+.blip--right .blip-label { left: 100%; top: 50%; transform: translateY(-50%); }
+.blip--left .blip-label { right: 100%; top: 50%; transform: translateY(-50%); }
+/* A phone-width (or landscape-phone) scope sits within ~20px of the screen
+   edge, so an outward label on the left ("PROJECT MANAGEMENT") ran off it.
+   Point those inward. */
+@media (max-width: 639px), (max-height: 480px) {
+  .blip--left .blip-label { right: auto; left: 100%; }
+}
+.blip:hover .blip-dot, .blip.is-active .blip-dot { background: var(--accent); box-shadow: 0 0 14px var(--accent); transform: scale(1.4); }
+.blip:hover, .blip.is-active { color: var(--foreground); }
+.blip:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+/* A fixed floor so switching contacts never re-centres the stage and jolts
+   the scope under the pointer. */
+.sonar-readout { width: min(360px, 100%); min-height: 14rem; display: grid; align-content: start; justify-items: center; text-align: center; }
+.sonar-readout .record-panel { width: 100%; text-align: left; }
+/* Wide or short-and-wide: scope and readout side by side. */
+@media (min-width: 1024px), (max-height: 720px) and (min-width: 640px) {
+  .sonar {
+    /* Width term: the readout keeps its 360px; at 1024 a height-only size
+       took 632px and squeezed the readout to one chip per line. */
+    --sonar-size: min(640px, calc(100svh - var(--hud-h) - 6rem), calc(100vw - 38rem));
+    grid-template-columns: auto minmax(0, 360px);
+    align-items: center;
+    justify-content: center;
+    column-gap: clamp(2rem, 5vw, 5rem);
+  }
+  .sonar-readout { min-height: 0; align-content: center; }
+}
+@media (prefers-reduced-motion: reduce) { .sonar-sweep { animation: none; } }
+
 /* Reduced motion, kept LAST in the file on purpose. These rules undo the
    at-rest state that the pinned timelines animate away from, and they do it at
    the same specificity as the rules they override — so cascade order is the

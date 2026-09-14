@@ -253,3 +253,60 @@ describe("TIMELINES.descent", () => {
     expect(tl.duration()).toBe(0);
   });
 });
+
+/** A midnight stage matching SonarChart's markup: rings, blips, the chart. */
+const buildMidnight = (rings: number, blips: number) => {
+  const section = document.createElement("section");
+  section.innerHTML =
+    `<div class="sonar"><svg>` +
+    Array.from({ length: rings }, () => `<circle data-ring></circle>`).join("") +
+    `</svg><ul class="sonar-blips">` +
+    Array.from({ length: blips }, () => `<li><button class="blip"></button></li>`).join("") +
+    `</ul></div>`;
+  const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
+  TIMELINES.midnight(tl, gsap.utils.selector(section), section);
+  const all = <T extends Element>(s: string) => [...section.querySelectorAll<T>(s)];
+  return {
+    tl,
+    rings: all<HTMLElement>("[data-ring]"),
+    blips: all<HTMLElement>(".blip"),
+    items: all<HTMLElement>(".sonar-blips li"),
+    sonar: section.querySelector<HTMLElement>(".sonar")!,
+  };
+};
+
+describe("TIMELINES.midnight", () => {
+  test("spans exactly one unit, so its numbers read as chapter progress", () => {
+    expect(buildMidnight(6, 6).tl.duration()).toBe(1);
+  });
+
+  test("rings and blips are drawn out at the chapter start", () => {
+    const { tl, rings, blips } = buildMidnight(6, 6);
+    tl.progress(0.5);
+    tl.progress(0);
+    expect(opacities(rings)).toEqual(Array(6).fill(0));
+    expect(opacities(blips)).toEqual(Array(6).fill(0));
+  });
+
+  test("the whole chart is up and interactive through the middle of the chapter", () => {
+    const { tl, rings, blips, sonar } = buildMidnight(6, 6);
+    for (const p of [0.5, 0.6, 0.75]) {
+      tl.progress(p);
+      expect(opacities(rings), `rings at ${p}`).toEqual(Array(6).fill(1));
+      expect(opacities(blips), `blips at ${p}`).toEqual(Array(6).fill(1));
+      expect(Number(gsap.getProperty(sonar, "opacity"))).toBe(1);
+    }
+  });
+
+  test("never writes a transform to the blip wrappers, which CSS centres with translate(-50%)", () => {
+    const { tl, items } = buildMidnight(6, 6);
+    tl.progress(0.3);
+    items.forEach((li) => expect(li.style.transform).toBe(""));
+  });
+
+  test("the chart lifts away at the end of the chapter", () => {
+    const { tl, sonar } = buildMidnight(6, 6);
+    tl.progress(1);
+    expect(Number(gsap.getProperty(sonar, "opacity"))).toBe(0);
+  });
+});

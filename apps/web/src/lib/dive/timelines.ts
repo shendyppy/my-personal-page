@@ -74,6 +74,14 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
     // One unit per entry, via a spacer for the reason given under reef.
     tl.to({}, { duration: n }, 0);
   },
-  midnight: noop,
+  midnight: (tl, q) => {
+    // Blips animate on the button, not the <li>: CSS centres each <li> on its
+    // point with translate(-50%, -50%), which a GSAP scale there would replace.
+    // Spacer pins the total at 1 (see reef): drawn in by 45%, up until 80%.
+    tl.from(q("[data-ring]"), { scale: 0.6, opacity: 0, transformOrigin: "50% 50%", duration: 0.2, stagger: 0.03 }, 0)
+      .from(q(".blip"), { scale: 0, opacity: 0, duration: 0.15, stagger: 0.03 }, 0.15)
+      .to(q(".sonar"), { opacity: 0, y: -24, duration: 0.2 }, 0.8)
+      .to({}, { duration: 1 }, 0);
+  },
   seafloor: noop,
 };

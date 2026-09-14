@@ -10,6 +10,7 @@ import { DiveScene } from "@/components/organisms/DiveScene";
 import { DiveShell } from "@/components/organisms/DiveShell";
 import { GrainOverlay } from "@/components/atoms/GrainOverlay";
 import { DescentChapter } from "@/components/sections/dive/DescentChapter";
+import { MidnightChapter } from "@/components/sections/dive/MidnightChapter";
 import { ReefChapter } from "@/components/sections/dive/ReefChapter";
 import { SurfaceChapter } from "@/components/sections/dive/SurfaceChapter";
 import { TwilightChapter } from "@/components/sections/dive/TwilightChapter";
@@ -18,12 +19,14 @@ import { chapterRanges, depthForProgress } from "@/lib/dive/depth";
 import { getAbout } from "@/server/queries/about";
 import { getExperiences } from "@/server/queries/experiences";
 import { getProjects } from "@/server/queries/projects";
+import { getSkills } from "@/server/queries/skills";
 
 export default async function Home() {
-  const [projects, experiences, about] = await Promise.all([
+  const [projects, experiences, about, skills] = await Promise.all([
     getProjects(),
     getExperiences(),
     getAbout(),
+    getSkills(),
   ]);
   const beats = CHAPTERS.map((c) =>
     c.id === "reef" ? Math.max(1, projects.length) : c.id === "descent" ? Math.max(1, experiences.length) : c.beats
@@ -44,8 +47,9 @@ export default async function Home() {
             beats={beats[3]}
             depth={{ start: depthForProgress(descent.start), end: depthForProgress(descent.end) }}
           />
-          {CHAPTERS.slice(4).map((c, i) => (
-            <ChapterFrame key={c.id} id={c.id} beats={beats[i + 4]}>
+          <MidnightChapter skills={skills} />
+          {CHAPTERS.slice(5).map((c, i) => (
+            <ChapterFrame key={c.id} id={c.id} beats={beats[i + 5]}>
               <ChapterHead index={c.index + 1} category={c.category} label={c.label} />
               <h2 className="font-heading text-[clamp(36px,5vw,72px)] uppercase leading-none">
                 {c.name}
