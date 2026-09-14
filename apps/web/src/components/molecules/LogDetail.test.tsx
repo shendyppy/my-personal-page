@@ -17,14 +17,6 @@ describe("LogDetail", () => {
     expect(screen.getByRole("button", { name: /2 PROJECTS · STACK/ })).toHaveAttribute("aria-expanded", "false");
   });
 
-  test("the hover popover carries projects and stack, hidden from assistive tech", () => {
-    const { container } = render(<LogDetail experience={experience} />);
-    const popover = container.querySelector(".log-popover")!;
-    expect(popover).toHaveAttribute("aria-hidden");
-    expect(popover).toHaveTextContent("EnGauge – Assessment Platform");
-    expect([...popover.querySelectorAll(".log-detail-chips li")].map((l) => l.textContent)).toEqual(["React.js", "Redux", "Axios"]);
-  });
-
   test("clicking opens the full log as a dialog, and Escape or the close button shuts it", () => {
     render(<LogDetail experience={experience} />);
     fireEvent.click(screen.getByRole("button", { name: /PROJECTS/ }));

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 import type { ExperienceDto } from "@/server/queries/experiences";
 
@@ -51,10 +51,10 @@ const Body = ({ experience: e }: LogDetailProps) => {
 
 /**
  * The rest of an experience — projects, responsibilities, stack — which the
- * log entry has no room for. On desktop it opens as a popover across the
- * pressure line while the entry is hovered or focused (CSS); tapping the
- * toggle opens it as a bottom sheet on phones, portalled to <body> because the
- * pinned, transformed stage would otherwise trap a fixed element.
+ * log entry has no room for. Only a click opens it (a hover popover got in the
+ * way of reading the log): a bottom sheet on phones, a centred dialog on
+ * desktop, portalled to <body> because the pinned, transformed stage would
+ * otherwise trap a fixed element.
  */
 export const LogDetail = ({ experience }: LogDetailProps) => {
   const [open, setOpen] = useState(false);
@@ -70,14 +70,12 @@ export const LogDetail = ({ experience }: LogDetailProps) => {
   return (
     <>
       <button type="button" className="log-detail-toggle" aria-expanded={open} onClick={() => setOpen(true)}>
-        <span className="text-accent">[</span>
+        <span aria-hidden className="log-detail-ping" />
+        <span className="log-detail-bracket">[</span>
         {count > 0 ? `${count} PROJECT${count === 1 ? "" : "S"} · STACK` : "OPEN LOG"}
-        <span className="text-accent">]</span>
+        <span className="log-detail-bracket">]</span>
+        <Plus aria-hidden className="log-detail-plus" />
       </button>
-
-      <div className="log-popover record-panel" aria-hidden>
-        <Body experience={experience} />
-      </div>
 
       {/* open only ever becomes true from a click, so this never runs on the server. */}
       {open &&
