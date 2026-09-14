@@ -26,11 +26,11 @@ npm run db:migrate -- --name add_<model_name>
 
 ## 2. TypeScript types
 
-Add the shape to `apps/web/src/types/index.ts`. Keep it close to the Prisma model but trimmed to what the UI needs (no internal DB fields like `id`/timestamps unless the UI uses them).
+Export the shape from the query file below (`server/queries/<model-plural>.ts`). Keep it close to the Prisma model but trimmed to what the UI needs (no internal DB fields like `id`/timestamps unless the UI uses them).
 
 ## 3. Server query
 
-Create `apps/web/src/server/queries/<model-plural>.ts`:
+Create `apps/web/src/server/queries/<model-plural>.ts` (the type from step 2 lives here too). A fixed value set is a Prisma `enum`, labelled in `constants/labels.ts`:
 
 ```ts
 import "server-only";

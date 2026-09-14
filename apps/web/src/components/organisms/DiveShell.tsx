@@ -1,0 +1,131 @@
+"use client";
+
+import { useEffect, type ReactNode } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+
+import { CHAPTER_IDS, sectionId, type ChapterId } from "@/constants/dive";
+import { dive } from "@/lib/dive/depth";
+import { measureLanes } from "@/lib/dive/lanes";
+import { scroller } from "@/lib/dive/scroll";
+
+gsap.registerPlugin(ScrollTrigger);
+
+type DiveShellProps = { beats: number[]; children: ReactNode };
+
+/** Slow at both ends: chapter jumps glide instead of lurching. */
+const glide = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const JUMP = { duration: 2.2, easing: glide };
+
+const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Scroll engine for the journey: Lenis smooth scroll wired into GSAP's ticker,
+ * one scrubbed ScrollTrigger over <main> that feeds the depth store, hash →
+ * chapter scrolling, and `data-chapter` on <html> for the CSS water fallback.
+ */
+export const DiveShell = ({ beats, children }: DiveShellProps) => {
+  // Keyed on the joined values, not the array identity: a new `beats` array
+  // literal on every render (the caller maps CHAPTERS inline) must not
+  // re-run configure() — configure() notifies subscribers, so that would
+  // fire on every render instead of only when the beats actually change.
+  const beatsKey = beats.join(",");
+
+  useEffect(() => {
+    dive.configure(beats);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [beatsKey]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const unsub = dive.subscribe((s) => {
+      if (root.dataset.chapter !== s.chapter) root.dataset.chapter = s.chapter;
+    });
+    root.dataset.chapter = dive.get().chapter;
+    return () => {
+      unsub();
+      delete root.dataset.chapter;
+    };
+  }, []);
+
+  useEffect(() => {
+    const main = document.getElementById("main-content");
+    if (!main) return;
+    // No refresh on window "load": every chapter's height is fixed in server CSS
+    // (beats × 100svh), so late images cannot move a trigger. That refresh
+    // re-measured every pin on the main thread right as the scene was loading,
+    // a 460ms long task on a throttled phone. Set here, not at module scope:
+    // config() reaches for browser globals and crashed the server render.
+    ScrollTrigger.config({ autoRefreshEvents: "visibilitychange,DOMContentLoaded,resize" });
+
+    let lenis: Lenis | null = null;
+    let raf: ((t: number) => void) | null = null;
+
+    if (!reduced()) {
+      // `anchors`: in-page `#dive-*` links (the seafloor's BACK TO SURFACE)
+      // scroll smoothly instead of jumping under Lenis.
+      lenis = new Lenis({ lerp: 0.07, smoothWheel: true, syncTouch: false, anchors: JUMP });
+      lenis.on("scroll", ScrollTrigger.update);
+      raf = (t) => lenis?.raf(t * 1000);
+      gsap.ticker.add(raf);
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    const trigger = ScrollTrigger.create({
+      trigger: main,
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true,
+      onUpdate: (self) => dive.set(self.progress),
+    });
+
+    // Lanes are layout: re-measure whenever ScrollTrigger re-measures (load,
+    // resize) and once the webfonts have settled the text blocks.
+    measureLanes();
+    ScrollTrigger.addEventListener("refresh", measureLanes);
+    document.fonts?.ready.then(measureLanes);
+
+    scroller.install((id: ChapterId) => {
+      const target = `#${sectionId(id)}`;
+      if (lenis) lenis.scrollTo(target, JUMP);
+      else document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
+    });
+
+    // A `#dive-*` hash is a one-off jump instruction, not the reader's place:
+    // left in the URL it stuck on while diving on, and a reload or shared link
+    // dropped the reader back at that chapter. Consume it, then strip it,
+    // keeping history.state so the Next router's entry survives.
+    const chapterInHash = () => {
+      const id = window.location.hash.replace("#dive-", "") as ChapterId;
+      return CHAPTER_IDS.includes(id) ? id : null;
+    };
+    const stripHash = () =>
+      window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+
+    const entry = chapterInHash();
+    if (entry) {
+      requestAnimationFrame(() => {
+        if (lenis) lenis.scrollTo(`#${sectionId(entry)}`, { immediate: true });
+        else document.getElementById(sectionId(entry))?.scrollIntoView();
+      });
+      stripHash();
+    }
+    // In-page anchors (the seafloor's BACK TO SURFACE) still write their hash:
+    // Lenis scrolls but does not cancel the click. The scroll is already under
+    // way, so only the URL needs cleaning.
+    const onHashChange = () => chapterInHash() && stripHash();
+    window.addEventListener("hashchange", onHashChange);
+
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+      trigger.kill();
+      ScrollTrigger.removeEventListener("refresh", measureLanes);
+      scroller.install(() => {});
+      if (raf) gsap.ticker.remove(raf);
+      lenis?.destroy();
+    };
+  }, []);
+
+  return <>{children}</>;
+};

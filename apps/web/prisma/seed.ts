@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type Prisma } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
 
@@ -66,8 +66,32 @@ async function main() {
         ],
         techStack:
           "React.js, Redux, Axios, Ant Design, Firebase, Vite.js, JavaScript, TypeScript",
-        employmentType: "Full Time",
+        employmentType: "FullTime",
         order: 1,
+      },
+      {
+        company: "80&Company/OCT-PATH",
+        companyLogo: "/assets/img/content/80&company-logo.webp",
+        title: "Brain Manager (Project Manager & Fullstack Engineer)",
+        location: "Jakarta, Indonesia",
+        period: "November 2025 - August 2026",
+        current: false,
+        description:
+          "Lead strategic planning, execution, and delivery of multi-layered digital products while contributing directly to system architecture, development, and DevOps.",
+        responsibilities: [
+          "Managed end-to-end delivery across multiple workstreams including business flow design, workflow automation, and technical architecture.",
+          "Built full-stack features involving PDF automation, assessment engines, secure authentication flows, and content platforms.",
+          "Contributed to DevOps processes including environment setup, CI/CD, deployment, and performance optimization.",
+          "Acted as both project manager and technical contributor, ensuring balance between execution speed and product quality.",
+        ],
+        projects: [
+          "EB-PLT – Pharmacist Administration Platform (Released)",
+          "Various workflow automation and internal tools",
+        ],
+        techStack:
+          "Next.js, shadcn UI, Tailwind CSS, TypeScript, Prisma, PostgreSQL (Neon), Gotenberg, Vercel Blob, Zod, GitHub Projects (Agile Management - ticketing, roadmap, milestones), CI/CD (Vercel), Error Logging (Sentry)",
+        employmentType: "Freelance",
+        order: 2,
       },
       {
         company: "PT. Mahardika Solusi Teknologi (IDE Asia)",
@@ -1007,7 +1031,7 @@ async function main() {
 
   // ============ SKILLS ============
   console.log("🛠️  Seeding skills...");
-  const skills = [
+  const skills: Prisma.SkillCreateManyInput[] = [
     {
       name: "TypeScript",
       level: 90,
@@ -1158,14 +1182,14 @@ async function main() {
     {
       name: "GitHub Projects",
       level: 60,
-      category: "Project Management",
+      category: "ProjectManagement",
       logo: "/assets/img/content/github-project.webp",
       order: 19,
     },
     {
       name: "Jira",
       level: 80,
-      category: "Project Management",
+      category: "ProjectManagement",
       logo: "/assets/img/content/jira.webp",
       order: 20,
     },
@@ -1281,18 +1305,12 @@ async function main() {
     {
       name: "Trello",
       level: 70,
-      category: "Project Management",
+      category: "ProjectManagement",
       logo: "https://cdn.simpleicons.org/trello",
       order: 36,
     },
   ];
-  await prisma.skill.createMany({
-    data: skills.map((skill) => ({
-      ...skill,
-      model: skill.name,
-      color: "#000000",
-    })),
-  });
+  await prisma.skill.createMany({ data: skills });
 
   // ============ TECH STACK ============
   console.log("💻 Seeding tech stack...");
@@ -1390,7 +1408,7 @@ async function main() {
   await prisma.cvInfo.create({
     data: {
       title: "Curriculum Vitae",
-      previewImage: "/assets/Screenshot_CV.webp",
+      previewImage: "/assets/Screenshot_CV_Latest.webp",
       // Canonical clean filename — no date suffix. The downloaded file name
       // follows this path's basename (see AboutSection `download` attr).
       downloadPath: "/assets/CV_Shendy Putra Perdana Yohansah.pdf",

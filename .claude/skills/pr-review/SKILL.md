@@ -48,7 +48,7 @@ When reviewing a PR (or self-reviewing), check each of these areas:
 - [ ] Atomic design boundaries respected — no sideways imports
 - [ ] Server Components by default — `"use client"` only where truly needed
 - [ ] No `useEffect + fetch` — TanStack Query pattern used
-- [ ] Types mirror Prisma models — `types/index.ts` updated if schema changed
+- [ ] Query return types in `server/queries/*` updated if schema changed; new enum values labelled in `constants/labels.ts`
 - [ ] No commented-out code in the diff
 
 ### Visual & UX
