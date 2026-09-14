@@ -8,6 +8,7 @@ import * as THREE from "three";
 import { dive } from "@/lib/dive/depth";
 import { lanes } from "@/lib/dive/lanes";
 import { poseAt } from "@/lib/dive/pose";
+import type { Pose } from "@/constants/dive";
 import { createSpin, spinEnd, spinMove, spinStart, spinStep } from "@/lib/dive/spin";
 
 const ACCENT = "#d7ff3e";
@@ -59,7 +60,12 @@ const Propeller = ({ radius, mat }: { radius: number; mat: THREE.Material }) => 
  * chapter leaves for it; plus an idle bob and a small pointer parallax. A
  * mouse drag on the hull spins it with inertia in any chapter (lib/dive/spin).
  */
-export const Submersible = () => {
+type SubmersibleProps = {
+  /** A fixed pose, for scenes outside the dive (the project page). Omit to follow the dive. */
+  pose?: Pose;
+};
+
+export const Submersible = ({ pose: fixed }: SubmersibleProps) => {
   const group = useRef<THREE.Group>(null);
   const lampA = useRef<THREE.SpotLight>(null);
   const lampB = useRef<THREE.SpotLight>(null);
@@ -133,7 +139,7 @@ export const Submersible = () => {
     const g = group.current;
     if (!g) return;
     const s = dive.get();
-    const pose = poseAt(s.progress, s.ranges, lanes);
+    const pose = fixed ?? poseAt(s.progress, s.ranges, lanes);
     // Lanes are in viewport terms; the plane the sub lives on is z = 0.
     const view = viewport.getCurrentViewport(camera, ORIGIN);
     pointer.current.x += (p.x - pointer.current.x) * Math.min(1, dt * 3);

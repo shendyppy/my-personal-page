@@ -742,6 +742,14 @@ body { background: #083352; transition: background-color 900ms ease; }
 @keyframes blip-ping { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(2.4); opacity: 0; } }
 .sonar-idle { padding: 1.25rem 1rem; border: 1px dashed var(--border); }
 
+/* ---- Project page: the sub in its own stage ---- */
+/* Phones: a strip under the overview. From lg: the track beside it. */
+.project-sub { height: 160px; margin-top: 1.5rem; }
+@media (min-width: 1024px) {
+  .project-intro { display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 1fr); column-gap: 3rem; align-items: center; }
+  .project-sub { height: 260px; margin-top: 1.5rem; }
+}
+
 /* Reduced motion, kept LAST in the file on purpose. These rules undo the
    at-rest state that the pinned timelines animate away from, and they do it at
    the same specificity as the rules they override — so cascade order is the

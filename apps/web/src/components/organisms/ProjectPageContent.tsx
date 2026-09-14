@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ImageModal } from "@/components/ui/image-modal";
 import { GrainOverlay } from "@/components/atoms/GrainOverlay";
 import { DiveHud } from "@/components/organisms/DiveHud";
+import { SubEscort } from "@/components/organisms/SubEscort";
 import { ProjectPagination } from "@/components/organisms/ProjectPagination";
 import type { ProjectDetail } from "@/types";
 import type { ProjectListItem } from "@/server/queries/projects";
@@ -65,11 +66,16 @@ export const ProjectPageContent = ({
           </span>
         </h1>
 
-        {project.overview && (
-          <p className="mt-6 max-w-[640px] animate-fade-up text-[19px] leading-[1.65] text-subtle [animation-delay:0.5s]">
-            {project.overview}
-          </p>
-        )}
+        {/* Overview | the sub, which followed you up from the reef. Its own grid
+            track, so it never sits on the title or the copy at any width. */}
+        <div className="project-intro">
+          {project.overview && (
+            <p className="mt-6 max-w-[640px] animate-fade-up text-[19px] leading-[1.65] text-subtle [animation-delay:0.5s]">
+              {project.overview}
+            </p>
+          )}
+          <SubEscort className="project-sub" />
+        </div>
 
         {meta.length > 0 && (
           <div className="mt-14 grid grid-cols-2 overflow-hidden rounded-2xl border border-border md:grid-cols-4">

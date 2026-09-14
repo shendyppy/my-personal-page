@@ -38,7 +38,7 @@ my-personal-page/
 | Data fetch  | RSC calls `server/queries/*`, passes props down  | never use raw `useEffect + fetch` in new code                        |
 | ORM / DB    | Prisma 7 + PostgreSQL (Neon)                      | content models: Project, Experience, Skill, AboutSection, etc.       |
 | 3D          | Three.js + `@react-three/fiber` + `drei`          | one persistent procedural scene, no `.glb` assets                    |
-| Animation   | GSAP 3 + ScrollTrigger + Lenis · Framer Motion   | GSAP owns scroll choreography; Framer only for hover/gesture springs |
+| Animation   | GSAP 3 + ScrollTrigger + Lenis                    | GSAP owns scroll choreography; CSS for hover states and loops        |
 | Journey     | `src/constants/dive.ts` + `src/lib/dive/*`        | chapter registry, depth store, pose/lane/water maths — every chapter name lives here |
 | Images      | `next/image` + WebP-only assets                   | converted via `npm run images:optimize` (sharp script)               |
 | Analytics   | `@vercel/analytics`                               | already wired in `app/layout.tsx`                                    |

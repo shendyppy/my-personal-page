@@ -18,10 +18,10 @@ src/
 │   ├── molecules/             # small composites (RecordPanel, DiveSiteRecord, SonarReadout, …)
 │   ├── organisms/             # DiveShell, ChapterFrame, DiveHud, DiveScene, SonarChart, …
 │   ├── sections/dive/         # one server component per chapter (Surface … Seafloor)
-│   ├── three/dive/            # R3F leaf components — imported only by DiveScene
+│   ├── three/dive/            # R3F leaf components — imported only by DiveScene and SubEscort
 │   └── ui/                    # shadcn-derived primitives (Button, Card, ImageModal) — prefer wrapping
 ├── server/queries/            # server-only data access, one file per content domain
-├── hooks/                     # client hooks (useDive, useWibClock, useTilt, useMagneticHover)
+├── hooks/                     # client hooks (useDive, useWibClock)
 ├── lib/                       # utilities (prisma, utils.ts, query-client.ts)
 │   └── dive/                  # pure journey maths: depth, pose, lanes, water, sonar, spin, scatter, timelines
 ├── constants/                 # site config + dive.ts (chapter registry, copy, fallback poses)
@@ -59,7 +59,7 @@ src/
 
 - **GSAP timelines live only in `lib/dive/timelines.ts`** — one builder per chapter id, targets found through `data-*` attributes. `ChapterFrame` pins the stage and scrubs its builder; `scrubRange` (lib/dive/scrub) decides the range. Anything that must stay visible under reduced motion carries `[data-reveal]`.
 - **Every pinned stage is a hard `100svh`.** Nothing clips or scrolls it, so overflow paints over the HUD and the next chapter. Verify new copy at short (1280×720, 844×390) and narrow (360×640) viewports.
-- **Framer Motion** only for pointer springs (`useTilt`, `useMagneticHover`). **CSS keyframes** for loops (blink, sonar sweep, blip ping).
+- **No Framer Motion.** CSS transitions for hover states, CSS keyframes for loops (blink, sonar sweep, blip ping).
 - **Reduced motion** is handled centrally: `ChapterFrame` skips pins and timelines, `DiveScene` renders no canvas, and the reduced-motion block kept last in `globals.css` resets at-rest styles.
 
 ---
@@ -78,6 +78,8 @@ src/
 - One persistent `<Canvas>` for the whole page: `Water`, `Sunrays`, `MarineSnow`, `Bioluminescence`, `Seafloor`, `Submersible`. Components read `dive.get()` inside `useFrame` — never React state per frame.
 - **The sub is placed by the layout.** Each chapter marks empty space with `[data-sub-anchor="lane"]`; `DiveShell` measures lanes on load/refresh (`lib/dive/lanes`) and `poseAt` parks the sub there, sized to fit. When you change a chapter layout, keep a lane free or the sub falls back to the head lane.
 - Pointer events reach the scene through `eventSource={document.body}`; the sub's hull is the drag hit area.
+- The dive opens at the sea surface: `Water` draws sky, coast and waterline, and `waterlineAt` (lib/dive/water) sinks the line off screen over the surface chapter.
+- Project pages show the same sub in its own small canvas (`SubEscort`), with a fixed pose.
 - The submersible is procedural (no `.glb`). Particle fields use the seeded `scatter` helper — `Math.random` in render fails the React compiler lint.
 
 ---
@@ -87,7 +89,7 @@ src/
 - **`window`/`document` in RSC:** will crash the build. If you need them, the component is client.
 - **Prisma in client components:** never. Prisma is server-only — import only from `server/queries/*` or `app/api/*` routes.
 - **Database content drifts from `prisma/seed.ts`.** Seeding wipes tables; for a one-field fix, update the row in place.
-- **Dev server serving stale CSS:** make sure only one `next dev` is running (an orphaned one keeps port 3000).
+- **Dev server serving stale CSS:** make sure only one `next dev` is running (an orphaned one keeps port 3000). Turbopack's watcher can also miss `globals.css` rewritten by a script; an editor save picks it up.
 
 ---
 
