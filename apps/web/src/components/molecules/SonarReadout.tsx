@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 
 import { RecordPanel } from "@/components/molecules/RecordPanel";
@@ -22,29 +23,34 @@ const Logo = ({ tool }: { tool: Skill }) => {
 export const SonarReadout = ({ group }: { group: ToolGroup | null }) => (
   <div aria-live="polite" className="sonar-readout">
     {group ? (
-      <RecordPanel
-        title="OBJECT READOUT"
-        rows={[
-          { label: "OBJECT", value: group.category },
-          { label: "CLASS", value: group.label },
-          {
-            label: "STACK",
-            value: (
-              <ul className="m-0 flex max-w-[300px] flex-wrap justify-end gap-1.5 p-0">
-                {group.tools.map((t) => (
-                  <li
-                    key={t.name}
-                    className="inline-flex list-none items-center gap-1.5 rounded border border-border px-2 py-0.5 text-[10px] tracking-[0.08em]"
-                  >
-                    <Logo tool={t} />
-                    {t.name}
-                  </li>
-                ))}
-              </ul>
-            ),
-          },
-        ]}
-      />
+      // Keyed by contact so every switch remounts and replays the swap-in:
+      // a scan line sweeps the panel, rows settle, then the chips pop in turn.
+      <div key={group.category} className="readout-swap">
+        <RecordPanel
+          title="OBJECT READOUT"
+          rows={[
+            { label: "OBJECT", value: group.category },
+            { label: "CLASS", value: group.label },
+            {
+              label: "STACK",
+              value: (
+                <ul className="m-0 flex max-w-[300px] flex-wrap justify-end gap-1.5 p-0">
+                  {group.tools.map((t, i) => (
+                    <li
+                      key={t.name}
+                      style={{ "--i": i } as CSSProperties}
+                      className="readout-chip inline-flex list-none items-center gap-1.5 rounded border border-border px-2 py-0.5 text-[10px] tracking-[0.08em]"
+                    >
+                      <Logo tool={t} />
+                      {t.name}
+                    </li>
+                  ))}
+                </ul>
+              ),
+            },
+          ]}
+        />
+      </div>
     ) : (
       // The contacts are the only way into the toolbox, so the idle state says
       // how to reach them, the same bracketed voice as the scroll cue.

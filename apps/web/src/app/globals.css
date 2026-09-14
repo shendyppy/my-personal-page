@@ -521,6 +521,8 @@ body { background: #083352; transition: background-color 900ms ease; }
    information per pixel — goes, the title keeps two lines, the rest one. */
 @media (max-height: 480px) and (min-width: 640px) {
   .log-badge { display: none; }
+  .log-meta { margin-top: 0; }
+  .log-detail-toggle { padding: 0; }
   .log-entry h3 {
     font-size: 16px;
     display: -webkit-box;
@@ -648,6 +650,28 @@ body { background: #083352; transition: background-color 900ms ease; }
    the scope under the pointer. */
 .sonar-readout { width: min(360px, 100%); min-height: 14rem; display: grid; align-content: start; justify-items: center; text-align: center; }
 .sonar-readout .record-panel { width: 100%; text-align: left; }
+/* Switching contacts: the panel wipes in from the top behind a HUD scan line,
+   its rows settle one after another, then the tool chips pop in turn. */
+.readout-swap { position: relative; width: 100%; animation: readout-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.readout-swap::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; pointer-events: none;
+  background: var(--hud); box-shadow: 0 0 14px var(--hud);
+  animation: readout-scan 560ms ease-out both;
+}
+.readout-swap .record-row { animation: readout-row 380ms ease-out both; }
+.readout-swap .record-row:nth-child(2) { animation-delay: 70ms; }
+.readout-swap .record-row:nth-child(3) { animation-delay: 140ms; }
+.readout-chip { animation: readout-chip 320ms cubic-bezier(0.2, 0.9, 0.3, 1.3) both; animation-delay: calc(180ms + var(--i, 0) * 28ms); }
+@keyframes readout-in { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(0); } }
+@keyframes readout-scan { from { top: 0; opacity: 1; } to { top: 100%; opacity: 0; } }
+@keyframes readout-row { from { opacity: 0; transform: translateX(-8px); } }
+@keyframes readout-chip { from { opacity: 0; transform: translateY(6px) scale(0.85); } }
+/* Stacked under the scope, the panel's height changed per contact and the
+   centred stage jumped the scope up and down with it. A floor as tall as the
+   largest contact holds everything still. */
+@media (max-width: 1023px) and (min-height: 481px) {
+  .sonar-readout { min-height: 17.5rem; }
+}
 /* Wide or short-and-wide: scope and readout side by side. */
 @media (min-width: 1024px), (max-height: 720px) and (min-width: 640px) {
   .sonar {
@@ -815,7 +839,10 @@ body { background: #083352; transition: background-color 900ms ease; }
   .descent-lane { width: 11rem; }
 }
 /* Inside the first ring (radius 70 of 640). */
-.sonar-lane { position: absolute; left: 50%; top: 50%; width: 18%; height: 18%; transform: translate(-50%, -50%); }
+/* Clear of the first ring's contact (11% out from the centre): the sub now
+   weaves and turns while it waits, and its swept footprint is wider than a
+   parked one, so an 18% box had it covering the FRONTEND label. */
+.sonar-lane { position: absolute; left: 50%; top: 50%; width: 12%; height: 9%; transform: translate(-50%, -50%); }
 /* Contacts pulse so they read as something to touch before anyone tries. */
 .blip-dot { position: relative; }
 .blip-dot::after {
@@ -859,5 +886,7 @@ body { background: #083352; transition: background-color 900ms ease; }
   .learning-crawl { animation: none; }
   .learning-echo { display: none; }
   .log-popover, .log-sheet, .log-sheet-backdrop { transition: none; animation: none; }
+  .readout-swap, .readout-swap::after, .readout-swap .record-row, .readout-chip { animation: none; }
+  .readout-swap::after { display: none; }
   .blip-dot::after { animation: none; }
 }

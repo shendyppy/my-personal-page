@@ -18,7 +18,12 @@ export function poseAt(p: number, ranges: Range[], lanes: Partial<Record<Chapter
   const { id, t } = localProgress(p, ranges);
   const i = CHAPTERS.findIndex((c) => c.id === id);
   const range = ranges.find((r) => r.id === id);
-  const move = Math.min(1, MOVE_BEATS / (range?.beats ?? 1));
+  // A one-beat chapter is all transition. Longer ones fly for a beat but never
+  // more than 45% of the chapter: at a full beat, a 1.5-beat chapter (twilight,
+  // midnight) held its lane for only the first third and the sub left the
+  // sonar while it was still being read.
+  const beats = range?.beats ?? 1;
+  const move = beats <= 1 ? 1 : Math.min(MOVE_BEATS, beats * 0.45) / beats;
   const hold = 1 - move;
 
   const { y2, ...from }: Pose = { ...SUB_POSES[id], ...lanes[id] };

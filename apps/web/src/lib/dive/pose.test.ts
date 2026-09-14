@@ -26,6 +26,12 @@ describe("poseAt", () => {
     expect(poseAt(at(1, 0.9999), r).x).toBeCloseTo(SUB_POSES.twilight.x, 2);
   });
 
+  test("a 1.5-beat chapter holds its lane for over half of it", () => {
+    // Twilight is 1.5 beats: flight capped at 45% of the chapter.
+    expect(poseAt(at(2, 0.54), r)).toEqual(SUB_POSES.twilight);
+    expect(poseAt(at(2, 0.7), r).x).not.toBeCloseTo(SUB_POSES.twilight.x, 5);
+  });
+
   test("a one-beat chapter spends its whole beat moving on", () => {
     const mid = poseAt(at(0, 0.7), r);
     const lo = Math.min(SUB_POSES.surface.x, SUB_POSES.reef.x);
