@@ -46,7 +46,7 @@ export const ProjectPageContent = ({
 
       <DiveHud mode="surface" />
       {/* The sub followed you up from the reef: it hovers in a fixed corner and
-          turns slowly while you read, never scrolling away or clipping. */}
+          turns slowly while you read (drag it to spin), never scrolling away. */}
       <SubEscort className="project-sub" />
 
       {/* Hero */}

@@ -909,24 +909,21 @@ body { background: #083352; transition: background-color 900ms ease; }
 @keyframes blip-ping { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(2.4); opacity: 0; } }
 .sonar-idle { padding: 1.25rem 1rem; border: 1px dashed var(--border); }
 
-/* ---- Project page: the sub in its own stage ---- */
+/* ---- Project page: the sub floating along ---- */
 /* Fixed, so it rides along with the page instead of scrolling past or being
-   clipped by a layout box. The page's reading column reaches both edges, so
-   there is no empty corner to park in: the sub sits in its own porthole, a
-   frosted round badge that reads as a floating companion over the content
-   rather than a model dropped on the text. It never takes a pointer, so the
-   content beneath stays clickable. */
+   clipped by a layout box. No badge behind it: the model floats free over the
+   corner, and a drop shadow keeps its silhouette off the text it crosses. The
+   box never takes a pointer — the canvas listens on <body> and only the hull
+   is a drag target — so the content beneath stays clickable. */
 .project-sub {
-  position: fixed; z-index: 20; right: 1rem; bottom: 1rem;
-  width: 88px; height: 88px; border-radius: 9999px; overflow: hidden;
+  position: fixed; z-index: 20; right: 0.5rem; bottom: 0.5rem;
+  width: 120px; height: 120px;
   pointer-events: none;
-  border: 1px solid var(--border);
-  background: radial-gradient(circle at 50% 35%, color-mix(in oklab, var(--hud) 22%, #06263f), #041a2c 70%);
-  box-shadow: inset 0 0 18px rgb(62 224 200 / 0.25), 0 10px 30px rgb(0 0 0 / 0.45), 0 0 0 5px color-mix(in oklab, var(--card) 55%, transparent);
+  filter: drop-shadow(0 12px 18px rgb(0 0 0 / 0.55));
 }
 .project-sub * { pointer-events: none !important; }
 @media (min-width: 1024px) {
-  .project-sub { right: 1.75rem; bottom: 1.75rem; width: 176px; height: 176px; }
+  .project-sub { right: 1rem; bottom: 1rem; width: 220px; height: 220px; }
 }
 
 /* Reduced motion, kept LAST in the file on purpose. These rules undo the

@@ -25,7 +25,11 @@ export const SubEscortImpl = () => {
   if (!ok) return null;
 
   return (
+    // Listens on <body> like the dive scene: the hull is the drag hit area and
+    // the box stays click-through for the page underneath.
     <Canvas
+      eventSource={document.body}
+      eventPrefix="client"
       dpr={[1, 1.5]}
       camera={{ position: [0, 0, 8], fov: 40 }}
       gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
