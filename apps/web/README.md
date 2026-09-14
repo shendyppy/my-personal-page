@@ -19,7 +19,6 @@ This app follows Next.js 16 App Router architecture:
 apps/web/
 ├── src/
 │   ├── app/
-│   │   ├── api/              # Backend API routes
 │   │   ├── projects/[slug]/  # Dynamic project pages
 │   │   ├── layout.tsx        # Root layout
 │   │   └── page.tsx          # Home page
@@ -116,15 +115,6 @@ Optional:
 ```env
 NEXT_PUBLIC_SITE_URL="https://your-domain.com"
 ```
-
-## 🌐 API Routes
-
-Will be created in `src/app/api/`:
-- `GET /api/projects` - Get all projects
-- `GET /api/projects/[slug]` - Get project by slug
-- `GET /api/experiences` - Get work experiences
-- `GET /api/skills` - Get skills
-- `GET /api/about` - Get about section data
 
 ## 📱 Features
 

@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
-import { RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
 import { dive } from "@/lib/dive/depth";
@@ -208,7 +207,10 @@ export const Submersible = ({ pose: fixed }: SubmersibleProps) => {
       </mesh>
 
       {/* sail, hatch, strobe, antenna */}
-      <RoundedBox args={[0.78, 0.3, 0.3]} radius={0.12} smoothness={4} position={[0.05, 0.5, 0]} material={mats.hull} />
+      {/* A capsule laid along x: the rounded sail without pulling in drei. */}
+      <mesh position={[0.05, 0.5, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.hull}>
+        <capsuleGeometry args={[0.15, 0.48, 6, 16]} />
+      </mesh>
       <mesh position={[0.2, 0.67, 0]} material={mats.metal}>
         <cylinderGeometry args={[0.09, 0.1, 0.05, 20]} />
       </mesh>

@@ -22,23 +22,3 @@ export const SITE_CONFIG = {
   url: inferredUrl,
   locale: "en_US",
 };
-
-export const BREAKPOINTS = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  "2xl": 1536,
-};
-
-export const SKILL_CATEGORIES = [
-  "All",
-  "Frontend",
-  "Backend",
-  "DevOps",
-  "Database",
-  "AI",
-  "Project Management",
-] as const;
-
-export type SkillCategoryFilter = (typeof SKILL_CATEGORIES)[number];

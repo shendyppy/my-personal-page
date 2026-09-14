@@ -22,8 +22,6 @@ const bundle = (over: Partial<AboutBundle> = {}): AboutBundle => ({
   aboutSections: [],
   cvInfo: null,
   techStacks: [],
-  socialLinks: [],
-  loves: [],
   ...over,
 });
 

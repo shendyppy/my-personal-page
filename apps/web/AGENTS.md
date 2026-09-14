@@ -9,9 +9,7 @@ Web-app-specific conventions. Read root `AGENTS.md` first.
 ```
 src/
 ├── app/                       # Next.js App Router
-│   ├── api/                   # Route Handlers (kept for mutations + revalidation)
 │   ├── projects/[slug]/       # dynamic project detail pages (surface HUD)
-│   ├── providers/             # QueryProvider
 │   ├── error.tsx, not-found.tsx, layout.tsx, page.tsx, globals.css
 ├── components/                # atomic design — strict layering
 │   ├── atoms/                 # leaf primitives (ChapterHead, ScrollCue, TerminalLogo, …)
@@ -22,7 +20,7 @@ src/
 │   └── ui/                    # shadcn-derived primitives (Button, Card, ImageModal) — prefer wrapping
 ├── server/queries/            # server-only data access, one file per content domain
 ├── hooks/                     # client hooks (useDive, useWibClock)
-├── lib/                       # utilities (prisma, utils.ts, query-client.ts)
+├── lib/                       # utilities (prisma, utils.ts)
 │   └── dive/                  # pure journey maths: depth, pose, lanes, water, sonar, spin, scatter, timelines
 ├── constants/                 # site config + dive.ts (chapter registry, copy, fallback poses)
 └── types/                     # all TypeScript types — mirrors Prisma models
@@ -37,8 +35,8 @@ src/
 
 `app/page.tsx` is an async server component: it calls the `server/queries/*` functions in one `Promise.all` and hands the results to the chapter sections as props. Chapters stay server components; only the interactive leaves (`ChapterFrame`, `SonarChart`, the HUD, the scene) are client.
 
-- `/api/*` route handlers call the same `server/queries/*` functions — one source of truth.
-- `QueryProvider` is still mounted in the layout for any future client-side refetch or mutation; nothing on the landing page uses `useQuery` today.
+- There are no API routes and no client data cache: every page is server-rendered with ISR (`revalidate = 3600`). Add a route handler only when something outside the pages needs the data.
+- Queries fetch only what the chapters render (e.g. `getAbout` skips social links and loves).
 - **Don't** add `useEffect(() => { fetch() }, [])` patterns.
 
 ---
@@ -87,7 +85,7 @@ src/
 ## Common gotchas
 
 - **`window`/`document` in RSC:** will crash the build. If you need them, the component is client.
-- **Prisma in client components:** never. Prisma is server-only — import only from `server/queries/*` or `app/api/*` routes.
+- **Prisma in client components:** never. Prisma is server-only — import only from `server/queries/*`.
 - **Database content drifts from `prisma/seed.ts`.** Seeding wipes tables; for a one-field fix, update the row in place.
 - **Dev server serving stale CSS:** make sure only one `next dev` is running (an orphaned one keeps port 3000). Turbopack's watcher can also miss `globals.css` rewritten by a script; an editor save picks it up.
 
