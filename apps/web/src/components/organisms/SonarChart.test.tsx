@@ -87,7 +87,7 @@ describe("SonarChart", () => {
   test("each label hangs off the outer side of its dot, so inner-ring neighbours never collide", () => {
     render(<SonarChart groups={[...groups, { ...groups[1], category: "DevOps", label: "DevOps" }]} />);
     // Three contacts: 12 o'clock, then 4 and 8 o'clock.
-    expect(blip("Frontend")).toHaveClass("blip--center");
+    expect(blip("Frontend")).toHaveClass("blip--top");
     expect(blip("AI & Productivity")).toHaveClass("blip--right");
     expect(blip("DevOps")).toHaveClass("blip--left");
   });

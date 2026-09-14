@@ -21,10 +21,12 @@ export const SurfaceChapter = ({ projectCount, experiences }: SurfaceChapterProp
           7fr column and an fr track never shrinks below its min-content, which
           pushed the panel off the right edge. Full-bleed headline first, then
           the asymmetric split underneath. */}
-      <div className="grid gap-x-10 gap-y-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
-        <div className="lg:col-span-2">
+      {/* Below the headline: copy | the sub's lane | record, so the sub surfaces
+          in open water instead of behind the hero type. */}
+      <div className="surface-grid grid gap-x-10 gap-y-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)_auto]">
+        <div className="lg:col-span-3">
           <ChapterHead index={chapter.index + 1} category="PRIMARY TARGET" label={chapter.label} />
-          <h1 className="font-heading m-0 text-[clamp(40px,7.8vw,112px)] uppercase leading-[0.92] tracking-[-0.03em]" data-hero-title>
+          <h1 className="surface-title font-heading m-0 text-[clamp(40px,7.8vw,112px)] uppercase leading-[0.92] tracking-[-0.03em]" data-hero-title>
             <span className="block">Software</span>
             <span className="block text-transparent" style={{ WebkitTextStroke: "2px var(--foreground)" }}>
               Engineer<span className="text-accent" style={{ WebkitTextStroke: "0" }}>.</span>
@@ -33,12 +35,19 @@ export const SurfaceChapter = ({ projectCount, experiences }: SurfaceChapterProp
         </div>
 
         <div className="lg:self-end">
-          <p className="m-0 max-w-[440px] text-[17px] leading-[1.65] text-subtle" data-reveal>
+          <p className="surface-copy m-0 max-w-[440px] text-[17px] leading-[1.65] text-subtle" data-reveal>
             I&apos;m <b className="text-foreground">Shendy</b> — a software engineer shipping products end-to-end
             for {years ?? "4"}+ years. Enterprise assessment platforms, cross-border banking systems, and
             full-stack apps from database schema to the last pixel.
           </p>
           <ScrollCue />
+        </div>
+
+        <div className="surface-lane hidden lg:flex lg:self-stretch">
+          <div data-sub-anchor="lane" aria-hidden className="grow" />
+          <p className="lane-cue m-0 font-mono text-[10px] tracking-[0.16em] text-muted-foreground" data-reveal>
+            {DIVE_COPY.dragCueShort}
+          </p>
         </div>
 
         <RecordPanel

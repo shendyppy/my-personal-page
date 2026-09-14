@@ -7,6 +7,7 @@ import Lenis from "lenis";
 
 import { CHAPTER_IDS, sectionId, type ChapterId } from "@/constants/dive";
 import { dive } from "@/lib/dive/depth";
+import { measureLanes } from "@/lib/dive/lanes";
 import { scroller } from "@/lib/dive/scroll";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -69,6 +70,12 @@ export const DiveShell = ({ beats, children }: DiveShellProps) => {
       onUpdate: (self) => dive.set(self.progress),
     });
 
+    // Lanes are layout: re-measure whenever ScrollTrigger re-measures (load,
+    // resize) and once the webfonts have settled the text blocks.
+    measureLanes();
+    ScrollTrigger.addEventListener("refresh", measureLanes);
+    document.fonts?.ready.then(measureLanes);
+
     scroller.install((id: ChapterId) => {
       const target = `#${sectionId(id)}`;
       if (lenis) lenis.scrollTo(target, { duration: 1.2 });
@@ -85,6 +92,7 @@ export const DiveShell = ({ beats, children }: DiveShellProps) => {
 
     return () => {
       trigger.kill();
+      ScrollTrigger.removeEventListener("refresh", measureLanes);
       scroller.install(() => {});
       if (raf) gsap.ticker.remove(raf);
       lenis?.destroy();

@@ -30,10 +30,11 @@ export const TwilightChapter = ({ about }: TwilightChapterProps) => {
   return (
     <ChapterFrame id={chapter.id} beats={chapter.beats}>
       <ChapterHead index={chapter.index + 1} category={chapter.category} label={chapter.label} />
-      {/* An `fr` track never shrinks past its content's min-content width, and a
-          grid item defaults to `min-width: auto` — together they overflowed the
-          surface hero invisibly. minmax(0, …) plus min-w-0 lets both give. */}
-      <div className="twilight-grid grid items-start gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+      {/* Three columns, not the old 7/5 split that piled the bio, body and
+          learning line into one heavy left column: bio | the sub's lane |
+          portrait, record and learning line. Weight sits on both sides and the
+          sub gets open water in the middle. */}
+      <div className="twilight-grid grid items-start gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,3fr)_minmax(300px,4fr)] lg:gap-12">
         <div className="min-w-0">
           {/* Size and measure live on `.twilight-lead` in globals.css — they
               have to answer to viewport height, which a utility cannot. */}
@@ -45,14 +46,11 @@ export const TwilightChapter = ({ about }: TwilightChapterProps) => {
               {rest}
             </p>
           )}
-          {learning && (
-            <p className="twilight-body twilight-learning mt-6 max-w-[56ch] font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground" data-reveal>
-              <span className="text-accent">CURRENTLY LEARNING</span> — {learning}
-            </p>
-          )}
         </div>
 
-        <div className="min-w-0 lg:justify-self-end">
+        <div data-sub-anchor="lane" aria-hidden className="twilight-lane hidden lg:block lg:self-stretch" />
+
+        <div className="min-w-0">
           <div className="porthole" data-reveal>
             <Image
               src={SITE_CONFIG.profileImage}
@@ -67,9 +65,8 @@ export const TwilightChapter = ({ about }: TwilightChapterProps) => {
             code="REC-02"
             // Below lg the grid is one column, so without a cap the panel
             // stretches the full stage width and strands each label metres from
-            // its value. The lg floor matches Surface's panel (320, not 360: at
-            // 1024 the 5fr track is 367px and a classic scrollbar eats the rest).
-            className="mt-6 md:max-w-[420px] lg:max-w-none lg:min-w-[320px]"
+            // its value.
+            className="mt-6 md:max-w-[420px] lg:max-w-none"
             rows={[
               { label: "DIVER", value: SITE_CONFIG.author },
               { label: "ROLE", value: "Software Engineer" },
@@ -78,6 +75,11 @@ export const TwilightChapter = ({ about }: TwilightChapterProps) => {
               { label: "BASE", value: DIVE_COPY.base },
             ]}
           />
+          {learning && (
+            <p className="twilight-body twilight-learning mt-6 font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground" data-reveal>
+              <span className="text-accent">CURRENTLY LEARNING</span> — {learning}
+            </p>
+          )}
         </div>
       </div>
     </ChapterFrame>

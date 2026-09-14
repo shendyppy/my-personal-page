@@ -14,6 +14,7 @@ export const ReefChapter = ({ projects, beats }: ReefChapterProps) => (
   <ChapterFrame id={chapter.id} beats={beats} snap>
     <ChapterHead index={chapter.index + 1} category={chapter.category} label={chapter.label} />
     <div className="reef-stack">
+      <div data-sub-anchor="lane" aria-hidden className="reef-lane" />
       {projects.map((p, i) => (
         <DiveSiteRecord key={p.slug} project={p} index={i + 1} />
       ))}

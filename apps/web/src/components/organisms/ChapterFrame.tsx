@@ -75,6 +75,10 @@ export const ChapterFrame = ({ id, beats, className, snap, children }: ChapterFr
       style={{ "--beats": beats } as CSSProperties}
     >
       <div data-stage className="stage">
+        {/* The sub's fallback parking spot: top-right of the stage, beside the
+            chapter head. A chapter's own [data-sub-anchor="lane"] wins where
+            its layout has one (lib/dive/lanes). */}
+        <span data-sub-anchor="head" aria-hidden className="stage-lane" />
         {children}
       </div>
     </section>

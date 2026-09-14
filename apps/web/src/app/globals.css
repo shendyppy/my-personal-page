@@ -658,8 +658,10 @@ body { background: #083352; transition: background-color 900ms ease; }
 /* An `fr` track never shrinks past its content's min-content width, which is
    how the surface hero overflowed. minmax(0, …) lets both tracks give. */
 @media (min-width: 1024px) {
-  .site { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 3.5rem; }
-  .site > .site-image { order: 0; }
+  /* record | the sub's lane | porthole — .reef-lane mirrors the middle track. */
+  .site { grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 5fr); gap: var(--site-gap); }
+  .site > .site-record { grid-column: 1; }
+  .site > .site-image { order: 0; grid-column: 3; }
 }
 .site-record { min-width: 0; overflow-wrap: anywhere; }
 .site-image {
@@ -897,7 +899,8 @@ body { background: #083352; transition: background-color 900ms ease; }
   font-family: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
   font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
 }
-.blip--center .blip-label { top: 100%; left: 50%; transform: translateX(-50%); }
+.blip--top .blip-label { bottom: 100%; left: 50%; transform: translateX(-50%); }
+.blip--bottom .blip-label { top: 100%; left: 50%; transform: translateX(-50%); }
 .blip--right .blip-label { left: 100%; top: 50%; transform: translateY(-50%); }
 .blip--left .blip-label { right: 100%; top: 50%; transform: translateY(-50%); }
 /* A phone-width (or landscape-phone) scope sits within ~20px of the screen
@@ -946,7 +949,7 @@ body { background: #083352; transition: background-color 900ms ease; }
 .seafloor-cv { width: 100%; max-width: 380px; text-align: left; }
 /* Drag is mouse-only (the same gesture scrolls on touch), and the cue only
    makes sense where it can sit under the sub. */
-.seafloor-cue { display: none; }
+.seafloor-lane { display: none; }
 .seafloor-channels {
   order: -1;
   width: 100%;
@@ -975,9 +978,10 @@ body { background: #083352; transition: background-color 900ms ease; }
   }
   .seafloor-band > * { grid-row: 1; }
   .seafloor-cv { grid-column: 1; justify-self: end; }
-  .seafloor-cue { grid-column: 2; }
+  .seafloor-lane { grid-column: 2; align-self: stretch; display: flex; flex-direction: column; }
   .seafloor-channels { order: 0; grid-column: 3; justify-self: start; max-width: 300px; grid-template-columns: 1fr; }
 }
+.seafloor-cue { display: none; }
 @media (hover: hover) and (min-width: 1024px) { .seafloor-cue { display: block; } }
 /* Short screens: the CV preview is 200px of a stage that has none to spare;
    the card keeps its title and download. */
@@ -991,6 +995,81 @@ body { background: #083352; transition: background-color 900ms ease; }
   .seafloor-headline { font-size: clamp(22px, 7svh, 32px); }
   .seafloor-channels a { padding-block: 8px; }
 }
+
+/* ---- Landscape phones: surface and reef ----
+   ~330px of stage. The hero stacked headline, copy, cue and record into
+   ~700px and pushed its headline under the HUD at 844x390; the reef's
+   three-line title and its tags ran ~40px over. */
+@media (max-height: 480px) and (min-width: 640px) {
+  .surface-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.75rem 2rem; }
+  .surface-grid > :first-child { grid-column: 1 / -1; }
+  .surface-title { font-size: clamp(28px, 11svh, 56px); }
+  .surface-copy { font-size: 14px; line-height: 1.55; }
+  .surface-grid [data-reveal] + button, .surface-grid button[data-reveal] { margin-top: 0.75rem; }
+  .site-record h3 { font-size: 22px; margin-top: 0.5rem; }
+  .site-record ul { display: none; }
+  .site-record a { margin-top: 0.75rem; }
+}
+
+/* ---- Sub lanes (lib/dive/lanes) ----
+   Empty boxes the layout leaves for the sub; the scene reads their rects and
+   parks the sub in them, sized to fit. They never take pointer events. */
+[data-sub-anchor] { pointer-events: none; }
+/* Fallback beside the chapter head, where every chapter's top-right is open. */
+.stage-lane {
+  position: absolute;
+  top: calc(var(--hud-h) + 0.25rem);
+  right: 1.5rem;
+  width: 32%;
+  /* Short enough that the sub never hangs into the first line under the head. */
+  height: 2.25rem;
+}
+/* Seafloor on phones: the free space between the headline and the channels
+   (the column is space-between). flex-basis 0 so it only ever takes what is
+   spare — on a 360x640 it collapses and the head lane takes over. */
+.seafloor-lane-phone { flex: 1 1 0; min-height: 0; width: 60%; align-self: center; }
+@media (min-width: 1024px), (max-height: 480px) and (min-width: 640px) {
+  .seafloor-lane-phone { display: none; }
+}
+@media (min-width: 768px) { .stage-lane { right: calc(2.5rem + var(--rail-clear)); width: 22%; } }
+:root { --site-gap: 3.5rem; }
+.reef-lane { display: none; }
+@media (min-width: 1024px) {
+  .reef-stack { position: relative; }
+  .reef-lane {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc((100% - 2 * var(--site-gap)) * 5 / 13 + var(--site-gap));
+    width: calc((100% - 2 * var(--site-gap)) * 3 / 13);
+  }
+}
+.surface-lane, .seafloor-lane { flex-direction: column; }
+.lane-cue { display: none; text-align: center; }
+@media (hover: hover) { .lane-cue { display: block; } }
+/* The gutter between the log's columns, so its width tracks their column-gap. */
+.descent-lane { display: none; position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); }
+@media (min-width: 1024px) { .descent-lane { display: block; width: 8rem; } }
+@media (min-width: 1280px) {
+  .log { column-gap: 11rem; }
+  .descent-lane { width: 11rem; }
+}
+/* Inside the first ring (radius 70 of 640). */
+.sonar-lane { position: absolute; left: 50%; top: 50%; width: 18%; height: 18%; transform: translate(-50%, -50%); }
+/* Contacts pulse so they read as something to touch before anyone tries. */
+.blip-dot { position: relative; }
+.blip-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 1px solid var(--hud);
+  animation: blip-ping 2.4s ease-out infinite;
+}
+.blip.is-active .blip-dot::after { border-color: var(--accent); }
+@keyframes blip-ping { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(2.4); opacity: 0; } }
+.sonar-idle { padding: 1.25rem 1rem; border: 1px dashed var(--border); }
 
 /* Reduced motion, kept LAST in the file on purpose. These rules undo the
    at-rest state that the pinned timelines animate away from, and they do it at
@@ -1009,4 +1088,5 @@ body { background: #083352; transition: background-color 900ms ease; }
      the timeline `from`s away from it. It does need its clamp lifted: with the
      pin gone the stage grows to fit, so there is no reason to withhold copy. */
   .twilight-body, .log-description { display: block; -webkit-line-clamp: none; line-clamp: none; }
+  .blip-dot::after { animation: none; }
 }

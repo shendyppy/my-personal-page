@@ -36,6 +36,8 @@ export const SeafloorChapter = ({ cv }: SeafloorChapterProps) => (
         </p>
       </div>
 
+      <div data-sub-anchor="lane" aria-hidden className="seafloor-lane-phone" />
+
       <div className="seafloor-band">
         {cv && (
           <div className="seafloor-cv" data-reveal>
@@ -43,9 +45,12 @@ export const SeafloorChapter = ({ cv }: SeafloorChapterProps) => (
           </div>
         )}
 
-        <p className="seafloor-cue m-0 font-mono text-[10px] tracking-[0.16em] text-muted-foreground" data-reveal>
-          {DIVE_COPY.dragCue}
-        </p>
+        <div className="seafloor-lane">
+          <div data-sub-anchor="lane" aria-hidden className="grow" />
+          <p className="seafloor-cue m-0 font-mono text-[10px] tracking-[0.16em] text-muted-foreground" data-reveal>
+            {DIVE_COPY.dragCue}
+          </p>
+        </div>
 
         <ul className="seafloor-channels" data-reveal>
           {CHANNELS.map((c) => {

@@ -46,7 +46,16 @@ export const SonarReadout = ({ group }: { group: ToolGroup | null }) => (
         ]}
       />
     ) : (
-      <p className="m-0 font-mono text-[11px] tracking-[0.16em] text-muted-foreground">{DIVE_COPY.sonarIdle}</p>
+      // The contacts are the only way into the toolbox, so the idle state says
+      // how to reach them, the same bracketed voice as the scroll cue.
+      <div className="sonar-idle">
+        <p className="m-0 font-mono text-xs tracking-[0.18em] text-foreground">
+          <span className="animate-blink text-accent">[</span>
+          <span className="mx-2">{DIVE_COPY.sonarCue}</span>
+          <span className="animate-blink text-accent">]</span>
+        </p>
+        <p className="m-0 mt-3 font-mono text-[10px] tracking-[0.16em] text-muted-foreground">{DIVE_COPY.sonarIdle}</p>
+      </div>
     )}
   </div>
 );

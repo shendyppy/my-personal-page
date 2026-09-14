@@ -6,10 +6,12 @@ import { RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
 import { dive } from "@/lib/dive/depth";
+import { lanes } from "@/lib/dive/lanes";
 import { poseAt } from "@/lib/dive/pose";
 import { createSpin, spinEnd, spinMove, spinStart, spinStep } from "@/lib/dive/spin";
 
 const ACCENT = "#d7ff3e";
+const ORIGIN = new THREE.Vector3();
 
 // Ruling D: a SpotLight only aims at `target` once that Object3D is part of
 // the scene graph. Each lamp gets its own target, rendered via <primitive>
@@ -22,6 +24,9 @@ const BLADES = [0, 1, 2];
 // Three-quarter view: seen dead side-on the hull reads as a flat silhouette.
 const YAW = -0.5;
 const PITCH = 0.1;
+/** The model's on-screen footprint at scale 1 in that view (world units). */
+const MODEL_W = 2.9;
+const MODEL_H = 1.5;
 
 /** Hull profile, tail (-y) to nose (+y), revolved and laid along +x. */
 const HULL_PROFILE = [
@@ -47,9 +52,10 @@ const Propeller = ({ radius, mat }: { radius: number; mat: THREE.Material }) => 
  * Procedural deep-sea research submersible: revolved hull with seam bands, an
  * acrylic dome, sail with hatch and strobe, shrouded stern thruster, cruciform
  * tail, side thruster pods, skids, a lamp bar and a manipulator arm. Nose is
- * +x. Props spin faster while the page is scrolling. Position/scale/lamp come
- * from poseAt every frame, plus an idle bob and a small pointer parallax; a
- * mouse drag on the hull spins it with inertia (lib/dive/spin).
+ * +x. Props spin faster while the page is scrolling. Position and size come
+ * from poseAt over the measured layout lanes, so it sits in the space each
+ * chapter leaves for it; plus an idle bob and a small pointer parallax. A
+ * mouse drag on the hull spins it with inertia in any chapter (lib/dive/spin).
  */
 export const Submersible = () => {
   const group = useRef<THREE.Group>(null);
@@ -105,38 +111,39 @@ export const Submersible = () => {
     };
   }, [spin]);
 
-  const atSeafloor = () => dive.get().chapter === "seafloor";
-
   // Mouse only: on touch the same gesture is the page scroll.
   const onDown = (e: ThreeEvent<PointerEvent>) => {
-    if (e.pointerType !== "mouse" || !atSeafloor()) return;
+    if (e.pointerType !== "mouse") return;
     spinStart(spin, e.clientX, e.clientY);
     document.body.style.userSelect = "none";
     document.body.style.cursor = "grabbing";
   };
   const onOver = () => {
-    if (atSeafloor() && !spin.dragging) document.body.style.cursor = "grab";
+    if (!spin.dragging) document.body.style.cursor = "grab";
   };
   const onOut = () => {
     if (!spin.dragging) document.body.style.cursor = "";
   };
 
-  useFrame(({ clock, pointer: p }, dt) => {
+  useFrame(({ clock, pointer: p, camera, viewport }, dt) => {
     const g = group.current;
     if (!g) return;
     const s = dive.get();
-    const pose = poseAt(s.progress, s.ranges);
+    const pose = poseAt(s.progress, s.ranges, lanes);
+    // Lanes are in viewport terms; the plane the sub lives on is z = 0.
+    const view = viewport.getCurrentViewport(camera, ORIGIN);
     pointer.current.x += (p.x - pointer.current.x) * Math.min(1, dt * 3);
     pointer.current.y += (p.y - pointer.current.y) * Math.min(1, dt * 3);
     const t = clock.elapsedTime;
-    spinStep(spin, dt, s.chapter === "seafloor");
-    g.position.set(pose.x, pose.y + Math.sin(t * 0.8) * 0.08, 0);
+    spinStep(spin, dt);
+    const scale = Math.min((pose.w * view.width) / MODEL_W, (pose.h * view.height) / MODEL_H);
+    g.position.set((pose.x * view.width) / 2, (pose.y * view.height) / 2 + Math.sin(t * 0.8) * 0.06 * scale, 0);
     g.rotation.set(
       PITCH + pointer.current.y * -0.07 + spin.rx,
       YAW + pointer.current.x * 0.07 + spin.ry,
       pose.rotZ + Math.sin(t * 0.5) * 0.02
     );
-    g.scale.setScalar(pose.scale);
+    g.scale.setScalar(scale);
 
     // Props idle at a slow churn and wind up with scroll speed.
     const velocity = Math.abs(s.progress - lastProgress.current) / Math.max(dt, 1e-3);

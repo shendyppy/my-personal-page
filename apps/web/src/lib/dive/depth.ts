@@ -1,6 +1,6 @@
 import { CHAPTERS, MAX_DEPTH_M, type ChapterId } from "@/constants/dive";
 
-export type Range = { id: ChapterId; start: number; end: number };
+export type Range = { id: ChapterId; start: number; end: number; beats: number };
 
 export type DiveState = {
   progress: number;
@@ -17,8 +17,9 @@ export function chapterRanges(beats: number[]): Range[] {
   let acc = 0;
   return CHAPTERS.map((c, i) => {
     const start = acc / total;
-    acc += beats[i] ?? c.beats;
-    return { id: c.id, start, end: i === CHAPTERS.length - 1 ? 1 : acc / total };
+    const b = beats[i] ?? c.beats;
+    acc += b;
+    return { id: c.id, start, end: i === CHAPTERS.length - 1 ? 1 : acc / total, beats: b };
   });
 }
 

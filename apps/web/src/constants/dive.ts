@@ -39,24 +39,36 @@ export const DIVE_COPY = {
   scrollCue: "[ SCROLL TO DIVE ]",
   path: "Front-end → Full-stack",
   base: "Tangerang Selatan, ID",
-  sonarIdle: "AWAITING CONTACT · HOVER A BLIP",
+  sonarIdle: "AWAITING CONTACT",
+  sonarCue: "HOVER OR TAP A CONTACT",
   dragCue: "DRAG THE SUB — IT'S YOURS TO SPIN",
+  dragCueShort: "DRAG THE SUB TO SPIN IT",
   contactHeadline: "Have something worth building?",
   contactSub: "LET'S BUILD SOMETHING GOOD.",
   builtIn: "BUILT WITH CURIOSITY IN TANGERANG SELATAN",
   backToSurface: "↑ BACK TO SURFACE",
 } as const;
 
-export type Pose = { x: number; y: number; scale: number; rotZ: number; lamp: number };
+/**
+ * Where the sub sits and how big it may be, in viewport terms: x/y are the
+ * centre in NDC (-1..1, y up), w/h the box it must fit as fractions of the
+ * viewport. `y2` makes the lane a travel lane (y → y2 over the chapter).
+ */
+export type Lane = { x: number; y: number; w: number; h: number; y2?: number };
+export type Pose = Lane & { rotZ: number; lamp: number };
 
-/** Submersible target pose per chapter (scene units at z=0, camera z=8 fov=40). */
+/**
+ * Fallback poses, used only for a chapter with no visible `[data-sub-anchor]`
+ * — normally every chapter measures one (see lib/dive/lanes). rotZ and lamp
+ * always come from here.
+ */
 export const SUB_POSES: Record<ChapterId, Pose> = {
-  surface: { x: 2.4, y: 0.6, scale: 1, rotZ: 0, lamp: 0 },
-  reef: { x: 2.8, y: -0.2, scale: 0.9, rotZ: -0.105, lamp: 0.6 },
-  twilight: { x: -2.6, y: 0.2, scale: 1, rotZ: 0.07, lamp: 1.2 },
-  descent: { x: 0, y: 1.5, scale: 0.8, rotZ: 0, lamp: 1.8 },
-  midnight: { x: 0, y: 0.4, scale: 0.55, rotZ: 0, lamp: 2.5 },
-  seafloor: { x: 0, y: -1.4, scale: 1, rotZ: 0, lamp: 3 },
+  surface: { x: 0.1, y: -0.45, w: 0.3, h: 0.25, rotZ: 0, lamp: 0 },
+  reef: { x: 0.15, y: -0.1, w: 0.22, h: 0.22, rotZ: -0.105, lamp: 0.6 },
+  twilight: { x: -0.15, y: 0, w: 0.22, h: 0.22, rotZ: 0.07, lamp: 1.2 },
+  descent: { x: 0, y: 0.6, w: 0.14, h: 0.2, rotZ: 0, lamp: 1.8 },
+  midnight: { x: 0, y: 0, w: 0.1, h: 0.12, rotZ: 0, lamp: 2.5 },
+  seafloor: { x: 0, y: -0.48, w: 0.3, h: 0.25, rotZ: 0, lamp: 3 },
 };
 
 /** Water gradient + fog density along progress (spec §7 palette). */

@@ -1,7 +1,8 @@
 /**
- * Drag-to-spin with inertia for the seafloor sub, ported from the old
- * PlaygroundIsland maths: a drag turns by the pointer delta, release keeps the
- * last move's velocity and lets it decay. Mutates in place — it runs in
+ * Drag-to-spin with inertia for the sub, ported from the old PlaygroundIsland
+ * maths: a drag turns by the pointer delta, release keeps the last move's
+ * velocity and lets it decay, and a released sub eases back home the short
+ * way round so it never stays upside-down. Mutates in place — it runs in
  * useFrame, which should not allocate.
  */
 export type Spin = { rx: number; ry: number; vx: number; vy: number; dragging: boolean; lx: number; ly: number };
@@ -10,8 +11,8 @@ const RAD_PER_PX = 0.006;
 /** Velocity kept per 1/60 s. */
 const DECAY = 0.94;
 const LAMBDA = -Math.log(DECAY) * 60;
-/** Per-second rate at which the sub eases home outside the seafloor. */
-const HOME = 3;
+/** Per-second rate at which a released sub eases home. */
+const HOME = 1.2;
 
 const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 
@@ -37,24 +38,17 @@ export const spinEnd = (s: Spin) => {
   s.dragging = false;
 };
 
-export const spinStep = (s: Spin, dt: number, active: boolean) => {
-  if (!active) {
-    // Wrap first so two full turns ease home as a small correction, not an unwind.
-    const k = 1 - Math.exp(-HOME * dt);
-    s.dragging = false;
-    s.vx = s.vy = 0;
-    s.rx = wrap(s.rx) * (1 - k);
-    s.ry = wrap(s.ry) * (1 - k);
-    return;
-  }
+export const spinStep = (s: Spin, dt: number) => {
   const d = Math.exp(-LAMBDA * dt);
-  // Exact integral of the decaying velocity over dt, so 30 fps and 60 fps land
-  // in the same place. Velocity decays while held too: a pause kills the flick.
   if (!s.dragging) {
+    // Exact integral of the decaying velocity over dt, so 30 fps and 60 fps
+    // flicks travel alike; then the homing pull, on the wrapped angle.
     const travel = (60 * (1 - d)) / LAMBDA;
-    s.rx += s.vx * travel;
-    s.ry += s.vy * travel;
+    const k = Math.exp(-HOME * dt);
+    s.rx = wrap(s.rx + s.vx * travel) * k;
+    s.ry = wrap(s.ry + s.vy * travel) * k;
   }
+  // Velocity decays while held too: a pause kills the flick.
   s.vx *= d;
   s.vy *= d;
 };

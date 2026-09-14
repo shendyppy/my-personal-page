@@ -40,6 +40,9 @@ export const DescentChapter = ({ experiences, beats, depth }: DescentChapterProp
           ))}
           <span data-depth-marker />
         </div>
+        {/* The sub rides down the gutter between the columns, in step with the
+            marker (a travel lane, see lib/dive/lanes). */}
+        <div data-sub-anchor="lane" data-sub-travel aria-hidden className="descent-lane" />
         <ol className="log">
           {experiences.map((e, i) => (
             <DescentLogEntry key={e.id} experience={e} index={i} side={i % 2 === 0 ? "left" : "right"} />

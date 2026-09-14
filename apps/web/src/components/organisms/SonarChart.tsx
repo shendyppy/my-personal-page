@@ -41,15 +41,19 @@ export const SonarChart = ({ groups }: SonarChartProps) => {
           </g>
         </svg>
 
+        {/* Own ship at the centre of the scope, inside the first ring. */}
+        <div data-sub-anchor="lane" aria-hidden className="sonar-lane" />
+
         <ul className="sonar-blips">
           {groups.map((g, i) => {
             // Ring follows category order, so the stack reads inside-out.
             const { x, y } = blipPosition(i, groups.length, RINGS[Math.min(i, RINGS.length - 1)], C, C);
             const isActive = active?.category === g.category;
-            // Label on the outer side of the dot: centred under it on the
-            // vertical axis, else away from the centre. Stacked labels under
-            // every dot collided on the inner rings once the scope shrank.
-            const side = Math.abs(x - C) < 1 ? "center" : x < C ? "left" : "right";
+            // Label on the outer side of the dot, away from the centre: above
+            // or below on the vertical axis, else beside. Labels stacked under
+            // every dot collided on the inner rings, and the top one ran into
+            // the sub parked at the centre.
+            const side = Math.abs(x - C) < 1 ? (y < C ? "top" : "bottom") : x < C ? "left" : "right";
             return (
               <li key={g.category} style={{ left: `${(x / SIZE) * 100}%`, top: `${(y / SIZE) * 100}%` }}>
                 <button
