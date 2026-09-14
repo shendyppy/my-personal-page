@@ -1,11 +1,7 @@
 import type { gsap } from "gsap";
 import type { ChapterId } from "@/constants/dive";
 
-export type TimelineBuilder = (
-  tl: gsap.core.Timeline,
-  q: gsap.utils.SelectorFunc,
-  section: HTMLElement
-) => void;
+export type TimelineBuilder = (tl: gsap.core.Timeline, q: gsap.utils.SelectorFunc) => void;
 
 export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
   surface: (tl, q) => {

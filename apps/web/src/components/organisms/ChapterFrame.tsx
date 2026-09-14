@@ -8,14 +8,12 @@ import { useGSAP } from "@gsap/react";
 import { CHAPTER_IDS, sectionId, type ChapterId } from "@/constants/dive";
 import { scrubRange } from "@/lib/dive/scrub";
 import { TIMELINES } from "@/lib/dive/timelines";
-import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 type ChapterFrameProps = {
   id: ChapterId;
   beats: number;
-  className?: string;
   /** Snap the scrub to each beat boundary (Reef's dive-site cards need this). */
   snap?: boolean;
   children: ReactNode;
@@ -27,7 +25,7 @@ type ChapterFrameProps = {
  * timeline (looked up by id) is scrubbed across it. Reduced motion: no pin,
  * every `[data-reveal]` is simply visible.
  */
-export const ChapterFrame = ({ id, beats, className, snap, children }: ChapterFrameProps) => {
+export const ChapterFrame = ({ id, beats, snap, children }: ChapterFrameProps) => {
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -58,7 +56,7 @@ export const ChapterFrame = ({ id, beats, className, snap, children }: ChapterFr
               ...(snap ? { snap: { snapTo: 1 / beats, duration: 0.3, directional: true } } : {}),
             },
           });
-          TIMELINES[id](tl, gsap.utils.selector(section), section);
+          TIMELINES[id](tl, gsap.utils.selector(section));
         }
       );
       return () => mm.revert();
@@ -71,7 +69,7 @@ export const ChapterFrame = ({ id, beats, className, snap, children }: ChapterFr
       ref={ref}
       id={sectionId(id)}
       data-chapter={id}
-      className={cn("chapter", className)}
+      className="chapter"
       style={{ "--beats": beats } as CSSProperties}
     >
       <div data-stage className="stage">

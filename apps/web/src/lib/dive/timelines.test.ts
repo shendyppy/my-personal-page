@@ -16,7 +16,7 @@ const stage = (n: number) => {
 const build = (n: number) => {
   const section = stage(n);
   const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
-  TIMELINES.reef(tl, gsap.utils.selector(section), section);
+  TIMELINES.reef(tl, gsap.utils.selector(section));
   return { tl, sites: [...section.querySelectorAll<HTMLElement>("[data-beat]")] };
 };
 
@@ -123,7 +123,7 @@ const buildTwilight = (n: number) => {
   const section = document.createElement("section");
   section.innerHTML = Array.from({ length: n }, () => `<p data-reveal></p>`).join("");
   const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
-  TIMELINES.twilight(tl, gsap.utils.selector(section), section);
+  TIMELINES.twilight(tl, gsap.utils.selector(section));
   return { tl, reveals: [...section.querySelectorAll<HTMLElement>("[data-reveal]")] };
 };
 
@@ -200,7 +200,7 @@ const buildDescent = (n: number) => {
     Array.from({ length: n }, (_, i) => `<li class="log-entry" data-beat="${i}"></li>`).join("") +
     `</ol>`;
   const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
-  TIMELINES.descent(tl, gsap.utils.selector(section), section);
+  TIMELINES.descent(tl, gsap.utils.selector(section));
   return {
     tl,
     entries: [...section.querySelectorAll<HTMLElement>("[data-beat]")],
@@ -266,7 +266,7 @@ const buildMidnight = (rings: number, blips: number) => {
     Array.from({ length: blips }, () => `<li><button class="blip"></button></li>`).join("") +
     `</ul></div>`;
   const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
-  TIMELINES.midnight(tl, gsap.utils.selector(section), section);
+  TIMELINES.midnight(tl, gsap.utils.selector(section));
   const all = <T extends Element>(s: string) => [...section.querySelectorAll<T>(s)];
   return {
     tl,
@@ -320,7 +320,7 @@ describe("TIMELINES.seafloor", () => {
     const section = document.createElement("section");
     section.innerHTML = Array.from({ length: n }, () => `<p data-reveal></p>`).join("");
     const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
-    TIMELINES.seafloor(tl, gsap.utils.selector(section), section);
+    TIMELINES.seafloor(tl, gsap.utils.selector(section));
     return { tl, reveals: [...section.querySelectorAll<HTMLElement>("[data-reveal]")] };
   };
 

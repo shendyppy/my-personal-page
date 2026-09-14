@@ -6,8 +6,8 @@
 export const scatter = (
   count: number,
   size: [number, number, number],
-  offset: [number, number, number] = [0, 0, 0],
-  seed = 1
+  offset: [number, number, number],
+  seed: number
 ) => {
   let a = seed >>> 0;
   const rand = () => {
