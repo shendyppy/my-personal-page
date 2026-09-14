@@ -310,3 +310,41 @@ describe("TIMELINES.midnight", () => {
     expect(Number(gsap.getProperty(sonar, "opacity"))).toBe(0);
   });
 });
+
+describe("TIMELINES.seafloor", () => {
+  /** A seafloor stage with `n` reveals. */
+  const buildSeafloor = (n: number) => {
+    const section = document.createElement("section");
+    section.innerHTML = Array.from({ length: n }, () => `<p data-reveal></p>`).join("");
+    const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
+    TIMELINES.seafloor(tl, gsap.utils.selector(section), section);
+    return { tl, reveals: [...section.querySelectorAll<HTMLElement>("[data-reveal]")] };
+  };
+
+  test("spans exactly one unit, so its numbers read as the entrance's progress", () => {
+    expect(buildSeafloor(6).tl.duration()).toBe(1);
+  });
+
+  test("reveals are held out while the chapter is still below the fold", () => {
+    const { tl, reveals } = buildSeafloor(6);
+    tl.progress(0.5);
+    tl.progress(0);
+    expect(opacities(reveals)).toEqual(Array(6).fill(0));
+  });
+
+  test("everything is settled before the page runs out, and stays", () => {
+    // The last chapter's entrance ends at the page bottom; nothing may still
+    // be arriving at the one scroll position a reader rests on.
+    const { tl, reveals } = buildSeafloor(6);
+    for (const p of [0.85, 1]) {
+      tl.progress(p);
+      expect(opacities(reveals), `at ${p}`).toEqual(Array(6).fill(1));
+      expect(ys(reveals), `at ${p}`).toEqual(Array(6).fill(0));
+    }
+  });
+
+  test("adds nothing at all when the stage has no reveals", () => {
+    const { tl } = buildSeafloor(0);
+    expect(tl.getChildren()).toHaveLength(0);
+  });
+});

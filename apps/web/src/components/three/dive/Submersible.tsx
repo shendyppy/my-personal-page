@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 
 import { dive } from "@/lib/dive/depth";
 import { poseAt } from "@/lib/dive/pose";
+import { createSpin, spinEnd, spinMove, spinStart, spinStep } from "@/lib/dive/spin";
 
 const ACCENT = "#d7ff3e";
 const HULL = "#232d3a";
@@ -20,7 +21,8 @@ const LAMP_Z = [0.22, -0.22] as const;
 /**
  * Procedural submersible: capsule hull, porthole ring, two accent lamps with
  * spotlights, propeller guard, antenna. Position/scale/lamp come from poseAt
- * every frame, plus an idle bob and a small pointer parallax.
+ * every frame, plus an idle bob and a small pointer parallax. At the seafloor a
+ * mouse drag on the hull spins it with inertia (lib/dive/spin).
  */
 export const Submersible = () => {
   const group = useRef<THREE.Group>(null);
@@ -30,6 +32,40 @@ export const Submersible = () => {
   const glowB = useRef<THREE.MeshBasicMaterial>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const targets = useMemo(() => [new THREE.Object3D(), new THREE.Object3D()], []);
+  const [spin] = useState(createSpin);
+
+  // Move/up on window, not the group: the pointer leaves the hull mid-drag.
+  useEffect(() => {
+    const move = (e: PointerEvent) => spinMove(spin, e.clientX, e.clientY);
+    const up = () => {
+      if (!spin.dragging) return;
+      spinEnd(spin);
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+  }, [spin]);
+
+  const atSeafloor = () => dive.get().chapter === "seafloor";
+
+  // Mouse only: on touch the same gesture is the page scroll.
+  const onDown = (e: ThreeEvent<PointerEvent>) => {
+    if (e.pointerType !== "mouse" || !atSeafloor()) return;
+    spinStart(spin, e.clientX, e.clientY);
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "grabbing";
+  };
+  const onOver = () => {
+    if (atSeafloor() && !spin.dragging) document.body.style.cursor = "grab";
+  };
+  const onOut = () => {
+    if (!spin.dragging) document.body.style.cursor = "";
+  };
 
   useFrame(({ clock, pointer: p }, dt) => {
     const g = group.current;
@@ -39,8 +75,13 @@ export const Submersible = () => {
     pointer.current.x += (p.x - pointer.current.x) * Math.min(1, dt * 3);
     pointer.current.y += (p.y - pointer.current.y) * Math.min(1, dt * 3);
     const t = clock.elapsedTime;
+    spinStep(spin, dt, s.chapter === "seafloor");
     g.position.set(pose.x, pose.y + Math.sin(t * 0.8) * 0.08, 0);
-    g.rotation.set(pointer.current.y * -0.07, pointer.current.x * 0.07, pose.rotZ + Math.sin(t * 0.5) * 0.02);
+    g.rotation.set(
+      pointer.current.y * -0.07 + spin.rx,
+      pointer.current.x * 0.07 + spin.ry,
+      pose.rotZ + Math.sin(t * 0.5) * 0.02
+    );
     g.scale.setScalar(pose.scale);
     const lampIntensity = pose.lamp * 30;
     const glowOpacity = Math.min(1, 0.15 + pose.lamp * 0.3);
@@ -51,7 +92,7 @@ export const Submersible = () => {
   });
 
   return (
-    <group ref={group}>
+    <group ref={group} onPointerDown={onDown} onPointerOver={onOver} onPointerOut={onOut}>
       {/* hull */}
       <mesh rotation={[0, 0, Math.PI / 2]}>
         <capsuleGeometry args={[0.42, 1.5, 8, 24]} />

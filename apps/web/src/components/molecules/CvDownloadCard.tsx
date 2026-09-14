@@ -135,6 +135,7 @@ export const CvDownloadCard = ({ cvInfo }: CvDownloadCardProps) => {
 
         {/* Preview reads as a paper sheet — ring + soft vignette */}
         <div
+          data-cv-preview
           className="relative w-full h-[150px] md:h-[200px] overflow-hidden rounded-lg shadow-md ring-1 ring-border/40 bg-muted/30"
           style={{ transform: "translateZ(15px)" }}
         >

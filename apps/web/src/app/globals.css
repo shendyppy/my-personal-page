@@ -928,6 +928,70 @@ body { background: #083352; transition: background-color 900ms ease; }
 }
 @media (prefers-reduced-motion: reduce) { .sonar-sweep { animation: none; } }
 
+/* ---- Seafloor: contact ---- */
+/* The landed sub sits bottom-centre (pose y -1.4 is ~74% down the viewport,
+   about a third of its width). A centred stack put the CV card squarely over
+   it, so the stage stretches to full height instead: headline pinned to the
+   top, a band along the bottom that leaves the sub's column empty. */
+.stage:has(.seafloor) { align-content: stretch; }
+.seafloor { display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem; text-align: center; }
+.seafloor-headline {
+  max-width: 16ch;
+  margin-inline: auto;
+  font-size: clamp(32px, min(4.6vw, 7svh), 76px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.seafloor-band { display: grid; gap: 1.5rem; justify-items: center; }
+.seafloor-cv { width: 100%; max-width: 380px; text-align: left; }
+/* Drag is mouse-only (the same gesture scrolls on touch), and the cue only
+   makes sense where it can sit under the sub. */
+.seafloor-cue { display: none; }
+.seafloor-channels {
+  order: -1;
+  width: 100%;
+  max-width: 380px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+.seafloor-channels a { display: flex; align-items: center; gap: 0.75rem; padding-block: 12px; border-bottom: 1px solid var(--border); }
+.seafloor-channels a > :nth-child(2) { flex: 1; text-align: left; }
+.seafloor-foot { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem; }
+/* The band: CV card | the sub's column | channels, bottoms aligned. The middle
+   track is sized to the sub, which spans ~24% of a 16:9 viewport and ~32% of
+   a 4:3 one. Landscape phones take it too; stacked, nothing fits in 330px. */
+@media (min-width: 1024px), (max-height: 480px) and (min-width: 640px) {
+  .seafloor-band {
+    grid-template-columns: minmax(0, 1fr) clamp(260px, 34vw, 480px) minmax(0, 1fr);
+    align-items: end;
+  }
+  .seafloor-band > * { grid-row: 1; }
+  .seafloor-cv { grid-column: 1; justify-self: end; }
+  .seafloor-cue { grid-column: 2; }
+  .seafloor-channels { order: 0; grid-column: 3; justify-self: start; max-width: 300px; grid-template-columns: 1fr; }
+}
+@media (hover: hover) and (min-width: 1024px) { .seafloor-cue { display: block; } }
+/* Short screens: the CV preview is 200px of a stage that has none to spare;
+   the card keeps its title and download. */
+@media (max-height: 700px) {
+  .seafloor [data-cv-preview] { display: none; }
+}
+/* Landscape phones: 32px is above 7svh here, and the headline's floor pushed
+   the chapter head under the HUD at 844x390. */
+@media (max-height: 480px) {
+  .seafloor { gap: 0.75rem; }
+  .seafloor-headline { font-size: clamp(22px, 7svh, 32px); }
+  .seafloor-channels a { padding-block: 8px; }
+}
+
 /* Reduced motion, kept LAST in the file on purpose. These rules undo the
    at-rest state that the pinned timelines animate away from, and they do it at
    the same specificity as the rules they override — so cascade order is the

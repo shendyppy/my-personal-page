@@ -3,8 +3,6 @@
 // without a full redeploy.
 export const revalidate = 3600;
 
-import { ChapterHead } from "@/components/atoms/ChapterHead";
-import { ChapterFrame } from "@/components/organisms/ChapterFrame";
 import { DiveHud } from "@/components/organisms/DiveHud";
 import { DiveScene } from "@/components/organisms/DiveScene";
 import { DiveShell } from "@/components/organisms/DiveShell";
@@ -12,6 +10,7 @@ import { GrainOverlay } from "@/components/atoms/GrainOverlay";
 import { DescentChapter } from "@/components/sections/dive/DescentChapter";
 import { MidnightChapter } from "@/components/sections/dive/MidnightChapter";
 import { ReefChapter } from "@/components/sections/dive/ReefChapter";
+import { SeafloorChapter } from "@/components/sections/dive/SeafloorChapter";
 import { SurfaceChapter } from "@/components/sections/dive/SurfaceChapter";
 import { TwilightChapter } from "@/components/sections/dive/TwilightChapter";
 import { CHAPTERS } from "@/constants/dive";
@@ -48,14 +47,7 @@ export default async function Home() {
             depth={{ start: depthForProgress(descent.start), end: depthForProgress(descent.end) }}
           />
           <MidnightChapter skills={skills} />
-          {CHAPTERS.slice(5).map((c, i) => (
-            <ChapterFrame key={c.id} id={c.id} beats={beats[i + 5]}>
-              <ChapterHead index={c.index + 1} category={c.category} label={c.label} />
-              <h2 className="font-heading text-[clamp(36px,5vw,72px)] uppercase leading-none">
-                {c.name}
-              </h2>
-            </ChapterFrame>
-          ))}
+          <SeafloorChapter cv={about.cvInfo} />
         </DiveShell>
       </main>
     </>

@@ -52,7 +52,9 @@ export const DiveShell = ({ beats, children }: DiveShellProps) => {
     let raf: ((t: number) => void) | null = null;
 
     if (!reduced()) {
-      lenis = new Lenis({ lerp: 0.1, smoothWheel: true, syncTouch: false });
+      // `anchors`: in-page `#dive-*` links (the seafloor's BACK TO SURFACE)
+      // scroll smoothly instead of jumping under Lenis.
+      lenis = new Lenis({ lerp: 0.1, smoothWheel: true, syncTouch: false, anchors: true });
       lenis.on("scroll", ScrollTrigger.update);
       raf = (t) => lenis?.raf(t * 1000);
       gsap.ticker.add(raf);

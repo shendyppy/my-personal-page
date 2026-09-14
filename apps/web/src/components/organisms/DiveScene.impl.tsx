@@ -25,7 +25,13 @@ export const DiveSceneImpl = () => {
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
+      {/* The chapter stages cover the canvas edge to edge, so it never sees a
+          pointer event of its own (which also left the sub's parallax dead).
+          Listening on <body> lets R3F raycast every pointer: the sub's hull is
+          the drag hit area, and whatever sits on top still gets its clicks. */}
       <Canvas
+        eventSource={document.body}
+        eventPrefix="client"
         dpr={[1, 1.5]}
         camera={{ position: [0, 0, 8], fov: 40 }}
         gl={{ antialias: false, powerPreference: "high-performance", alpha: false }}

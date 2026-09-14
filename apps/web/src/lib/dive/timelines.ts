@@ -7,7 +7,6 @@ export type TimelineBuilder = (
   section: HTMLElement
 ) => void;
 
-const noop: TimelineBuilder = () => {};
 
 export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
   surface: (tl, q) => {
@@ -83,5 +82,12 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
       .to(q(".sonar"), { opacity: 0, y: -24, duration: 0.2 }, 0.8)
       .to({}, { duration: 1 }, 0);
   },
-  seafloor: noop,
+  seafloor: (tl, q) => {
+    const reveal = q("[data-reveal]");
+    if (reveal.length === 0) return;
+    // This is the chapter's entrance (see scrubRange), which ends at the page
+    // bottom. Everything lands by ~80% so nothing is still moving where the
+    // reader stops.
+    tl.from(reveal, { y: 28, opacity: 0, duration: 0.4, stagger: 0.05 }, 0.1).to({}, { duration: 1 }, 0);
+  },
 };
