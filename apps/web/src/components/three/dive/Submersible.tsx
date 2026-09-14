@@ -1,0 +1,364 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useFrame, type ThreeEvent } from "@react-three/fiber";
+import * as THREE from "three";
+
+import { dive } from "@/lib/dive/depth";
+import { lanes } from "@/lib/dive/lanes";
+import { altAt, plungeAt, poseAt } from "@/lib/dive/pose";
+import type { Pose } from "@/constants/dive";
+import { createSpin, spinEnd, spinMove, spinStart, spinStep } from "@/lib/dive/spin";
+
+const ACCENT = "#d7ff3e";
+const ORIGIN = new THREE.Vector3();
+const STERN = new THREE.Vector3(-1.45, 0, 0);
+
+/**
+ * Where the sub is, for scene pieces that react to it (the bubble trail):
+ * world position of its stern, screen height of its centre (0 bottom, 1 top),
+ * size and speed in world units. Written once per frame by Submersible.
+ */
+export const subTelemetry = { stern: new THREE.Vector3(), screenY: 0.5, scale: 1, speed: 0 };
+
+// Ruling D: a SpotLight only aims at `target` once that Object3D is part of
+// the scene graph. Each lamp gets its own target, rendered via <primitive>
+// and passed explicitly — `target-position` on a detached default target is
+// silently ignored.
+const LAMP_Z = [0.2, -0.2] as const;
+const SKID_Z = [0.3, -0.3] as const;
+const POD_Z = [0.56, -0.56] as const;
+const BLADES = [0, 1, 2];
+// Three-quarter view: seen dead side-on the hull reads as a flat silhouette.
+const YAW = -0.5;
+const PITCH = 0.1;
+/** The model's on-screen footprint at scale 1 in that view (world units). */
+const MODEL_W = 2.9;
+const MODEL_H = 1.5;
+/** Damping rate (1/s) for the sub easing toward its pose. */
+const EASE = 2.5;
+
+/** Hull profile, tail (-y) to nose (+y), revolved and laid along +x. */
+const HULL_PROFILE = [
+  [0, -1.22], [0.14, -1.2], [0.26, -1.08], [0.36, -0.86], [0.42, -0.55],
+  [0.44, -0.1], [0.43, 0.45], [0.39, 0.8], [0.31, 1.0], [0.24, 1.08], [0, 1.08],
+].map(([r, y]) => new THREE.Vector2(r, y));
+
+/** A three-bladed propeller; the parent spins it about x. */
+const Propeller = ({ radius, mat }: { radius: number; mat: THREE.Material }) => (
+  <>
+    <mesh rotation={[0, 0, -Math.PI / 2]} material={mat}>
+      <coneGeometry args={[radius * 0.28, radius * 0.7, 12]} />
+    </mesh>
+    {BLADES.map((i) => (
+      <mesh key={i} rotation={[(i * Math.PI * 2) / 3, 0, 0]} material={mat}>
+        <boxGeometry args={[0.02, radius * 0.95, radius * 0.34]} />
+      </mesh>
+    ))}
+  </>
+);
+
+/**
+ * Procedural deep-sea research submersible: revolved hull with seam bands, an
+ * acrylic dome, sail with hatch and strobe, shrouded stern thruster, cruciform
+ * tail, side thruster pods, skids, a lamp bar and a manipulator arm. Nose is
+ * +x. Props spin faster while the page is scrolling. Position and size come
+ * from poseAt over the measured layout lanes, so it sits in the space each
+ * chapter leaves for it; plus an idle bob and a small pointer parallax. A
+ * mouse drag on the hull spins it with inertia in any chapter (lib/dive/spin).
+ */
+type SubmersibleProps = {
+  /** A fixed pose, for scenes outside the dive (the project page). Omit to follow the dive. */
+  pose?: Pose;
+  /** Turn slowly on the spot, like a model on a display stand. */
+  turntable?: boolean;
+};
+
+export const Submersible = ({ pose: fixed, turntable }: SubmersibleProps) => {
+  const group = useRef<THREE.Group>(null);
+  const body = useRef<THREE.Group>(null);
+  /** Damped attitude: nose pitch, bank and yaw into the direction of travel. */
+  const attitude = useRef({ pitch: 0, bank: 0, yaw: 0 });
+  const lampA = useRef<THREE.SpotLight>(null);
+  const lampB = useRef<THREE.SpotLight>(null);
+  const glowA = useRef<THREE.MeshBasicMaterial>(null);
+  const glowB = useRef<THREE.MeshBasicMaterial>(null);
+  const strobe = useRef<THREE.MeshBasicMaterial>(null);
+  const props = useRef<THREE.Group[]>([]);
+  const pointer = useRef({ x: 0, y: 0 });
+  const lastProgress = useRef(0);
+  /** Damped on-screen pose; null until the first frame snaps it into place. */
+  const eased = useRef<{ x: number; y: number; s: number } | null>(null);
+  const targets = useMemo(() => [new THREE.Object3D(), new THREE.Object3D()], []);
+  const [spin] = useState(createSpin);
+
+  const hull = useMemo(() => new THREE.LatheGeometry(HULL_PROFILE, 48), []);
+  const mats = useMemo(
+    () => ({
+      hull: new THREE.MeshStandardMaterial({ color: "#c9d0d4", metalness: 0.15, roughness: 0.45 }),
+      seam: new THREE.MeshStandardMaterial({ color: "#6f7a82", metalness: 0.3, roughness: 0.5 }),
+      frame: new THREE.MeshStandardMaterial({ color: "#2b343c", metalness: 0.55, roughness: 0.4 }),
+      metal: new THREE.MeshStandardMaterial({ color: "#8a949b", metalness: 0.7, roughness: 0.3 }),
+      glass: new THREE.MeshStandardMaterial({
+        color: "#9fe6ff",
+        metalness: 0.1,
+        roughness: 0.05,
+        transparent: true,
+        opacity: 0.32,
+        depthWrite: false,
+      }),
+      cabin: new THREE.MeshStandardMaterial({ color: "#0c1418", roughness: 0.9 }),
+      stripe: new THREE.MeshStandardMaterial({ color: ACCENT, roughness: 0.6, emissive: ACCENT, emissiveIntensity: 0.15 }),
+    }),
+    []
+  );
+  const addProp = (g: THREE.Group | null) => {
+    if (g && !props.current.includes(g)) props.current.push(g);
+  };
+
+  // Move/up on window, not the group: the pointer leaves the hull mid-drag.
+  useEffect(() => {
+    const move = (e: PointerEvent) => spinMove(spin, e.clientX, e.clientY);
+    const up = () => {
+      if (!spin.dragging) return;
+      spinEnd(spin);
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+  }, [spin]);
+
+  // Mouse only: on touch the same gesture is the page scroll.
+  const onDown = (e: ThreeEvent<PointerEvent>) => {
+    if (e.pointerType !== "mouse") return;
+    spinStart(spin, e.clientX, e.clientY);
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "grabbing";
+  };
+  const onOver = () => {
+    if (!spin.dragging) document.body.style.cursor = "grab";
+  };
+  const onOut = () => {
+    if (!spin.dragging) document.body.style.cursor = "";
+  };
+
+  useFrame(({ clock, pointer: p, camera, viewport }, dt) => {
+    const g = group.current;
+    if (!g) return;
+    const s = dive.get();
+    const pose = fixed ?? poseAt(s.progress, s.ranges, lanes);
+    // Lanes are in viewport terms; the plane the sub lives on is z = 0.
+    const view = viewport.getCurrentViewport(camera, ORIGIN);
+    // Clamped: a small canvas listening on <body> (the project page) sees
+    // pointers far outside its own -1..1 box.
+    const clamp = THREE.MathUtils.clamp;
+    pointer.current.x += (clamp(p.x, -1, 1) - pointer.current.x) * Math.min(1, dt * 3);
+    pointer.current.y += (clamp(p.y, -1, 1) - pointer.current.y) * Math.min(1, dt * 3);
+    const t = clock.elapsedTime;
+    spinStep(spin, dt);
+    const plunge = fixed ? { pitch: 0, dip: 0 } : plungeAt(s.progress, s.ranges);
+    const target = {
+      x: (pose.x * view.width) / 2,
+      y: ((pose.y + plunge.dip) * view.height) / 2,
+      s: Math.min((pose.w * view.width) / MODEL_W, (pose.h * view.height) / MODEL_H),
+    };
+    // Glide toward the pose instead of locking to it, so a fast scroll, a
+    // snap or a lane re-measure never makes the sub jump.
+    const e = eased.current ?? { ...target };
+    const px = e.x;
+    const py = e.y;
+    e.x = THREE.MathUtils.damp(e.x, target.x, EASE, dt);
+    e.y = THREE.MathUtils.damp(e.y, target.y, EASE, dt);
+    e.s = THREE.MathUtils.damp(e.s, target.s, EASE, dt);
+    eased.current = e;
+    const scale = e.s;
+
+    // Fly like a vessel, not a lift: the nose dips into a descent and rises
+    // out of a climb, the hull banks and turns toward where it is heading.
+    // Velocities are normalised by size so a small sub manoeuvres as keenly.
+    const step = Math.max(dt, 1e-3) * Math.max(scale, 0.05);
+    const vx = (e.x - px) / step;
+    const vy = (e.y - py) / step;
+    const a = attitude.current;
+    a.pitch = THREE.MathUtils.damp(a.pitch, THREE.MathUtils.clamp(vy * 0.09, -0.75, 0.6), 4, dt);
+    a.bank = THREE.MathUtils.damp(a.bank, THREE.MathUtils.clamp(-vx * 0.05, -0.5, 0.5), 3, dt);
+    a.yaw = THREE.MathUtils.damp(a.yaw, THREE.MathUtils.clamp(vx * 0.06, -0.7, 0.7), 3, dt);
+
+    // Swapping to the alternate side (the reef's odd sites) it turns to face
+    // the way it crosses and stays turned there: facing right in the lane,
+    // left in alt. Mirrored while it faces left, so it banks and yaws into its
+    // own heading.
+    const turn = fixed ? 0 : Math.PI * altAt(s.progress, s.ranges, lanes);
+    const facing = Math.cos(turn);
+
+    g.position.set(e.x, e.y + Math.sin(t * 0.8) * 0.06 * scale, 0);
+    // While a chapter is read the sub is not parked: it idles through a slow
+    // weave, turning to look around, so it is never a still model.
+    const weave = turntable ? t * 0.5 : Math.sin(t * 0.45) * 0.4;
+    g.rotation.set(
+      PITCH + Math.sin(t * 0.3) * 0.08 + pointer.current.y * -0.07 + spin.rx,
+      // Turning toward the camera (-turn), with the three-quarter view
+      // mirrored, so both headings show the dome side.
+      YAW * facing - turn + a.yaw * facing + weave + pointer.current.x * 0.07 + spin.ry,
+      0
+    );
+    g.scale.setScalar(scale);
+    // ZYX: bank about the long axis first, then pitch, so the bank turns
+    // around the hull however steeply the nose is pointing.
+    body.current?.rotation.set(a.bank * facing, 0, pose.rotZ + a.pitch + plunge.pitch + Math.sin(t * 0.5) * 0.04);
+
+    subTelemetry.scale = scale;
+    subTelemetry.speed = Math.hypot(vx, vy) * scale;
+    subTelemetry.screenY = e.y / view.height + 0.5;
+    if (body.current) body.current.localToWorld(subTelemetry.stern.copy(STERN));
+
+    // Props idle at a slow churn and wind up with scroll speed.
+    const velocity = Math.abs(s.progress - lastProgress.current) / Math.max(dt, 1e-3);
+    lastProgress.current = s.progress;
+    const rate = 2.5 + Math.min(velocity * 400, 30);
+    props.current.forEach((prop) => (prop.rotation.x += rate * dt));
+
+    const lampIntensity = pose.lamp * 30;
+    if (lampA.current) lampA.current.intensity = lampIntensity;
+    if (lampB.current) lampB.current.intensity = lampIntensity;
+    const glowOpacity = Math.min(1, 0.15 + pose.lamp * 0.3);
+    if (glowA.current) glowA.current.opacity = glowOpacity;
+    if (glowB.current) glowB.current.opacity = glowOpacity;
+    if (strobe.current) strobe.current.opacity = t % 1.6 < 0.12 ? 1 : 0.15;
+  });
+
+  return (
+    <group ref={group} onPointerDown={onDown} onPointerOver={onOver} onPointerOut={onOut}>
+      <group ref={body} rotation-order="ZYX">
+        {/* hull, laid along +x */}
+        <mesh geometry={hull} material={mats.hull} rotation={[0, 0, -Math.PI / 2]} />
+        {[-0.6, 0.2].map((x) => (
+          <mesh key={x} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.seam}>
+            <torusGeometry args={[0.435, 0.012, 8, 48]} />
+          </mesh>
+        ))}
+        {/* accent belt behind the dome */}
+        <mesh position={[0.62, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.stripe}>
+          <torusGeometry args={[0.415, 0.014, 8, 48]} />
+        </mesh>
+
+        {/* acrylic dome with a dark cabin behind it */}
+        <mesh position={[1.02, 0.02, 0]} material={mats.cabin}>
+          <sphereGeometry args={[0.2, 20, 16]} />
+        </mesh>
+        <mesh position={[1.02, 0.02, 0]} rotation={[0, 0, -Math.PI / 2]} material={mats.glass}>
+          <sphereGeometry args={[0.3, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        </mesh>
+        <mesh position={[1.02, 0.02, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.metal}>
+          <torusGeometry args={[0.3, 0.025, 10, 40]} />
+        </mesh>
+
+        {/* sail, hatch, strobe, antenna */}
+        {/* A capsule laid along x: the rounded sail without pulling in drei. */}
+        <mesh position={[0.05, 0.5, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.hull}>
+          <capsuleGeometry args={[0.15, 0.48, 6, 16]} />
+        </mesh>
+        <mesh position={[0.2, 0.67, 0]} material={mats.metal}>
+          <cylinderGeometry args={[0.09, 0.1, 0.05, 20]} />
+        </mesh>
+        <mesh position={[-0.25, 0.9, 0]} material={mats.frame}>
+          <cylinderGeometry args={[0.008, 0.008, 0.5, 6]} />
+        </mesh>
+        <mesh position={[-0.25, 1.16, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <meshBasicMaterial ref={strobe} color={ACCENT} transparent toneMapped={false} />
+        </mesh>
+
+        {/* cruciform tail */}
+        {[0, Math.PI / 2].map((r) => (
+          <mesh key={r} position={[-1.0, 0, 0]} rotation={[r, 0, 0]} material={mats.frame}>
+            <boxGeometry args={[0.32, 0.9, 0.025]} />
+          </mesh>
+        ))}
+
+        {/* shrouded stern thruster */}
+        <mesh position={[-1.3, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.frame}>
+          <torusGeometry args={[0.24, 0.045, 12, 36]} />
+        </mesh>
+        <group position={[-1.3, 0, 0]} ref={addProp}>
+          <Propeller radius={0.4} mat={mats.metal} />
+        </group>
+
+        {/* side thruster pods on struts */}
+        {POD_Z.map((z) => (
+          <group key={z} position={[-0.35, -0.08, z]}>
+            <mesh rotation={[0, 0, Math.PI / 2]} material={mats.frame}>
+              <cylinderGeometry args={[0.1, 0.1, 0.36, 20]} />
+            </mesh>
+            <mesh position={[0, 0, -Math.sign(z) * 0.12]} rotation={[Math.PI / 2, 0, 0]} material={mats.frame}>
+              <boxGeometry args={[0.08, 0.2, 0.03]} />
+            </mesh>
+            <group position={[-0.05, 0, 0]} ref={addProp}>
+              <Propeller radius={0.18} mat={mats.metal} />
+            </group>
+          </group>
+        ))}
+
+        {/* skids and struts */}
+        {SKID_Z.map((z) => (
+          <group key={z}>
+            <mesh position={[0, -0.62, z]} rotation={[0, 0, Math.PI / 2]} material={mats.frame}>
+              <capsuleGeometry args={[0.03, 1.7, 6, 12]} />
+            </mesh>
+            {[-0.6, 0, 0.6].map((x) => (
+              <mesh key={x} position={[x, -0.5, z * 0.8]} rotation={[z > 0 ? -0.35 : 0.35, 0, 0]} material={mats.frame}>
+                <cylinderGeometry args={[0.018, 0.018, 0.26, 6]} />
+              </mesh>
+            ))}
+          </group>
+        ))}
+
+        {/* lamp bar under the nose */}
+        <mesh position={[0.82, -0.36, 0]} material={mats.frame}>
+          <boxGeometry args={[0.1, 0.06, 0.56]} />
+        </mesh>
+        {LAMP_Z.map((z, i) => (
+          <group key={z} position={[0.9, -0.36, z]}>
+            <mesh>
+              <sphereGeometry args={[0.055, 12, 12]} />
+              {/* Unlit so tonemapping never dulls the accent. */}
+              <meshBasicMaterial ref={i === 0 ? glowA : glowB} color={ACCENT} transparent toneMapped={false} />
+            </mesh>
+            <primitive object={targets[i]} position={[4, -2, 0]} />
+            <spotLight
+              ref={i === 0 ? lampA : lampB}
+              color={ACCENT}
+              angle={0.5}
+              penumbra={0.6}
+              distance={9}
+              decay={1}
+              target={targets[i]}
+            />
+          </group>
+        ))}
+
+        {/* manipulator arm, folded forward under the dome */}
+        <group position={[0.62, -0.42, 0.18]} rotation={[0, 0, -0.5]}>
+          <mesh position={[0.18, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.metal}>
+            <cylinderGeometry args={[0.025, 0.03, 0.36, 10]} />
+          </mesh>
+          <group position={[0.36, 0, 0]} rotation={[0, 0, 0.9]}>
+            <mesh position={[0.13, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.metal}>
+              <cylinderGeometry args={[0.02, 0.025, 0.26, 10]} />
+            </mesh>
+            {[0.25, -0.25].map((a) => (
+              <mesh key={a} position={[0.29, a * 0.12, 0]} rotation={[0, 0, a]} material={mats.frame}>
+                <boxGeometry args={[0.09, 0.015, 0.02]} />
+              </mesh>
+            ))}
+          </group>
+        </group>
+      </group>
+    </group>
+  );
+};

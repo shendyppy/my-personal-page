@@ -58,6 +58,15 @@ model ProjectImage {
 }
 
 // Experiences
+// Enum names must be identifiers; @map keeps the stored value readable.
+enum EmploymentType {
+  FullTime   @map("Full Time")
+  PartTime   @map("Part Time")
+  Contract
+  Freelance
+  Internship
+}
+
 model Experience {
   id             String   @id @default(cuid())
   company        String
@@ -70,7 +79,7 @@ model Experience {
   responsibilities String[] // Array of strings
   projects       String[] // Array of strings - project names
   techStack      String   // Comma-separated string
-  employmentType String   @default("Full Time") // "Full Time", "Part Time", "Contract", "Internship"
+  employmentType EmploymentType @default(FullTime)
   isPublished    Boolean  @default(true)
   order          Int      @default(0)
   createdAt      DateTime @default(now())
@@ -128,11 +137,20 @@ model Love {
 }
 
 // Skills
+enum SkillCategory {
+  Frontend
+  Backend
+  Database
+  DevOps
+  AI
+  ProjectManagement @map("Project Management")
+}
+
 model Skill {
   id        String   @id @default(cuid())
   name      String   @unique
   level     Int      // 1-100
-  category  String   // "Frontend", "Backend", "DevOps", "Database"
+  category  SkillCategory
   logo      String   // Path to logo image
   order     Int      @default(0)
   createdAt DateTime @default(now())
