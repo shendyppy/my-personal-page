@@ -1,5 +1,6 @@
-import { expect, test } from "vitest";
-import { waterAt } from "./water";
+import { describe, expect, test } from "vitest";
+import { chapterRanges } from "./depth";
+import { SUBMERGED_LINE, SURFACE_LINE, waterAt, waterlineAt } from "./water";
 
 test("progress 0 returns the first stop as 0..1 rgb", () => {
   const w = waterAt(0);
@@ -35,4 +36,24 @@ test("clamped negative progress returns first stop", () => {
 test("clamped progress > 1 returns last stop", () => {
   const w = waterAt(1.4);
   expect(w.fog).toBe(0.12);
+});
+
+describe("waterlineAt", () => {
+  const r = chapterRanges([1, 5, 1.5, 3, 1.5, 1]);
+  const at = (i: number, t: number) => r[i].start + (r[i].end - r[i].start) * t;
+
+  test("at rest the sea surface sits across the hero, shore and sky above it", () => {
+    expect(waterlineAt(0, r)).toBeCloseTo(SURFACE_LINE, 10);
+  });
+
+  test("scrolling the surface chapter carries the waterline up and off the top", () => {
+    const heights = [0, 0.2, 0.4, 0.6].map((t) => waterlineAt(at(0, t), r));
+    heights.slice(1).forEach((h, i) => expect(h).toBeGreaterThan(heights[i]));
+    expect(waterlineAt(at(0, 0.7), r)).toBeCloseTo(SUBMERGED_LINE, 10);
+    expect(SUBMERGED_LINE).toBeGreaterThan(1);
+  });
+
+  test("every later chapter is fully under", () => {
+    for (let i = 1; i < r.length; i += 1) expect(waterlineAt(at(i, 0.5), r)).toBe(SUBMERGED_LINE);
+  });
 });

@@ -711,6 +711,12 @@ body { background: #083352; transition: background-color 900ms ease; }
   }
 }
 .surface-lane, .seafloor-lane { flex-direction: column; }
+/* At rest the sea surface is 45% up the screen (lib/dive/water SURFACE_LINE):
+   a box centred on that line on the right, where the phone hero is empty. */
+.surface-lane-phone { position: absolute; top: calc(55% - 2.25rem); right: 1.5rem; width: 40%; height: 4.5rem; }
+@media (min-width: 1024px), (max-height: 480px) { .surface-lane-phone { display: none; } }
+/* Short phones: the copy runs down to the waterline, so the sub rides smaller. */
+@media (max-height: 700px) { .surface-lane-phone { top: calc(55% - 1.5rem); height: 3rem; width: 30%; } }
 .lane-cue { display: none; text-align: center; }
 @media (hover: hover) { .lane-cue { display: block; } }
 /* The gutter between the log's columns, so its width tracks their column-gap. */

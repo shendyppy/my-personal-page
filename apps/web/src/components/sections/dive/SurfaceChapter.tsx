@@ -23,6 +23,8 @@ export const SurfaceChapter = ({ projectCount, experiences }: SurfaceChapterProp
           the asymmetric split underneath. */}
       {/* Below the headline: copy | the sub's lane | record, so the sub surfaces
           in open water instead of behind the hero type. */}
+      {/* Phones: the sub floats on the sea surface, right of the scroll cue. */}
+      <div data-sub-anchor="lane" aria-hidden className="surface-lane-phone" />
       <div className="surface-grid grid gap-x-10 gap-y-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)_auto]">
         <div className="lg:col-span-3">
           <ChapterHead index={chapter.index + 1} category="PRIMARY TARGET" label={chapter.label} />

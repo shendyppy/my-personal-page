@@ -1,4 +1,5 @@
 import { WATER_STOPS } from "@/constants/dive";
+import { localProgress, type Range } from "./depth";
 
 export type Rgb = [number, number, number];
 
@@ -25,4 +26,26 @@ export function waterAt(p: number): { top: Rgb; bottom: Rgb; fog: number } {
     bottom: mix(hexToRgb(a.bottom), hexToRgb(b.bottom), t),
     fog: a.fog + (b.fog - a.fog) * t,
   };
+}
+
+/** Where the sea surface sits at the very top of the dive: 45% up the screen. */
+export const SURFACE_LINE = 0.45;
+/** Past this the line is above the viewport and only water is left. */
+export const SUBMERGED_LINE = 1.3;
+/** Share of the surface chapter it takes to go under. */
+const DIVE_SHARE = 0.7;
+
+/**
+ * Height of the sea surface on screen (0 = bottom edge, 1 = top edge) for the
+ * opening dive: the shore and sky fill the top of the hero at rest, and the
+ * waterline climbs past the top of the viewport over the first 70% of the
+ * surface chapter, so scrolling reads as going under. Every later chapter is
+ * fully submerged.
+ */
+export function waterlineAt(p: number, ranges: Range[]): number {
+  const { id, t } = localProgress(p, ranges);
+  if (id !== "surface") return SUBMERGED_LINE;
+  const k = Math.min(1, t / DIVE_SHARE);
+  const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+  return SURFACE_LINE + (SUBMERGED_LINE - SURFACE_LINE) * e;
 }
