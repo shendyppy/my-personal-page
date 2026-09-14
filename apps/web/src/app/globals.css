@@ -890,11 +890,13 @@ body { background: #083352; transition: background-color 900ms ease; }
   .log { column-gap: 11rem; }
   .descent-lane { width: 11rem; }
 }
-/* Inside the first ring (radius 70 of 640). */
-/* Clear of the first ring's contact (11% out from the centre): the sub now
-   weaves and turns while it waits, and its swept footprint is wider than a
-   parked one, so an 18% box had it covering the FRONTEND label. */
-.sonar-lane { position: absolute; left: 50%; top: 50%; width: 12%; height: 9%; transform: translate(-50%, -50%); }
+/* The scope's top-right corner, outside the outer ring. Parked at the centre
+   the sub sat on the radar itself and hid the inner contacts (DATABASE most of
+   all). Contacts run clockwise from 12 o'clock, so the only one in that
+   quadrant is the second, on the 110 ring — the corner past radius 290 is
+   always open water. The box's inner corner (80%, 16%) is ~300 of 640 from
+   the centre, and the sub, wider than tall, fills less than its full height. */
+.sonar-lane { position: absolute; right: 0; top: 0; width: 20%; height: 16%; }
 /* Contacts pulse so they read as something to touch before anyone tries. */
 .blip-dot { position: relative; }
 .blip-dot::after {

@@ -41,7 +41,7 @@ export const SonarChart = ({ groups }: SonarChartProps) => {
           </g>
         </svg>
 
-        {/* Own ship at the centre of the scope, inside the first ring. */}
+        {/* Own ship, parked in the scope's empty top-right corner (see globals.css). */}
         <div data-sub-anchor="lane" aria-hidden className="sonar-lane" />
 
         <ul className="sonar-blips">
@@ -51,8 +51,7 @@ export const SonarChart = ({ groups }: SonarChartProps) => {
             const isActive = active?.category === g.category;
             // Label on the outer side of the dot, away from the centre: above
             // or below on the vertical axis, else beside. Labels stacked under
-            // every dot collided on the inner rings, and the top one ran into
-            // the sub parked at the centre.
+            // every dot collided on the inner rings.
             const side = Math.abs(x - C) < 1 ? (y < C ? "top" : "bottom") : x < C ? "left" : "right";
             return (
               <li key={g.category} style={{ left: `${(x / SIZE) * 100}%`, top: `${(y / SIZE) * 100}%` }}>
