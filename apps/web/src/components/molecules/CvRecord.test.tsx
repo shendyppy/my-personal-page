@@ -12,7 +12,7 @@ describe("CvRecord", () => {
   test("reads as a record: header code, file title and format rows", () => {
     const { container } = render(<CvRecord cv={cv} />);
     expect(container.querySelector(".record-head")).toHaveTextContent("CURRICULUM VITAE");
-    expect(container.querySelector(".record-head")).toHaveTextContent("DOC-06");
+    expect(container.querySelector(".record-head")).toHaveTextContent("LATEST");
     const row = (label: string) => within(container).getByText(label).closest(".record-row")?.querySelector("dd");
     expect(row("FILE")).toHaveTextContent("Curriculum Vitae");
     expect(row("FORMAT")).toHaveTextContent("PDF · A4");
