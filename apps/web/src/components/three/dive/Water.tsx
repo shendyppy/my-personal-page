@@ -46,6 +46,18 @@ const frag = /* glsl */ `
     return max(trunk, fronds);
   }
 
+  // A gull in flight, p in half-wingspans from its body: each wing rises to an
+  // elbow and droops at the tip, and flap (-1..1) beats the whole curve.
+  float gull(vec2 p, float flap) {
+    float x = abs(p.x);
+    if (x > 1.0) return 0.0;
+    float a = 1.2 + 0.8 * flap;
+    float slope = a - 3.2 * x;
+    float d = abs(p.y - x * (a - 1.6 * x)) / sqrt(1.0 + slope * slope);
+    float th = 0.16 * (1.0 - 0.6 * x);
+    return smoothstep(th, th * 0.3, d);
+  }
+
   void main() {
     vec2 uv = vUv;
     float x = uv.x * uAspect;
@@ -81,6 +93,19 @@ const frag = /* glsl */ `
     float r2 = dot(sp, sp);
     sky += vec3(0.85, 0.50, 0.32) * exp(-r2 * 18.0) * mix(0.25, 0.55, wide);
     sky += vec3(1.0, 0.86, 0.66) * exp(-r2 * 900.0) * mix(0.5, 0.9, wide);
+
+    // Gulls drift across the dusk toward the coast, flapping in bursts and
+    // gliding between them, high enough to clear the hero headline.
+    for (int i = 0; i < 4; i++) {
+      float fi = float(i);
+      float gx = 1.1 - fract(hash(fi + 11.0) + uTime * (0.008 + hash(fi + 13.0) * 0.008)) * 1.2;
+      float gy = 0.3 + hash(fi + 17.0) * 0.14;
+      float size = 0.014 + hash(fi + 19.0) * 0.007;
+      float beat = step(0.0, sin(uTime * 0.5 + fi * 2.3));
+      float flap = sin(uTime * (7.0 + fi) + fi * 3.0) * beat;
+      vec2 gp = vec2((uv.x - gx) * uAspect, h - gy) / size;
+      sky = mix(sky, vec3(0.05, 0.09, 0.12), gull(gp, flap) * 0.85);
+    }
 
     // The coast holds the right edge, clear of the hero headline on the left.
     float reach = smoothstep(0.74, 0.92, uv.x);
