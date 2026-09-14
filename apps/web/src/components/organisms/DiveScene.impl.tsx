@@ -46,7 +46,7 @@ export const DiveSceneImpl = () => {
         <ambientLight intensity={1.2} />
         <directionalLight position={[3, 6, 4]} intensity={3} />
         <Sunrays count={lite ? 3 : 5} />
-        <MarineSnow count={lite ? 500 : 1400} />
+        <MarineSnow count={lite ? 300 : 1400} />
         <Bioluminescence count={lite ? 40 : 80} />
         <Seafloor />
         <Submersible />
