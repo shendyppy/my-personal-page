@@ -80,19 +80,28 @@ export const TwilightChapter = ({ about }: TwilightChapterProps) => {
             // Where the stage is too short for the whole line it becomes a
             // slow teleprompter instead of an ellipsis: the copy crawls up
             // through a masked window and loops (the echo makes the loop
-            // seamless), pausing while hovered or touched. See globals.css.
-            <div
-              className="twilight-learning mt-6 font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground"
-              style={{ "--crawl-dur": `${Math.max(18, Math.round(learning.length / 6))}s` } as CSSProperties}
-              data-reveal
-            >
-              <div className="learning-crawl">
-                <p className="m-0">
-                  <span className="text-accent">CURRENTLY LEARNING</span> — {learning}
-                </p>
-                <p className="learning-echo m-0" aria-hidden>
-                  <span className="text-accent">CURRENTLY LEARNING</span> — {learning}
-                </p>
+            // seamless), pausing while hovered or touched. Phones get a
+            // one-line ticker under a fixed label instead. See globals.css.
+            <div className="mt-6" data-reveal>
+              <p className="learning-tag">CURRENTLY LEARNING</p>
+              <div
+                className="twilight-learning font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground"
+                style={{ "--crawl-dur": `${Math.max(18, Math.round(learning.length / 6))}s` } as CSSProperties}
+              >
+                <div className="learning-crawl">
+                  <p className="m-0">
+                    <span className="learning-lead">
+                      <span className="text-accent">CURRENTLY LEARNING</span> —{" "}
+                    </span>
+                    {learning}
+                  </p>
+                  <p className="learning-echo m-0" aria-hidden>
+                    <span className="learning-lead">
+                      <span className="text-accent">CURRENTLY LEARNING</span> —{" "}
+                    </span>
+                    {learning}
+                  </p>
+                </div>
               </div>
             </div>
           )}

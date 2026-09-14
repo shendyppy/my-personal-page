@@ -109,7 +109,7 @@ describe("TwilightChapter", () => {
     expect(bodies(container)).toEqual(["Body."]);
     const [line, echo] = container.querySelectorAll(".twilight-learning p");
     expect(line.textContent).toBe("CURRENTLY LEARNING — Nest.js and CI/CD");
-    expect(line.querySelector("span")).toHaveClass("text-accent");
+    expect(line.querySelector(".text-accent")).toHaveClass("text-accent");
     // The teleprompter's loop copy is decoration: screen readers hear it once.
     expect(echo).toHaveAttribute("aria-hidden");
     expect(echo.textContent).toBe(line.textContent);
