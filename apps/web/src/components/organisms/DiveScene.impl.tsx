@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 
 import { Bioluminescence } from "@/components/three/dive/Bioluminescence";
 import { Bubbles } from "@/components/three/dive/Bubbles";
+import { Fish } from "@/components/three/dive/Fish";
 import { MarineSnow } from "@/components/three/dive/MarineSnow";
 import { Seafloor } from "@/components/three/dive/Seafloor";
 import { Submersible } from "@/components/three/dive/Submersible";
@@ -50,6 +51,7 @@ export const DiveSceneImpl = () => {
         <MarineSnow count={lite ? 300 : 1400} />
         <Bioluminescence count={lite ? 40 : 80} />
         <Seafloor />
+        <Fish lite={lite} />
         <Submersible />
         <Bubbles count={lite ? 120 : 220} />
       </Canvas>
