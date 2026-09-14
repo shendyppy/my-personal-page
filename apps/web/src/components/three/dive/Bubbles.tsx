@@ -46,6 +46,9 @@ export const Bubbles = ({ count = 220 }: { count?: number }) => {
   const cursor = useRef(0);
   const debt = useRef(0);
   const lastLine = useRef<number | null>(null);
+  /** Bubbles alive after the last frame; 0 lets an idle wake skip the upload. */
+  const alive = useRef(0);
+  const lastCursor = useRef(0);
 
   // Built once per count and only ever written through the points ref in
   // the frame loop, never during render.
@@ -99,6 +102,9 @@ export const Bubbles = ({ count = 220 }: { count?: number }) => {
     }
     lastLine.current = line;
 
+    if (alive.current === 0 && cursor.current === lastCursor.current) return;
+    lastCursor.current = cursor.current;
+    let live = 0;
     for (let i = 0; i < count; i += 1) {
       if (age[i] < 0) continue;
       age[i] += dt;
@@ -109,7 +115,9 @@ export const Bubbles = ({ count = 220 }: { count?: number }) => {
       pos[i * 3] += (velocity[i * 2] + Math.sin(t * 3 + i) * 0.25) * dt;
       pos[i * 3 + 1] += velocity[i * 2 + 1] * dt;
       velocity[i * 2 + 1] += 0.4 * dt;
+      live += 1;
     }
+    alive.current = live;
     attrs.position.needsUpdate = true;
     attrs.aAge.needsUpdate = true;
     attrs.aSize.needsUpdate = true;

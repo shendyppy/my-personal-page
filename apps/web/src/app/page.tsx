@@ -35,6 +35,8 @@ export default async function Home() {
     <>
       <GrainOverlay />
       <DiveHud />
+      {/* Static opening frame under the canvas (see globals.css). */}
+      <div aria-hidden className="dive-surface-backdrop" />
       <DiveScene />
       <main id="main-content" className="relative z-10 w-full">
         <DiveShell beats={beats}>

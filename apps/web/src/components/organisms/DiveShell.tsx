@@ -52,6 +52,12 @@ export const DiveShell = ({ beats, children }: DiveShellProps) => {
   useEffect(() => {
     const main = document.getElementById("main-content");
     if (!main) return;
+    // No refresh on window "load": every chapter's height is fixed in server CSS
+    // (beats × 100svh), so late images cannot move a trigger. That refresh
+    // re-measured every pin on the main thread right as the scene was loading,
+    // a 460ms long task on a throttled phone. Set here, not at module scope:
+    // config() reaches for browser globals and crashed the server render.
+    ScrollTrigger.config({ autoRefreshEvents: "visibilitychange,DOMContentLoaded,resize" });
 
     let lenis: Lenis | null = null;
     let raf: ((t: number) => void) | null = null;

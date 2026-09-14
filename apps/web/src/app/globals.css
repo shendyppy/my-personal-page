@@ -303,6 +303,21 @@ body { background: #083352; transition: background-color 900ms ease; }
 :root[data-chapter="descent"]  body { background: #020a10; }
 :root[data-chapter="midnight"] body { background: #010508; }
 :root[data-chapter="seafloor"] body { background: #000203; }
+/* The surface before the canvas arrives — and for reduced motion or no WebGL,
+   for good: a static sky over the sea line at 45% (SURFACE_LINE), a low sun
+   and the lit band under the water, matching the shader's opening frame. It
+   scrolls away with the hero; the canvas paints over it once loaded. */
+.dive-surface-backdrop {
+  position: absolute; inset: 0 0 auto; height: 100svh; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 22% 16% at 60% 50%, rgb(255 219 168 / 0.45), transparent 70%),
+    linear-gradient(to bottom, #09192b 0%, #40666f 54.6%, #d9ecf0 55%, #2a78a8 55.4%, #0e4a6e 70%, #083352 100%);
+}
+@media (max-aspect-ratio: 4/5) {
+  .dive-surface-backdrop { background:
+    radial-gradient(ellipse 30% 10% at 78% 50%, rgb(255 219 168 / 0.3), transparent 70%),
+    linear-gradient(to bottom, #09192b 0%, #40666f 54.6%, #d9ecf0 55%, #2a78a8 55.4%, #0e4a6e 70%, #083352 100%); }
+}
 
 .record-panel {
   border: 1px solid var(--border);
