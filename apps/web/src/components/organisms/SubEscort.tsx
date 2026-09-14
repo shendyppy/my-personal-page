@@ -7,8 +7,9 @@ const Scene = dynamic(() => import("./SubEscort.impl").then((m) => m.SubEscortIm
 type SubEscortProps = { className?: string };
 
 /**
- * The dive's submersible, hovering in its own small stage on the project
- * page: it bobs, its props churn and a mouse drag spins it. three.js stays
+ * The dive's submersible on the project page, in a fixed corner: it turns on
+ * the spot, bobs and its props churn. It takes no pointer events, so it
+ * never blocks the content it floats over. three.js stays
  * out of the first-paint bundle.
  */
 export const SubEscort = ({ className }: SubEscortProps) => (

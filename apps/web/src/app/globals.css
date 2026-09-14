@@ -895,11 +895,23 @@ body { background: #083352; transition: background-color 900ms ease; }
 .sonar-idle { padding: 1.25rem 1rem; border: 1px dashed var(--border); }
 
 /* ---- Project page: the sub in its own stage ---- */
-/* Phones: a strip under the overview. From lg: the track beside it. */
-.project-sub { height: 160px; margin-top: 1.5rem; }
+/* Fixed, so it rides along with the page instead of scrolling past or being
+   clipped by a layout box. The page's reading column reaches both edges, so
+   there is no empty corner to park in: the sub sits in its own porthole, a
+   frosted round badge that reads as a floating companion over the content
+   rather than a model dropped on the text. It never takes a pointer, so the
+   content beneath stays clickable. */
+.project-sub {
+  position: fixed; z-index: 20; right: 1rem; bottom: 1rem;
+  width: 88px; height: 88px; border-radius: 9999px; overflow: hidden;
+  pointer-events: none;
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at 50% 35%, color-mix(in oklab, var(--hud) 22%, #06263f), #041a2c 70%);
+  box-shadow: inset 0 0 18px rgb(62 224 200 / 0.25), 0 10px 30px rgb(0 0 0 / 0.45), 0 0 0 5px color-mix(in oklab, var(--card) 55%, transparent);
+}
+.project-sub * { pointer-events: none !important; }
 @media (min-width: 1024px) {
-  .project-intro { display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 1fr); column-gap: 3rem; align-items: center; }
-  .project-sub { height: 260px; margin-top: 1.5rem; }
+  .project-sub { right: 1.75rem; bottom: 1.75rem; width: 176px; height: 176px; }
 }
 
 /* Reduced motion, kept LAST in the file on purpose. These rules undo the

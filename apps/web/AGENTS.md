@@ -77,7 +77,7 @@ src/
 - **The sub is placed by the layout.** Each chapter marks empty space with `[data-sub-anchor="lane"]`; `DiveShell` measures lanes on load/refresh (`lib/dive/lanes`) and `poseAt` parks the sub there, sized to fit. When you change a chapter layout, keep a lane free or the sub falls back to the head lane.
 - Pointer events reach the scene through `eventSource={document.body}`; the sub's hull is the drag hit area.
 - The dive opens at the sea surface: `Water` draws sky, coast and waterline, and `waterlineAt` (lib/dive/water) sinks the line off screen over the surface chapter.
-- Project pages show the same sub in its own small canvas (`SubEscort`), with a fixed pose.
+- Project pages show the same sub on a turntable in a fixed porthole badge (`SubEscort`), which takes no pointer events.
 - The submersible is procedural (no `.glb`). Particle fields use the seeded `scatter` helper — `Math.random` in render fails the React compiler lint.
 
 ---

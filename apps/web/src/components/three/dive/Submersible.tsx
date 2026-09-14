@@ -70,9 +70,11 @@ const Propeller = ({ radius, mat }: { radius: number; mat: THREE.Material }) => 
 type SubmersibleProps = {
   /** A fixed pose, for scenes outside the dive (the project page). Omit to follow the dive. */
   pose?: Pose;
+  /** Turn slowly on the spot, like a model on a display stand. */
+  turntable?: boolean;
 };
 
-export const Submersible = ({ pose: fixed }: SubmersibleProps) => {
+export const Submersible = ({ pose: fixed, turntable }: SubmersibleProps) => {
   const group = useRef<THREE.Group>(null);
   const body = useRef<THREE.Group>(null);
   /** Damped attitude: nose pitch, bank and yaw into the direction of travel. */
@@ -187,7 +189,7 @@ export const Submersible = ({ pose: fixed }: SubmersibleProps) => {
     g.position.set(e.x, e.y + Math.sin(t * 0.8) * 0.06 * scale, 0);
     // While a chapter is read the sub is not parked: it idles through a slow
     // weave, turning to look around, so it is never a still model.
-    const weave = Math.sin(t * 0.45) * 0.4;
+    const weave = turntable ? t * 0.5 : Math.sin(t * 0.45) * 0.4;
     g.rotation.set(
       PITCH + Math.sin(t * 0.3) * 0.08 + pointer.current.y * -0.07 + spin.rx,
       YAW + a.yaw + weave + pointer.current.x * 0.07 + spin.ry,

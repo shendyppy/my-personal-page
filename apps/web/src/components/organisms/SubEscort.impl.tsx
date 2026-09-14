@@ -6,8 +6,8 @@ import { Canvas } from "@react-three/fiber";
 import { Submersible } from "@/components/three/dive/Submersible";
 import type { Pose } from "@/constants/dive";
 
-/** Fills its little stage, lamps half up. */
-const POSE: Pose = { x: 0, y: 0, w: 0.82, h: 0.82, rotZ: 0, lamp: 1.4 };
+/** Lamps half up, sized so a full turn never reaches the canvas edge. */
+const POSE: Pose = { x: 0, y: -0.05, w: 0.8, h: 0.8, rotZ: 0, lamp: 1.4 };
 
 const canRender = () => {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
@@ -32,7 +32,7 @@ export const SubEscortImpl = () => {
     >
       <ambientLight intensity={1.2} />
       <directionalLight position={[3, 6, 4]} intensity={3} />
-      <Submersible pose={POSE} />
+      <Submersible pose={POSE} turntable />
     </Canvas>
   );
 };

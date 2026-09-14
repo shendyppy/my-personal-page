@@ -45,6 +45,9 @@ export const ProjectPageContent = ({
       <GrainOverlay />
 
       <DiveHud mode="surface" />
+      {/* The sub followed you up from the reef: it hovers in a fixed corner and
+          turns slowly while you read, never scrolling away or clipping. */}
+      <SubEscort className="project-sub" />
 
       {/* Hero */}
       <header className="mx-auto box-border max-w-[1400px] px-6 pt-[120px] md:px-10">
@@ -66,16 +69,11 @@ export const ProjectPageContent = ({
           </span>
         </h1>
 
-        {/* Overview | the sub, which followed you up from the reef. Its own grid
-            track, so it never sits on the title or the copy at any width. */}
-        <div className="project-intro">
-          {project.overview && (
-            <p className="mt-6 max-w-[640px] animate-fade-up text-[19px] leading-[1.65] text-subtle [animation-delay:0.5s]">
-              {project.overview}
-            </p>
-          )}
-          <SubEscort className="project-sub" />
-        </div>
+        {project.overview && (
+          <p className="mt-6 max-w-[640px] animate-fade-up text-[19px] leading-[1.65] text-subtle [animation-delay:0.5s]">
+            {project.overview}
+          </p>
+        )}
 
         {meta.length > 0 && (
           <div className="mt-14 grid grid-cols-2 overflow-hidden rounded-2xl border border-border md:grid-cols-4">
