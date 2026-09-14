@@ -7,23 +7,16 @@ import type { ExperienceDto } from "@/server/queries/experiences";
 type DescentChapterProps = {
   experiences: ExperienceDto[];
   beats: number;
-  /** The chapter's depth range in metres, from the same ranges the HUD reads. */
-  depth: { start: number; end: number };
 };
 
 const chapter = chapterById("descent");
-const TICK_M = 200;
-
-/** Every multiple of 200 m inside [start, end]. */
-const ticksFor = ({ start, end }: DescentChapterProps["depth"]) => {
-  const out: number[] = [];
-  for (let m = Math.ceil(start / TICK_M) * TICK_M; m <= end; m += TICK_M) out.push(m);
-  return out;
-};
+const TICK_M = 500;
+/** The same band the HUD reads across this chapter. */
+const [START_M, END_M] = chapter.depthM;
+const TICKS = Array.from({ length: Math.floor((END_M - START_M) / TICK_M) + 1 }, (_, i) => START_M + i * TICK_M);
 
 /** Career. Entries alternate either side of a pressure line the marker descends. */
-export const DescentChapter = ({ experiences, beats, depth }: DescentChapterProps) => {
-  const span = depth.end - depth.start || 1;
+export const DescentChapter = ({ experiences, beats }: DescentChapterProps) => {
 
   return (
     <ChapterFrame id={chapter.id} beats={beats}>
@@ -33,8 +26,8 @@ export const DescentChapter = ({ experiences, beats, depth }: DescentChapterProp
             progress is linear in depth, so a tick at its share of the line is
             passed exactly when the HUD reads that depth. */}
         <div className="pressure-line" aria-hidden>
-          {ticksFor(depth).map((m) => (
-            <span key={m} className="depth-tick" data-depth-tick style={{ top: `${((m - depth.start) / span) * 100}%` }}>
+          {TICKS.map((m) => (
+            <span key={m} className="depth-tick" data-depth-tick style={{ top: `${((m - START_M) / (END_M - START_M)) * 100}%` }}>
               {m} M
             </span>
           ))}

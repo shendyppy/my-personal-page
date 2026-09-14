@@ -20,13 +20,9 @@ const experience = (id: string): ExperienceDto => ({
   order: 1,
 });
 
-const renderChapter = (n: number, depth = { start: 1650, end: 2420 }) =>
+const renderChapter = (n: number) =>
   render(
-    <DescentChapter
-      experiences={Array.from({ length: n }, (_, i) => experience(`e${i}`))}
-      beats={Math.max(1, n)}
-      depth={depth}
-    />
+    <DescentChapter experiences={Array.from({ length: n }, (_, i) => experience(`e${i}`))} beats={Math.max(1, n)} />
   ).container;
 
 const ticks = (c: HTMLElement) => [...c.querySelectorAll<HTMLElement>("[data-depth-tick]")];
@@ -54,13 +50,9 @@ describe("DescentChapter", () => {
     expect(c.querySelectorAll(".pressure-line [data-depth-marker]")).toHaveLength(1);
   });
 
-  test("ticks fall on every 200 m inside the chapter's depth range", () => {
-    const c = renderChapter(2, { start: 1650, end: 2420 });
-    expect(ticks(c).map((t) => t.textContent)).toEqual(["1800 M", "2000 M", "2200 M", "2400 M"]);
-  });
-
-  test("each tick sits at its depth's share of the line, where the marker passes it", () => {
-    const c = renderChapter(2, { start: 1600, end: 2400 });
+  test("ticks fall every 500 m across the chapter's depth band, each at its share of the line", () => {
+    const c = renderChapter(2);
+    expect(ticks(c).map((t) => t.textContent)).toEqual(["1000 M", "1500 M", "2000 M", "2500 M", "3000 M"]);
     expect(ticks(c).map((t) => t.style.top)).toEqual(["0%", "25%", "50%", "75%", "100%"]);
   });
 });

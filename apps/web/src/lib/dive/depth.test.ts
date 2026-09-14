@@ -41,12 +41,21 @@ describe("chapterRanges", () => {
 });
 
 describe("depthForProgress", () => {
-  test("maps 0..1 to 0..4000 metres, rounded, clamped", () => {
-    expect(depthForProgress(0)).toBe(0);
-    expect(depthForProgress(0.5)).toBe(2000);
-    expect(depthForProgress(1)).toBe(4000);
-    expect(depthForProgress(1.2)).toBe(4000);
-    expect(depthForProgress(-0.1)).toBe(0);
+  const r = chapterRanges(beats);
+  test("follows each chapter's depth band, rounded, clamped", () => {
+    expect(depthForProgress(0, r)).toBe(0);
+    expect(depthForProgress(1 / 13, r)).toBe(5); // reef starts in the sunlit shallows
+    expect(depthForProgress(3.5 / 13, r)).toBeCloseTo(27.5, -0.5); // half-way through the reef's 5..50 m
+    expect(depthForProgress(7.5 / 13, r)).toBe(1000); // descent opens at the midnight zone
+    expect(depthForProgress(1, r)).toBe(4000);
+    expect(depthForProgress(1.2, r)).toBe(4000);
+    expect(depthForProgress(-0.1, r)).toBe(0);
+  });
+
+  test("never jumps at a chapter boundary", () => {
+    for (const x of r.slice(1)) {
+      expect(Math.abs(depthForProgress(x.start - 1e-9, r) - depthForProgress(x.start, r))).toBeLessThanOrEqual(1);
+    }
   });
 });
 
@@ -73,13 +82,13 @@ describe("dive store", () => {
     dive.set(0.25);
     expect(dive.get()).toMatchObject({
       progress: 0.25,
-      depth: 1000,
+      depth: 25,
       chapter: "reef",
       ranges: chapterRanges(beats),
     });
     off();
     dive.set(0.5);
-    expect(seen).toEqual([1000]);
+    expect(seen).toEqual([25]);
   });
 
   test("configure notifies subscribers even without a set() call", () => {

@@ -1,4 +1,4 @@
-import { CHAPTERS, MAX_DEPTH_M, type ChapterId } from "@/constants/dive";
+import { CHAPTERS, chapterById, type ChapterId } from "@/constants/dive";
 
 export type Range = { id: ChapterId; start: number; end: number; beats: number };
 
@@ -23,7 +23,12 @@ export function chapterRanges(beats: number[]): Range[] {
   });
 }
 
-export const depthForProgress = (p: number) => Math.round(clamp01(p) * MAX_DEPTH_M);
+/** Metres at progress `p`: linear inside each chapter's `depthM` band, continuous across chapters. */
+export function depthForProgress(p: number, ranges: Range[]) {
+  const { id, t } = localProgress(p, ranges);
+  const [from, to] = chapterById(id).depthM;
+  return Math.round(from + (to - from) * t);
+}
 
 export function localProgress(p: number, ranges: Range[]): { id: ChapterId; t: number } {
   const x = clamp01(p);
@@ -46,13 +51,13 @@ const listeners = new Set<Listener>();
 export const dive = {
   configure(beats: number[]) {
     ranges = chapterRanges(beats);
-    state = { ...state, ranges, chapter: chapterAt(state.progress, ranges) };
+    state = { ...state, ranges, depth: depthForProgress(state.progress, ranges), chapter: chapterAt(state.progress, ranges) };
     listeners.forEach((l) => l(state));
   },
   set(progress: number) {
     const p = clamp01(progress);
     if (p === state.progress) return;
-    state = { progress: p, depth: depthForProgress(p), chapter: chapterAt(p, ranges), ranges };
+    state = { progress: p, depth: depthForProgress(p, ranges), chapter: chapterAt(p, ranges), ranges };
     listeners.forEach((l) => l(state));
   },
   get: () => state,

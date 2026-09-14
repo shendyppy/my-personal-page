@@ -1,5 +1,3 @@
-export const MAX_DEPTH_M = 4000;
-
 export const CHAPTER_IDS = [
   "surface",
   "reef",
@@ -21,15 +19,22 @@ export type Chapter = {
   category: string;
   /** Viewport-heights the pinned stage scrolls. reef/descent are replaced by data length. */
   beats: number;
+  /** Metres the HUD reads from the chapter's first beat to its last. */
+  depthM: readonly [number, number];
 };
 
+/*
+ * Depths follow the real ocean zones rather than a straight 0..4000 scale:
+ * coral reefs live in the sunlit top 50 m, the twilight zone runs to 1000 m,
+ * the midnight zone below it, and the abyssal plain sits near 4000 m.
+ */
 export const CHAPTERS: readonly Chapter[] = [
-  { id: "surface", index: 0, name: "SURFACE", label: "DEEP FIELD", category: "HERO", beats: 1 },
-  { id: "reef", index: 1, name: "REEF", label: "DIVE SITES", category: "WORK", beats: 5 },
-  { id: "twilight", index: 2, name: "TWILIGHT", label: "DIVER RECORD", category: "ABOUT", beats: 1.5 },
-  { id: "descent", index: 3, name: "DESCENT", label: "DESCENT LOG", category: "CAREER", beats: 3 },
-  { id: "midnight", index: 4, name: "MIDNIGHT", label: "SONAR", category: "TOOLBOX", beats: 1.5 },
-  { id: "seafloor", index: 5, name: "SEAFLOOR", label: "SURFACE LINK", category: "CONTACT", beats: 1 },
+  { id: "surface", index: 0, name: "SURFACE", label: "DEEP FIELD", category: "HERO", beats: 1, depthM: [0, 5] },
+  { id: "reef", index: 1, name: "REEF", label: "DIVE SITES", category: "WORK", beats: 5, depthM: [5, 50] },
+  { id: "twilight", index: 2, name: "TWILIGHT", label: "DIVER RECORD", category: "ABOUT", beats: 1.5, depthM: [50, 1000] },
+  { id: "descent", index: 3, name: "DESCENT", label: "DESCENT LOG", category: "CAREER", beats: 3, depthM: [1000, 3000] },
+  { id: "midnight", index: 4, name: "MIDNIGHT", label: "SONAR", category: "TOOLBOX", beats: 1.5, depthM: [3000, 3800] },
+  { id: "seafloor", index: 5, name: "SEAFLOOR", label: "SURFACE LINK", category: "CONTACT", beats: 1, depthM: [3800, 4000] },
 ];
 
 /** Look a chapter up by id, so reordering `CHAPTERS` cannot silently hand a section the wrong entry. */

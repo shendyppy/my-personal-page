@@ -14,7 +14,6 @@ import { SeafloorChapter } from "@/components/sections/dive/SeafloorChapter";
 import { SurfaceChapter } from "@/components/sections/dive/SurfaceChapter";
 import { TwilightChapter } from "@/components/sections/dive/TwilightChapter";
 import { CHAPTERS } from "@/constants/dive";
-import { chapterRanges, depthForProgress } from "@/lib/dive/depth";
 import { getAbout } from "@/server/queries/about";
 import { getExperiences } from "@/server/queries/experiences";
 import { getProjects } from "@/server/queries/projects";
@@ -30,7 +29,6 @@ export default async function Home() {
   const beats = CHAPTERS.map((c) =>
     c.id === "reef" ? Math.max(1, projects.length) : c.id === "descent" ? Math.max(1, experiences.length) : c.beats
   );
-  const descent = chapterRanges(beats)[CHAPTERS.findIndex((c) => c.id === "descent")];
   return (
     <>
       <GrainOverlay />
@@ -43,11 +41,7 @@ export default async function Home() {
           <SurfaceChapter projectCount={projects.length} experiences={experiences} />
           <ReefChapter projects={projects} beats={beats[1]} />
           <TwilightChapter about={about} />
-          <DescentChapter
-            experiences={experiences}
-            beats={beats[3]}
-            depth={{ start: depthForProgress(descent.start), end: depthForProgress(descent.end) }}
-          />
+          <DescentChapter experiences={experiences} beats={beats[3]} />
           <MidnightChapter skills={skills} />
           <SeafloorChapter cv={about.cvInfo} />
         </DiveShell>

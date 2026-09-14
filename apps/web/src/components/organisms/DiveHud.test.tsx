@@ -21,9 +21,9 @@ describe("DiveHud", () => {
 
   test('mode="dive" renders the depth zero-padded to four digits', () => {
     dive.configure(beats);
-    dive.set(0.25); // MAX_DEPTH_M * 0.25 = 1000
+    dive.set(0.25); // 45% through the reef's 5..50 m band
     render(<DiveHud mode="dive" />);
-    expect(screen.getByText("1000 m")).toBeInTheDocument();
+    expect(screen.getByText("0025 m")).toBeInTheDocument();
   });
 
   test('mode="dive" renders a "Chapters" nav with six buttons, exactly one aria-current', () => {
