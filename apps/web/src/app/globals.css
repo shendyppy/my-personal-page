@@ -731,9 +731,26 @@ body { background: #083352; transition: background-color 900ms ease; }
    still lands on a tall desktop, which is where the spec set it.
    Kept here rather than in a `text-[…]` utility because Tailwind's utilities
    are layered and this rule is not — inline they would silently disagree. */
+/* Revised after measuring the live copy with the learning line in: the lead
+   (165), body (338) and learning line (362) overflowed every laptop from
+   1280x720 to 1440x900 — ten lines of 47px lead alone were 505px. The lead
+   now tops out at 40px on a 32ch measure (seven lines), and the clamps below
+   withhold secondary copy by height, learning line first. */
 .twilight-lead {
-  max-width: 26ch;
-  font-size: clamp(20px, min(3.4vw, 5.2svh), 48px);
+  max-width: 32ch;
+  font-size: clamp(20px, min(2.6vw, 4svh), 40px);
+}
+.twilight-body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (max-height: 960px) {
+  .twilight-learning { -webkit-line-clamp: 3; line-clamp: 3; }
+}
+@media (max-height: 800px), (max-width: 639px) {
+  .twilight-body:not(.twilight-learning) { -webkit-line-clamp: 4; line-clamp: 4; }
+  .twilight-learning { -webkit-line-clamp: 2; line-clamp: 2; }
 }
 /* Short viewports. Same problem as the reef, one chapter further down: the
    stage is 100svh while pinned, so anything taller is painted over the HUD and
@@ -745,20 +762,21 @@ body { background: #083352; transition: background-color 900ms ease; }
   .porthole { width: 64px; height: 64px; }
   .record-head, .record-row { padding-block: 6px; }
 }
-/* Only then the copy, and only where density was not enough. A 1280x720
-   desktop is short but two-column and fits the bio whole with ~40px spare, so
-   clamping there would drop sentences into empty space; below 1280 the stage
-   is between 330px (844x390 landscape) and 580px (360x640) tall and the full
-   bio plus the learning line is ~1050px. The lead is never clamped — it is one
-   sentence, and truncating it mid-word is worse than the small type. */
+/* Only then the tightest copy budget, and only on short screens below 1280,
+   where the stage is 330px (844x390) to 580px (360x640) tall and still ran
+   ~50px over on the height-graded clamps above. The lead is never clamped —
+   it is one sentence, and truncating it mid-word is worse than small type. */
 @media (max-height: 720px) and (max-width: 1279px) {
-  .twilight-body {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    overflow: hidden;
-  }
+  .twilight-grid { row-gap: 1rem; }
+  .twilight-body:not(.twilight-learning) { -webkit-line-clamp: 2; line-clamp: 2; }
+  .twilight-learning { -webkit-line-clamp: 1; line-clamp: 1; }
+}
+/* Landscape phones: the record sits in a ~250px column where its values wrap
+   to ~300px on their own. The porthole repeats the DIVER row as a picture, so
+   it is what goes. */
+@media (max-height: 480px) {
+  .twilight-grid .porthole { display: none; }
+  .twilight-grid .record-panel { margin-top: 0; }
 }
 /* Landscape phones and small landscape tablets: short, with width to spare.
    Stacking cannot fit at 844x390 — the single column is ~700px in a 330px

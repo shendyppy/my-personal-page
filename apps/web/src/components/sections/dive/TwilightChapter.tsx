@@ -46,7 +46,7 @@ export const TwilightChapter = ({ about }: TwilightChapterProps) => {
             </p>
           )}
           {learning && (
-            <p className="twilight-body mt-6 max-w-[56ch] font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground" data-reveal>
+            <p className="twilight-body twilight-learning mt-6 max-w-[56ch] font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground" data-reveal>
               <span className="text-accent">CURRENTLY LEARNING</span> — {learning}
             </p>
           )}
