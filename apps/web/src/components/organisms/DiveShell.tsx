@@ -92,15 +92,33 @@ export const DiveShell = ({ beats, children }: DiveShellProps) => {
       else document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
     });
 
-    const hash = window.location.hash.replace("#dive-", "") as ChapterId;
-    if (CHAPTER_IDS.includes(hash)) {
+    // A `#dive-*` hash is a one-off jump instruction, not the reader's place:
+    // left in the URL it stuck on while diving on, and a reload or shared link
+    // dropped the reader back at that chapter. Consume it, then strip it,
+    // keeping history.state so the Next router's entry survives.
+    const chapterInHash = () => {
+      const id = window.location.hash.replace("#dive-", "") as ChapterId;
+      return CHAPTER_IDS.includes(id) ? id : null;
+    };
+    const stripHash = () =>
+      window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+
+    const entry = chapterInHash();
+    if (entry) {
       requestAnimationFrame(() => {
-        if (lenis) lenis.scrollTo(`#${sectionId(hash)}`, { immediate: true });
-        else document.getElementById(sectionId(hash))?.scrollIntoView();
+        if (lenis) lenis.scrollTo(`#${sectionId(entry)}`, { immediate: true });
+        else document.getElementById(sectionId(entry))?.scrollIntoView();
       });
+      stripHash();
     }
+    // In-page anchors (the seafloor's BACK TO SURFACE) still write their hash:
+    // Lenis scrolls but does not cancel the click. The scroll is already under
+    // way, so only the URL needs cleaning.
+    const onHashChange = () => chapterInHash() && stripHash();
+    window.addEventListener("hashchange", onHashChange);
 
     return () => {
+      window.removeEventListener("hashchange", onHashChange);
       trigger.kill();
       ScrollTrigger.removeEventListener("refresh", measureLanes);
       scroller.install(() => {});
