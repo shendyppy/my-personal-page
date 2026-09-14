@@ -5,7 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-import { sectionId, type ChapterId } from "@/constants/dive";
+import { CHAPTER_IDS, sectionId, type ChapterId } from "@/constants/dive";
+import { scrubRange } from "@/lib/dive/scrub";
 import { TIMELINES } from "@/lib/dive/timelines";
 import { cn } from "@/lib/utils";
 
@@ -42,14 +43,15 @@ export const ChapterFrame = ({ id, beats, className, snap, children }: ChapterFr
             gsap.set(section.querySelectorAll("[data-reveal]"), { opacity: 1, y: 0, x: 0 });
             return;
           }
+          const { start, end, pin } = scrubRange(CHAPTER_IDS.indexOf(id), beats);
           const tl = gsap.timeline({
             defaults: { ease: "none" },
             scrollTrigger: {
               trigger: section,
-              start: "top top",
-              end: "bottom bottom",
+              start,
+              end,
               scrub: true,
-              pin: stage,
+              pin: pin && stage,
               pinSpacing: false,
               // ScrollTrigger only reads `snap` at creation time; assigning
               // trigger.vars.snap afterwards is silently ignored.
