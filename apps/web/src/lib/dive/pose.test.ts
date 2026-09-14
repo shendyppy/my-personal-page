@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { SUB_POSES } from "@/constants/dive";
 import { chapterRanges } from "./depth";
-import { lapAt, NO_LAP, plungeAt, poseAt } from "./pose";
+import { altAt, plungeAt, poseAt } from "./pose";
 
 const r = chapterRanges([1, 5, 1.5, 3, 1.5, 1]);
 /** Global progress at local `t` of chapter `i`. */
@@ -61,35 +61,33 @@ describe("poseAt", () => {
   });
 });
 
-describe("lapAt", () => {
+describe("altAt", () => {
   /** Reef progress at `beat` of its 5 beats. */
   const beat = (b: number) => at(1, b / 5);
+  const reef = { x: 0.5, y: 0, w: 0.2, h: 0.2, alt: { x: -0.5, y: 0, w: 0.2, h: 0.2 } };
 
-  test("no lap outside the reef, nor while a dive site is being read", () => {
-    for (const i of [0, 2, 3, 4, 5]) expect(lapAt(at(i, 0.5), r)).toEqual(NO_LAP);
-    expect(lapAt(beat(0), r)).toEqual(NO_LAP);
-    expect(lapAt(beat(0.3), r)).toEqual(NO_LAP);
-    expect(lapAt(beat(1.2), r)).toEqual(NO_LAP);
+  test("zero for a lane with no alt box, or outside the chapter", () => {
+    expect(altAt(beat(1), r)).toBe(0);
+    expect(altAt(beat(1), r, { reef: { x: 0.5, y: 0, w: 0.2, h: 0.2 } })).toBe(0);
+    expect(altAt(at(2, 0.3), r, { reef })).toBe(0);
   });
 
-  test("each handover sweeps right edge, then left edge, facing the way it swims", () => {
-    // Reef is 5 beats: four handovers, the first lap over beats 0.4..1.1.
-    let right = 0;
-    let left = 0;
-    for (let b = 0.4; b <= 1.1; b += 0.005) {
-      const { sweep, turn } = lapAt(beat(b), r);
-      if (sweep > right) right = sweep;
-      if (sweep < left) left = sweep;
-      expect(turn).toBeGreaterThanOrEqual(0);
-      expect(turn).toBeLessThanOrEqual(Math.PI + 1e-9);
-    }
-    expect(right).toBeGreaterThan(0.99);
-    expect(left).toBeLessThan(-0.99);
-    // Midway it crosses its own lane heading left.
-    const mid = lapAt(beat(0.75), r);
-    expect(mid.sweep).toBeCloseTo(0, 5);
-    expect(mid.turn).toBeCloseTo(Math.PI, 5);
-    expect(lapAt(beat(3.75), r).turn).toBeCloseTo(Math.PI, 5);
+  test("alternates sides beat by beat, landing as each beat settles", () => {
+    // Even beats in the lane, odd beats in alt; each swap runs over beats k-0.6..k.
+    expect(altAt(beat(0), r, { reef })).toBe(0);
+    expect(altAt(beat(0.4), r, { reef })).toBe(0);
+    expect(altAt(beat(0.7), r, { reef })).toBeCloseTo(0.5, 5);
+    expect(altAt(beat(1), r, { reef })).toBe(1);
+    expect(altAt(beat(1.3), r, { reef })).toBe(1);
+    expect(altAt(beat(2), r, { reef })).toBe(0);
+    expect(altAt(beat(3), r, { reef })).toBe(1);
+  });
+
+  test("poseAt parks the sub in the lane or its alt box accordingly", () => {
+    expect(poseAt(beat(0), r, { reef }).x).toBe(0.5);
+    expect(poseAt(beat(1), r, { reef }).x).toBe(-0.5);
+    expect(poseAt(beat(0.7), r, { reef }).x).toBeCloseTo(0, 5);
+    expect(poseAt(beat(1), r, { reef })).not.toHaveProperty("alt");
   });
 });
 

@@ -7,7 +7,9 @@ type DiveSiteRecordProps = { project: ProjectListItem; index: number };
 
 /** One project as a dive-site record. Screenshots live on the project page. */
 export const DiveSiteRecord = ({ project, index }: DiveSiteRecordProps) => (
-  <div className="site" data-beat={index - 1}>
+  // Every other site mirrors, record on the right, so the sub crosses the
+  // screen once per handover instead of racing around it.
+  <div className={index % 2 === 0 ? "site site--flip" : "site"} data-beat={index - 1}>
     <div className="site-record" data-site-record>
       <div className="flex items-center justify-between font-mono text-[11px] tracking-[0.14em] text-muted-foreground">
         <span className="text-accent">SITE-{String(index).padStart(2, "0")}</span>

@@ -26,14 +26,21 @@ export function poseAt(p: number, ranges: Range[], lanes: Partial<Record<Chapter
   const move = beats <= 1 ? 1 : Math.min(MOVE_BEATS, beats * 0.45) / beats;
   const hold = 1 - move;
 
-  const { y2, ...from }: Pose = { ...SUB_POSES[id], ...lanes[id] };
+  const { y2, alt, ...from }: Pose = { ...SUB_POSES[id], ...lanes[id] };
   // Over the whole chapter, in step with the descent marker's own tween; the
   // flight to the next lane then leaves from wherever the sub has got to.
   if (y2 !== undefined) from.y = lerp(from.y, y2, clamp01(t));
+  if (alt) {
+    const s = altAt(p, ranges, lanes);
+    from.x = lerp(from.x, alt.x, s);
+    from.y = lerp(from.y, alt.y, s);
+    from.w = lerp(from.w, alt.w, s);
+    from.h = lerp(from.h, alt.h, s);
+  }
 
   const next = CHAPTERS[i + 1];
   if (!next || t <= hold) return from;
-  const { y2: _, ...to }: Pose = { ...SUB_POSES[next.id], ...lanes[next.id] };
+  const { y2: _, alt: __, ...to }: Pose = { ...SUB_POSES[next.id], ...lanes[next.id] };
   const e = easeInOut((t - hold) / move);
   return {
     x: lerp(from.x, to.x, e),
@@ -45,32 +52,29 @@ export function poseAt(p: number, ranges: Range[], lanes: Partial<Record<Chapter
   };
 }
 
-const TURN = Math.PI * 2;
-/** A lap starts this far (in beats) before a reef beat lands, and takes this long. */
-const LAP_LEAD = 0.6;
-const LAP_BEATS = 0.7;
-
-export type Lap = { sweep: number; turn: number };
-export const NO_LAP: Lap = { sweep: 0, turn: 0 };
+/** A side swap starts this far (in beats) before a beat lands, and takes this long. */
+const SWAP_LEAD = 0.6;
+const SWAP_BEATS = 0.6;
 
 /**
- * A lap of the screen as each reef dive site hands over to the next: the sub
- * swims out to the right edge, turns, crosses to the left edge, turns again
- * and comes home to its lane just after the snap settles on the new site.
- * `sweep` runs -1..1 (left edge..right edge, 0 = in its lane); `turn` is the
- * heading, 0 facing right and π facing left, half turned at either edge.
- * Scroll-driven, so scrolling back runs the lap in reverse.
+ * How far the sub has crossed to its lane's `alt` box: 0 in the lane, 1 in
+ * alt. A chapter whose layout alternates sides beat by beat (the reef: odd
+ * sites put the record on the right) swaps the sub across at each handover,
+ * eased so it lands as the snap settles on the new beat. Always 0 for a
+ * chapter whose lane has no `alt` — including the reef on phones, which parks
+ * beside the head. Scroll-driven, so scrolling back swaps it back.
  */
-export function lapAt(p: number, ranges: Range[]): Lap {
+export function altAt(p: number, ranges: Range[], lanes: Partial<Record<ChapterId, Lane>> = {}): number {
   const { id, t } = localProgress(p, ranges);
-  if (id !== "reef") return NO_LAP;
+  if (!lanes[id]?.alt) return 0;
   const beats = ranges.find((r) => r.id === id)?.beats ?? 1;
   const pos = t * beats;
-  for (let k = 1; k < beats; k += 1) {
-    const e = easeInOut(clamp01((pos - (k - LAP_LEAD)) / LAP_BEATS));
-    if (e > 0 && e < 1) return { sweep: Math.sin(TURN * e), turn: (Math.PI * (1 - Math.cos(TURN * e))) / 2 };
+  let s = 0;
+  for (let k = 1; k < beats && pos > k - SWAP_LEAD; k += 1) {
+    const e = easeInOut(clamp01((pos - (k - SWAP_LEAD)) / SWAP_BEATS));
+    s = k % 2 === 1 ? e : 1 - e;
   }
-  return NO_LAP;
+  return s;
 }
 
 /**

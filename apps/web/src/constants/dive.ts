@@ -53,8 +53,11 @@ export const DIVE_COPY = {
  * Where the sub sits and how big it may be, in viewport terms: x/y are the
  * centre in NDC (-1..1, y up), w/h the box it must fit as fractions of the
  * viewport. `y2` makes the lane a travel lane (y → y2 over the chapter).
+ * `alt` is a second box the sub swaps to beat by beat, for a chapter whose
+ * layout alternates sides (the reef).
  */
-export type Lane = { x: number; y: number; w: number; h: number; y2?: number };
+export type Lane = { x: number; y: number; w: number; h: number; y2?: number; alt?: Box };
+type Box = { x: number; y: number; w: number; h: number };
 export type Pose = Lane & { rotZ: number; lamp: number };
 
 /**

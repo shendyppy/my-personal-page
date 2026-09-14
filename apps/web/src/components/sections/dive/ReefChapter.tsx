@@ -14,7 +14,10 @@ export const ReefChapter = ({ projects, beats }: ReefChapterProps) => (
   <ChapterFrame id={chapter.id} beats={beats} snap>
     <ChapterHead index={chapter.index + 1} category={chapter.category} label={chapter.label} />
     <div className="reef-stack">
+      {/* Sites alternate sides, so the sub gets a lane on each: right of the
+          even sites' record, left of the odd ones' (lib/dive/pose altAt). */}
       <div data-sub-anchor="lane" aria-hidden className="reef-lane" />
+      <div data-sub-anchor="lane-alt" aria-hidden className="reef-lane reef-lane--alt" />
       {projects.map((p, i) => (
         <DiveSiteRecord key={p.slug} project={p} index={i + 1} />
       ))}

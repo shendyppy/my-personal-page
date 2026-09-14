@@ -349,6 +349,9 @@ body { background: #083352; transition: background-color 900ms ease; }
 :root { --site-gap: 3.5rem; }
 @media (min-width: 1024px), (max-height: 720px) and (min-width: 640px) {
   .site { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); column-gap: var(--site-gap); }
+  /* Odd sites mirror: open water left, record right (see .reef-lane--alt). */
+  .site.site--flip { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .site.site--flip .site-record { grid-column: 2; }
 }
 @media (max-height: 720px) and (min-width: 640px) and (max-width: 1023px) {
   :root { --site-gap: 2rem; }
@@ -915,6 +918,8 @@ body { background: #083352; transition: background-color 900ms ease; }
     left: calc((100% - var(--site-gap)) * 6 / 11 + var(--site-gap) + (100% - var(--site-gap)) * 5 / 11 * 0.14);
     width: calc((100% - var(--site-gap)) * 5 / 11 * 0.72);
   }
+  /* The same box in the mirrored sites' first track. */
+  .reef-lane.reef-lane--alt { left: calc((100% - var(--site-gap)) * 5 / 11 * 0.14); }
 }
 .surface-lane, .seafloor-lane { flex-direction: column; }
 /* At rest the sea surface is 45% up the screen (lib/dive/water SURFACE_LINE):

@@ -74,7 +74,7 @@ src/
 
 - `organisms/DiveScene.tsx` dynamic-imports `DiveScene.impl.tsx` with `ssr: false`, so three.js is never in the first-paint bundle.
 - One persistent `<Canvas>` for the whole page: `Water`, `Sunrays`, `MarineSnow`, `Bioluminescence`, `Seafloor`, `Submersible`. Components read `dive.get()` inside `useFrame` — never React state per frame.
-- **The sub is placed by the layout.** Each chapter marks empty space with `[data-sub-anchor="lane"]`; `DiveShell` measures lanes on load/refresh (`lib/dive/lanes`) and `poseAt` parks the sub there, sized to fit. When you change a chapter layout, keep a lane free or the sub falls back to the head lane.
+- **The sub is placed by the layout.** Each chapter marks empty space with `[data-sub-anchor="lane"]`; `DiveShell` measures lanes on load/refresh (`lib/dive/lanes`) and `poseAt` parks the sub there, sized to fit. When you change a chapter layout, keep a lane free or the sub falls back to the head lane. A layout that alternates sides beat by beat (the reef) adds a `"lane-alt"` anchor; the sub swaps to it on odd beats (`altAt`).
 - Pointer events reach the scene through `eventSource={document.body}`; the sub's hull is the drag hit area.
 - The dive opens at the sea surface: `Water` draws sky, coast and waterline, and `waterlineAt` (lib/dive/water) sinks the line off screen over the surface chapter.
 - Project pages show the same sub on a turntable, floating free in a fixed corner (`SubEscort`); its box is click-through and a mouse drag on the hull spins it.

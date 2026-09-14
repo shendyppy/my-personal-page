@@ -28,7 +28,8 @@ export const lanes: Partial<Record<ChapterId, Lane>> = {};
 /**
  * Measure every chapter's lane: its first visible `[data-sub-anchor="lane"]`,
  * else its visible `"head"` anchor (the phone fallback beside the chapter
- * head). Call after layout changes — DiveShell does on load, fonts and every
+ * head). A visible `"lane-alt"` anchor beside a lane becomes its `alt` box,
+ * the side the sub swaps to on alternate beats. Call after layout changes — DiveShell does on load, fonts and every
  * ScrollTrigger refresh.
  */
 export const measureLanes = () => {
@@ -46,6 +47,10 @@ export const measureLanes = () => {
       delete lanes[id];
       continue;
     }
-    lanes[id] = laneFromRect(found.r, stage.getBoundingClientRect().top, vw, vh, found.el.hasAttribute("data-sub-travel"));
+    const stageTop = stage.getBoundingClientRect().top;
+    const lane = laneFromRect(found.r, stageTop, vw, vh, found.el.hasAttribute("data-sub-travel"));
+    const alt = found.el.dataset.subAnchor === "lane" && pick("lane-alt");
+    if (alt) lane.alt = laneFromRect(alt.r, stageTop, vw, vh, false);
+    lanes[id] = lane;
   }
 };

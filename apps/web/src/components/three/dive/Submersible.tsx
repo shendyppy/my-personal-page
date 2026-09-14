@@ -6,7 +6,7 @@ import * as THREE from "three";
 
 import { dive } from "@/lib/dive/depth";
 import { lanes } from "@/lib/dive/lanes";
-import { lapAt, NO_LAP, plungeAt, poseAt } from "@/lib/dive/pose";
+import { altAt, plungeAt, poseAt } from "@/lib/dive/pose";
 import type { Pose } from "@/constants/dive";
 import { createSpin, spinEnd, spinMove, spinStart, spinStep } from "@/lib/dive/spin";
 
@@ -87,7 +87,6 @@ export const Submersible = ({ pose: fixed, turntable }: SubmersibleProps) => {
   const props = useRef<THREE.Group[]>([]);
   const pointer = useRef({ x: 0, y: 0 });
   const lastProgress = useRef(0);
-  const lastLapX = useRef(0);
   /** Damped on-screen pose; null until the first frame snaps it into place. */
   const eased = useRef<{ x: number; y: number; s: number } | null>(null);
   const targets = useMemo(() => [new THREE.Object3D(), new THREE.Object3D()], []);
@@ -190,18 +189,14 @@ export const Submersible = ({ pose: fixed, turntable }: SubmersibleProps) => {
     a.bank = THREE.MathUtils.damp(a.bank, THREE.MathUtils.clamp(-vx * 0.05, -0.5, 0.5), 3, dt);
     a.yaw = THREE.MathUtils.damp(a.yaw, THREE.MathUtils.clamp(vx * 0.06, -0.7, 0.7), 3, dt);
 
-    // The reef lap rides on top of the eased pose rather than through it: the
-    // damping would cut the sweep short of the screen edges on a quick snap.
-    // Each edge is where the hull's tip just touches it.
-    const lap = fixed ? NO_LAP : lapAt(s.progress, s.ranges);
-    const edge = view.width / 2 - (scale * MODEL_W) / 2;
-    const lapX = lap.sweep * (lap.sweep > 0 ? edge - e.x : edge + e.x);
-    const lapV = (lapX - lastLapX.current) / Math.max(dt, 1e-3);
-    lastLapX.current = lapX;
-    // Mirrored while it faces left, so it banks and yaws into its own heading.
-    const facing = Math.cos(lap.turn);
+    // Swapping to the alternate side (the reef's odd sites) it turns to face
+    // the way it crosses and stays turned there: facing right in the lane,
+    // left in alt. Mirrored while it faces left, so it banks and yaws into its
+    // own heading.
+    const turn = fixed ? 0 : Math.PI * altAt(s.progress, s.ranges, lanes);
+    const facing = Math.cos(turn);
 
-    g.position.set(e.x + lapX, e.y + Math.sin(t * 0.8) * 0.06 * scale, 0);
+    g.position.set(e.x, e.y + Math.sin(t * 0.8) * 0.06 * scale, 0);
     // While a chapter is read the sub is not parked: it idles through a slow
     // weave, turning to look around, so it is never a still model.
     const weave = turntable ? t * 0.5 : Math.sin(t * 0.45) * 0.4;
@@ -209,7 +204,7 @@ export const Submersible = ({ pose: fixed, turntable }: SubmersibleProps) => {
       PITCH + Math.sin(t * 0.3) * 0.08 + pointer.current.y * -0.07 + spin.rx,
       // Turning toward the camera (-turn), with the three-quarter view
       // mirrored, so both headings show the dome side.
-      YAW * facing - lap.turn + a.yaw * facing + weave + pointer.current.x * 0.07 + spin.ry,
+      YAW * facing - turn + a.yaw * facing + weave + pointer.current.x * 0.07 + spin.ry,
       0
     );
     g.scale.setScalar(scale);
@@ -218,7 +213,7 @@ export const Submersible = ({ pose: fixed, turntable }: SubmersibleProps) => {
     body.current?.rotation.set(a.bank * facing, 0, pose.rotZ + a.pitch + plunge.pitch + Math.sin(t * 0.5) * 0.04);
 
     subTelemetry.scale = scale;
-    subTelemetry.speed = Math.hypot(vx * scale + lapV, vy * scale);
+    subTelemetry.speed = Math.hypot(vx, vy) * scale;
     subTelemetry.screenY = e.y / view.height + 0.5;
     if (body.current) body.current.localToWorld(subTelemetry.stern.copy(STERN));
 
