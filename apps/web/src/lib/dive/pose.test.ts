@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { SUB_POSES } from "@/constants/dive";
 import { chapterRanges } from "./depth";
-import { plungeAt, poseAt, rollAt } from "./pose";
+import { lapAt, NO_LAP, plungeAt, poseAt } from "./pose";
 
 const r = chapterRanges([1, 5, 1.5, 3, 1.5, 1]);
 /** Global progress at local `t` of chapter `i`. */
@@ -61,29 +61,35 @@ describe("poseAt", () => {
   });
 });
 
-describe("rollAt", () => {
-  test("the sub is level outside the reef", () => {
-    for (const i of [0, 2, 3, 4, 5]) expect(rollAt(at(i, 0.5), r)).toBe(0);
+describe("lapAt", () => {
+  /** Reef progress at `beat` of its 5 beats. */
+  const beat = (b: number) => at(1, b / 5);
+
+  test("no lap outside the reef, nor while a dive site is being read", () => {
+    for (const i of [0, 2, 3, 4, 5]) expect(lapAt(at(i, 0.5), r)).toEqual(NO_LAP);
+    expect(lapAt(beat(0), r)).toEqual(NO_LAP);
+    expect(lapAt(beat(0.3), r)).toEqual(NO_LAP);
+    expect(lapAt(beat(1.2), r)).toEqual(NO_LAP);
   });
 
-  test("one full barrel roll per dive-site handover, whole turns once each lands", () => {
-    // Reef is 5 beats: four handovers.
-    expect(rollAt(at(1, 0), r)).toBe(0);
-    expect(rollAt(at(1, 1 / 5 - 0.5 / 5), r)).toBe(0); // before the first roll starts
-    const mid = rollAt(at(1, (1 - 0.2) / 5), r);
-    expect(mid).toBeGreaterThan(0);
-    expect(mid).toBeLessThan(Math.PI * 2);
-    expect(rollAt(at(1, 1.1 / 5), r)).toBeCloseTo(Math.PI * 2, 5);
-    expect(rollAt(at(1, 4.2 / 5), r)).toBeCloseTo(Math.PI * 8, 5);
-  });
-
-  test("rolling is monotonic through the reef, so scrolling back unrolls smoothly", () => {
-    let last = -1;
-    for (let t = 0; t <= 1; t += 0.01) {
-      const v = rollAt(at(1, t), r);
-      expect(v).toBeGreaterThanOrEqual(last - 1e-9);
-      last = v;
+  test("each handover sweeps right edge, then left edge, facing the way it swims", () => {
+    // Reef is 5 beats: four handovers, the first lap over beats 0.4..1.1.
+    let right = 0;
+    let left = 0;
+    for (let b = 0.4; b <= 1.1; b += 0.005) {
+      const { sweep, turn } = lapAt(beat(b), r);
+      if (sweep > right) right = sweep;
+      if (sweep < left) left = sweep;
+      expect(turn).toBeGreaterThanOrEqual(0);
+      expect(turn).toBeLessThanOrEqual(Math.PI + 1e-9);
     }
+    expect(right).toBeGreaterThan(0.99);
+    expect(left).toBeLessThan(-0.99);
+    // Midway it crosses its own lane heading left.
+    const mid = lapAt(beat(0.75), r);
+    expect(mid.sweep).toBeCloseTo(0, 5);
+    expect(mid.turn).toBeCloseTo(Math.PI, 5);
+    expect(lapAt(beat(3.75), r).turn).toBeCloseTo(Math.PI, 5);
   });
 });
 

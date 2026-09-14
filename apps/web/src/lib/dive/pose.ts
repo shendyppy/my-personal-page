@@ -46,25 +46,31 @@ export function poseAt(p: number, ranges: Range[], lanes: Partial<Record<Chapter
 }
 
 const TURN = Math.PI * 2;
-/** A barrel roll starts this far (in beats) before a reef beat lands, and takes this long. */
-const ROLL_LEAD = 0.45;
-const ROLL_BEATS = 0.5;
+/** A lap starts this far (in beats) before a reef beat lands, and takes this long. */
+const LAP_LEAD = 0.6;
+const LAP_BEATS = 0.7;
+
+export type Lap = { sweep: number; turn: number };
+export const NO_LAP: Lap = { sweep: 0, turn: 0 };
 
 /**
- * Roll about the sub's long axis: one full barrel roll as each reef dive site
- * hands over to the next, landing just after the snap settles on it. Zero
- * everywhere else. Cumulative, so scrolling back unrolls the same way.
+ * A lap of the screen as each reef dive site hands over to the next: the sub
+ * swims out to the right edge, turns, crosses to the left edge, turns again
+ * and comes home to its lane just after the snap settles on the new site.
+ * `sweep` runs -1..1 (left edge..right edge, 0 = in its lane); `turn` is the
+ * heading, 0 facing right and π facing left, half turned at either edge.
+ * Scroll-driven, so scrolling back runs the lap in reverse.
  */
-export function rollAt(p: number, ranges: Range[]): number {
+export function lapAt(p: number, ranges: Range[]): Lap {
   const { id, t } = localProgress(p, ranges);
-  if (id !== "reef") return 0;
+  if (id !== "reef") return NO_LAP;
   const beats = ranges.find((r) => r.id === id)?.beats ?? 1;
   const pos = t * beats;
-  let roll = 0;
   for (let k = 1; k < beats; k += 1) {
-    roll += TURN * easeInOut(clamp01((pos - (k - ROLL_LEAD)) / ROLL_BEATS));
+    const e = easeInOut(clamp01((pos - (k - LAP_LEAD)) / LAP_BEATS));
+    if (e > 0 && e < 1) return { sweep: Math.sin(TURN * e), turn: (Math.PI * (1 - Math.cos(TURN * e))) / 2 };
   }
-  return roll;
+  return NO_LAP;
 }
 
 /**
