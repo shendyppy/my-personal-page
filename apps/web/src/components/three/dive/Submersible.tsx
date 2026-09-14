@@ -6,12 +6,20 @@ import * as THREE from "three";
 
 import { dive } from "@/lib/dive/depth";
 import { lanes } from "@/lib/dive/lanes";
-import { poseAt } from "@/lib/dive/pose";
+import { plungeAt, poseAt, rollAt } from "@/lib/dive/pose";
 import type { Pose } from "@/constants/dive";
 import { createSpin, spinEnd, spinMove, spinStart, spinStep } from "@/lib/dive/spin";
 
 const ACCENT = "#d7ff3e";
 const ORIGIN = new THREE.Vector3();
+const STERN = new THREE.Vector3(-1.45, 0, 0);
+
+/**
+ * Where the sub is, for scene pieces that react to it (the bubble trail):
+ * world position of its stern, screen height of its centre (0 bottom, 1 top),
+ * size and speed in world units. Written once per frame by Submersible.
+ */
+export const subTelemetry = { stern: new THREE.Vector3(), screenY: 0.5, scale: 1, speed: 0 };
 
 // Ruling D: a SpotLight only aims at `target` once that Object3D is part of
 // the scene graph. Each lamp gets its own target, rendered via <primitive>
@@ -66,6 +74,9 @@ type SubmersibleProps = {
 
 export const Submersible = ({ pose: fixed }: SubmersibleProps) => {
   const group = useRef<THREE.Group>(null);
+  const body = useRef<THREE.Group>(null);
+  /** Damped attitude: nose pitch, bank and yaw into the direction of travel. */
+  const attitude = useRef({ pitch: 0, bank: 0, yaw: 0 });
   const lampA = useRef<THREE.SpotLight>(null);
   const lampB = useRef<THREE.SpotLight>(null);
   const glowA = useRef<THREE.MeshBasicMaterial>(null);
@@ -145,26 +156,53 @@ export const Submersible = ({ pose: fixed }: SubmersibleProps) => {
     pointer.current.y += (p.y - pointer.current.y) * Math.min(1, dt * 3);
     const t = clock.elapsedTime;
     spinStep(spin, dt);
+    const plunge = fixed ? { pitch: 0, dip: 0 } : plungeAt(s.progress, s.ranges);
     const target = {
       x: (pose.x * view.width) / 2,
-      y: (pose.y * view.height) / 2,
+      y: ((pose.y + plunge.dip) * view.height) / 2,
       s: Math.min((pose.w * view.width) / MODEL_W, (pose.h * view.height) / MODEL_H),
     };
     // Glide toward the pose instead of locking to it, so a fast scroll, a
     // snap or a lane re-measure never makes the sub jump.
     const e = eased.current ?? { ...target };
+    const px = e.x;
+    const py = e.y;
     e.x = THREE.MathUtils.damp(e.x, target.x, EASE, dt);
     e.y = THREE.MathUtils.damp(e.y, target.y, EASE, dt);
     e.s = THREE.MathUtils.damp(e.s, target.s, EASE, dt);
     eased.current = e;
     const scale = e.s;
+
+    // Fly like a vessel, not a lift: the nose dips into a descent and rises
+    // out of a climb, the hull banks and turns toward where it is heading.
+    // Velocities are normalised by size so a small sub manoeuvres as keenly.
+    const step = Math.max(dt, 1e-3) * Math.max(scale, 0.05);
+    const vx = (e.x - px) / step;
+    const vy = (e.y - py) / step;
+    const a = attitude.current;
+    a.pitch = THREE.MathUtils.damp(a.pitch, THREE.MathUtils.clamp(vy * 0.09, -0.75, 0.6), 4, dt);
+    a.bank = THREE.MathUtils.damp(a.bank, THREE.MathUtils.clamp(-vx * 0.05, -0.5, 0.5), 3, dt);
+    a.yaw = THREE.MathUtils.damp(a.yaw, THREE.MathUtils.clamp(vx * 0.06, -0.7, 0.7), 3, dt);
+
     g.position.set(e.x, e.y + Math.sin(t * 0.8) * 0.06 * scale, 0);
+    // While a chapter is read the sub is not parked: it idles through a slow
+    // weave, turning to look around, so it is never a still model.
+    const weave = Math.sin(t * 0.45) * 0.4;
     g.rotation.set(
-      PITCH + pointer.current.y * -0.07 + spin.rx,
-      YAW + pointer.current.x * 0.07 + spin.ry,
-      pose.rotZ + Math.sin(t * 0.5) * 0.02
+      PITCH + Math.sin(t * 0.3) * 0.08 + pointer.current.y * -0.07 + spin.rx,
+      YAW + a.yaw + weave + pointer.current.x * 0.07 + spin.ry,
+      0
     );
     g.scale.setScalar(scale);
+    const roll = fixed ? 0 : rollAt(s.progress, s.ranges);
+    // ZYX: roll about the long axis first, then pitch, so a barrel roll turns
+    // around the hull however steeply the nose is pointing.
+    body.current?.rotation.set(roll + a.bank, 0, pose.rotZ + a.pitch + plunge.pitch + Math.sin(t * 0.5) * 0.04);
+
+    subTelemetry.scale = scale;
+    subTelemetry.speed = Math.hypot(vx, vy) * scale;
+    subTelemetry.screenY = e.y / view.height + 0.5;
+    if (body.current) body.current.localToWorld(subTelemetry.stern.copy(STERN));
 
     // Props idle at a slow churn and wind up with scroll speed.
     const velocity = Math.abs(s.progress - lastProgress.current) / Math.max(dt, 1e-3);
@@ -183,127 +221,129 @@ export const Submersible = ({ pose: fixed }: SubmersibleProps) => {
 
   return (
     <group ref={group} onPointerDown={onDown} onPointerOver={onOver} onPointerOut={onOut}>
-      {/* hull, laid along +x */}
-      <mesh geometry={hull} material={mats.hull} rotation={[0, 0, -Math.PI / 2]} />
-      {[-0.6, 0.2].map((x) => (
-        <mesh key={x} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.seam}>
-          <torusGeometry args={[0.435, 0.012, 8, 48]} />
-        </mesh>
-      ))}
-      {/* accent belt behind the dome */}
-      <mesh position={[0.62, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.stripe}>
-        <torusGeometry args={[0.415, 0.014, 8, 48]} />
-      </mesh>
-
-      {/* acrylic dome with a dark cabin behind it */}
-      <mesh position={[1.02, 0.02, 0]} material={mats.cabin}>
-        <sphereGeometry args={[0.2, 20, 16]} />
-      </mesh>
-      <mesh position={[1.02, 0.02, 0]} rotation={[0, 0, -Math.PI / 2]} material={mats.glass}>
-        <sphereGeometry args={[0.3, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-      </mesh>
-      <mesh position={[1.02, 0.02, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.metal}>
-        <torusGeometry args={[0.3, 0.025, 10, 40]} />
-      </mesh>
-
-      {/* sail, hatch, strobe, antenna */}
-      {/* A capsule laid along x: the rounded sail without pulling in drei. */}
-      <mesh position={[0.05, 0.5, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.hull}>
-        <capsuleGeometry args={[0.15, 0.48, 6, 16]} />
-      </mesh>
-      <mesh position={[0.2, 0.67, 0]} material={mats.metal}>
-        <cylinderGeometry args={[0.09, 0.1, 0.05, 20]} />
-      </mesh>
-      <mesh position={[-0.25, 0.9, 0]} material={mats.frame}>
-        <cylinderGeometry args={[0.008, 0.008, 0.5, 6]} />
-      </mesh>
-      <mesh position={[-0.25, 1.16, 0]}>
-        <sphereGeometry args={[0.025, 10, 10]} />
-        <meshBasicMaterial ref={strobe} color={ACCENT} transparent toneMapped={false} />
-      </mesh>
-
-      {/* cruciform tail */}
-      {[0, Math.PI / 2].map((r) => (
-        <mesh key={r} position={[-1.0, 0, 0]} rotation={[r, 0, 0]} material={mats.frame}>
-          <boxGeometry args={[0.32, 0.9, 0.025]} />
-        </mesh>
-      ))}
-
-      {/* shrouded stern thruster */}
-      <mesh position={[-1.3, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.frame}>
-        <torusGeometry args={[0.24, 0.045, 12, 36]} />
-      </mesh>
-      <group position={[-1.3, 0, 0]} ref={addProp}>
-        <Propeller radius={0.4} mat={mats.metal} />
-      </group>
-
-      {/* side thruster pods on struts */}
-      {POD_Z.map((z) => (
-        <group key={z} position={[-0.35, -0.08, z]}>
-          <mesh rotation={[0, 0, Math.PI / 2]} material={mats.frame}>
-            <cylinderGeometry args={[0.1, 0.1, 0.36, 20]} />
+      <group ref={body} rotation-order="ZYX">
+        {/* hull, laid along +x */}
+        <mesh geometry={hull} material={mats.hull} rotation={[0, 0, -Math.PI / 2]} />
+        {[-0.6, 0.2].map((x) => (
+          <mesh key={x} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.seam}>
+            <torusGeometry args={[0.435, 0.012, 8, 48]} />
           </mesh>
-          <mesh position={[0, 0, -Math.sign(z) * 0.12]} rotation={[Math.PI / 2, 0, 0]} material={mats.frame}>
-            <boxGeometry args={[0.08, 0.2, 0.03]} />
+        ))}
+        {/* accent belt behind the dome */}
+        <mesh position={[0.62, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.stripe}>
+          <torusGeometry args={[0.415, 0.014, 8, 48]} />
+        </mesh>
+
+        {/* acrylic dome with a dark cabin behind it */}
+        <mesh position={[1.02, 0.02, 0]} material={mats.cabin}>
+          <sphereGeometry args={[0.2, 20, 16]} />
+        </mesh>
+        <mesh position={[1.02, 0.02, 0]} rotation={[0, 0, -Math.PI / 2]} material={mats.glass}>
+          <sphereGeometry args={[0.3, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        </mesh>
+        <mesh position={[1.02, 0.02, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.metal}>
+          <torusGeometry args={[0.3, 0.025, 10, 40]} />
+        </mesh>
+
+        {/* sail, hatch, strobe, antenna */}
+        {/* A capsule laid along x: the rounded sail without pulling in drei. */}
+        <mesh position={[0.05, 0.5, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.hull}>
+          <capsuleGeometry args={[0.15, 0.48, 6, 16]} />
+        </mesh>
+        <mesh position={[0.2, 0.67, 0]} material={mats.metal}>
+          <cylinderGeometry args={[0.09, 0.1, 0.05, 20]} />
+        </mesh>
+        <mesh position={[-0.25, 0.9, 0]} material={mats.frame}>
+          <cylinderGeometry args={[0.008, 0.008, 0.5, 6]} />
+        </mesh>
+        <mesh position={[-0.25, 1.16, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <meshBasicMaterial ref={strobe} color={ACCENT} transparent toneMapped={false} />
+        </mesh>
+
+        {/* cruciform tail */}
+        {[0, Math.PI / 2].map((r) => (
+          <mesh key={r} position={[-1.0, 0, 0]} rotation={[r, 0, 0]} material={mats.frame}>
+            <boxGeometry args={[0.32, 0.9, 0.025]} />
           </mesh>
-          <group position={[-0.05, 0, 0]} ref={addProp}>
-            <Propeller radius={0.18} mat={mats.metal} />
+        ))}
+
+        {/* shrouded stern thruster */}
+        <mesh position={[-1.3, 0, 0]} rotation={[0, Math.PI / 2, 0]} material={mats.frame}>
+          <torusGeometry args={[0.24, 0.045, 12, 36]} />
+        </mesh>
+        <group position={[-1.3, 0, 0]} ref={addProp}>
+          <Propeller radius={0.4} mat={mats.metal} />
+        </group>
+
+        {/* side thruster pods on struts */}
+        {POD_Z.map((z) => (
+          <group key={z} position={[-0.35, -0.08, z]}>
+            <mesh rotation={[0, 0, Math.PI / 2]} material={mats.frame}>
+              <cylinderGeometry args={[0.1, 0.1, 0.36, 20]} />
+            </mesh>
+            <mesh position={[0, 0, -Math.sign(z) * 0.12]} rotation={[Math.PI / 2, 0, 0]} material={mats.frame}>
+              <boxGeometry args={[0.08, 0.2, 0.03]} />
+            </mesh>
+            <group position={[-0.05, 0, 0]} ref={addProp}>
+              <Propeller radius={0.18} mat={mats.metal} />
+            </group>
           </group>
-        </group>
-      ))}
+        ))}
 
-      {/* skids and struts */}
-      {SKID_Z.map((z) => (
-        <group key={z}>
-          <mesh position={[0, -0.62, z]} rotation={[0, 0, Math.PI / 2]} material={mats.frame}>
-            <capsuleGeometry args={[0.03, 1.7, 6, 12]} />
-          </mesh>
-          {[-0.6, 0, 0.6].map((x) => (
-            <mesh key={x} position={[x, -0.5, z * 0.8]} rotation={[z > 0 ? -0.35 : 0.35, 0, 0]} material={mats.frame}>
-              <cylinderGeometry args={[0.018, 0.018, 0.26, 6]} />
+        {/* skids and struts */}
+        {SKID_Z.map((z) => (
+          <group key={z}>
+            <mesh position={[0, -0.62, z]} rotation={[0, 0, Math.PI / 2]} material={mats.frame}>
+              <capsuleGeometry args={[0.03, 1.7, 6, 12]} />
             </mesh>
-          ))}
-        </group>
-      ))}
+            {[-0.6, 0, 0.6].map((x) => (
+              <mesh key={x} position={[x, -0.5, z * 0.8]} rotation={[z > 0 ? -0.35 : 0.35, 0, 0]} material={mats.frame}>
+                <cylinderGeometry args={[0.018, 0.018, 0.26, 6]} />
+              </mesh>
+            ))}
+          </group>
+        ))}
 
-      {/* lamp bar under the nose */}
-      <mesh position={[0.82, -0.36, 0]} material={mats.frame}>
-        <boxGeometry args={[0.1, 0.06, 0.56]} />
-      </mesh>
-      {LAMP_Z.map((z, i) => (
-        <group key={z} position={[0.9, -0.36, z]}>
-          <mesh>
-            <sphereGeometry args={[0.055, 12, 12]} />
-            {/* Unlit so tonemapping never dulls the accent. */}
-            <meshBasicMaterial ref={i === 0 ? glowA : glowB} color={ACCENT} transparent toneMapped={false} />
-          </mesh>
-          <primitive object={targets[i]} position={[4, -2, 0]} />
-          <spotLight
-            ref={i === 0 ? lampA : lampB}
-            color={ACCENT}
-            angle={0.5}
-            penumbra={0.6}
-            distance={9}
-            decay={1}
-            target={targets[i]}
-          />
-        </group>
-      ))}
-
-      {/* manipulator arm, folded forward under the dome */}
-      <group position={[0.62, -0.42, 0.18]} rotation={[0, 0, -0.5]}>
-        <mesh position={[0.18, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.metal}>
-          <cylinderGeometry args={[0.025, 0.03, 0.36, 10]} />
+        {/* lamp bar under the nose */}
+        <mesh position={[0.82, -0.36, 0]} material={mats.frame}>
+          <boxGeometry args={[0.1, 0.06, 0.56]} />
         </mesh>
-        <group position={[0.36, 0, 0]} rotation={[0, 0, 0.9]}>
-          <mesh position={[0.13, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.metal}>
-            <cylinderGeometry args={[0.02, 0.025, 0.26, 10]} />
-          </mesh>
-          {[0.25, -0.25].map((a) => (
-            <mesh key={a} position={[0.29, a * 0.12, 0]} rotation={[0, 0, a]} material={mats.frame}>
-              <boxGeometry args={[0.09, 0.015, 0.02]} />
+        {LAMP_Z.map((z, i) => (
+          <group key={z} position={[0.9, -0.36, z]}>
+            <mesh>
+              <sphereGeometry args={[0.055, 12, 12]} />
+              {/* Unlit so tonemapping never dulls the accent. */}
+              <meshBasicMaterial ref={i === 0 ? glowA : glowB} color={ACCENT} transparent toneMapped={false} />
             </mesh>
-          ))}
+            <primitive object={targets[i]} position={[4, -2, 0]} />
+            <spotLight
+              ref={i === 0 ? lampA : lampB}
+              color={ACCENT}
+              angle={0.5}
+              penumbra={0.6}
+              distance={9}
+              decay={1}
+              target={targets[i]}
+            />
+          </group>
+        ))}
+
+        {/* manipulator arm, folded forward under the dome */}
+        <group position={[0.62, -0.42, 0.18]} rotation={[0, 0, -0.5]}>
+          <mesh position={[0.18, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.metal}>
+            <cylinderGeometry args={[0.025, 0.03, 0.36, 10]} />
+          </mesh>
+          <group position={[0.36, 0, 0]} rotation={[0, 0, 0.9]}>
+            <mesh position={[0.13, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={mats.metal}>
+              <cylinderGeometry args={[0.02, 0.025, 0.26, 10]} />
+            </mesh>
+            {[0.25, -0.25].map((a) => (
+              <mesh key={a} position={[0.29, a * 0.12, 0]} rotation={[0, 0, a]} material={mats.frame}>
+                <boxGeometry args={[0.09, 0.015, 0.02]} />
+              </mesh>
+            ))}
+          </group>
         </group>
       </group>
     </group>

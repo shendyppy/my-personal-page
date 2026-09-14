@@ -39,3 +39,38 @@ export function poseAt(p: number, ranges: Range[], lanes: Partial<Record<Chapter
     lamp: lerp(from.lamp, to.lamp, e),
   };
 }
+
+const TURN = Math.PI * 2;
+/** A barrel roll starts this far (in beats) before a reef beat lands, and takes this long. */
+const ROLL_LEAD = 0.45;
+const ROLL_BEATS = 0.5;
+
+/**
+ * Roll about the sub's long axis: one full barrel roll as each reef dive site
+ * hands over to the next, landing just after the snap settles on it. Zero
+ * everywhere else. Cumulative, so scrolling back unrolls the same way.
+ */
+export function rollAt(p: number, ranges: Range[]): number {
+  const { id, t } = localProgress(p, ranges);
+  if (id !== "reef") return 0;
+  const beats = ranges.find((r) => r.id === id)?.beats ?? 1;
+  const pos = t * beats;
+  let roll = 0;
+  for (let k = 1; k < beats; k += 1) {
+    roll += TURN * easeInOut(clamp01((pos - (k - ROLL_LEAD)) / ROLL_BEATS));
+  }
+  return roll;
+}
+
+/**
+ * The opening plunge: across the surface chapter the nose tips down into the
+ * dive (steepest halfway, level again as it reaches the reef) and the sub
+ * sinks a little below its path, so going under reads as a dive rather than
+ * a lift. Pitch in radians, dip in NDC. Zero outside the surface chapter.
+ */
+export function plungeAt(p: number, ranges: Range[]): { pitch: number; dip: number } {
+  const { id, t } = localProgress(p, ranges);
+  if (id !== "surface" || t === 0) return { pitch: 0, dip: 0 };
+  const arc = Math.sin(Math.PI * easeInOut(t));
+  return { pitch: -0.55 * arc, dip: -0.12 * arc };
+}

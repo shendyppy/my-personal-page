@@ -71,7 +71,11 @@ const frag = /* glsl */ `
       return;
     }
 
-    float h = uv.y - line;
+    // Land and sky sit on the still line, so the island never rides the waves;
+    // only the water's edge (and its foam) moves against the shore.
+    // Clamped: in a wave's trough the pixel is above the water but below the
+    // still line, and there it continues the horizon rather than going negative.
+    float h = max(uv.y - uLine, 0.0);
     vec3 sky = mix(vec3(0.25, 0.40, 0.47), vec3(0.035, 0.10, 0.17), smoothstep(0.0, 0.55, h));
     vec2 sp = vec2((uv.x - SUN.x) * uAspect, h - SUN.y);
     float r2 = dot(sp, sp);
@@ -96,7 +100,7 @@ const frag = /* glsl */ `
       col = mix(col, land, palm(p) * reach);
     }
 
-    float foam = smoothstep(0.006, 0.0, h) * 0.6;
+    float foam = smoothstep(0.006, 0.0, uv.y - line) * 0.6;
     col = mix(col, vec3(0.85, 0.93, 0.95), foam);
     gl_FragColor = vec4(col, 1.0);
   }

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { SUB_POSES } from "@/constants/dive";
 import { chapterRanges } from "./depth";
-import { poseAt } from "./pose";
+import { plungeAt, poseAt, rollAt } from "./pose";
 
 const r = chapterRanges([1, 5, 1.5, 3, 1.5, 1]);
 /** Global progress at local `t` of chapter `i`. */
@@ -52,5 +52,46 @@ describe("poseAt", () => {
     expect(poseAt(at(3, 0.5), r, lanes).y).toBeCloseTo(0);
     // Descent is 3 beats, so it holds until t = 2/3 and is still on the line there.
     expect(poseAt(at(3, 0.6), r, lanes)).toMatchObject({ x: 0, y: expect.closeTo(-0.16, 5) });
+  });
+});
+
+describe("rollAt", () => {
+  test("the sub is level outside the reef", () => {
+    for (const i of [0, 2, 3, 4, 5]) expect(rollAt(at(i, 0.5), r)).toBe(0);
+  });
+
+  test("one full barrel roll per dive-site handover, whole turns once each lands", () => {
+    // Reef is 5 beats: four handovers.
+    expect(rollAt(at(1, 0), r)).toBe(0);
+    expect(rollAt(at(1, 1 / 5 - 0.5 / 5), r)).toBe(0); // before the first roll starts
+    const mid = rollAt(at(1, (1 - 0.2) / 5), r);
+    expect(mid).toBeGreaterThan(0);
+    expect(mid).toBeLessThan(Math.PI * 2);
+    expect(rollAt(at(1, 1.1 / 5), r)).toBeCloseTo(Math.PI * 2, 5);
+    expect(rollAt(at(1, 4.2 / 5), r)).toBeCloseTo(Math.PI * 8, 5);
+  });
+
+  test("rolling is monotonic through the reef, so scrolling back unrolls smoothly", () => {
+    let last = -1;
+    for (let t = 0; t <= 1; t += 0.01) {
+      const v = rollAt(at(1, t), r);
+      expect(v).toBeGreaterThanOrEqual(last - 1e-9);
+      last = v;
+    }
+  });
+});
+
+describe("plungeAt", () => {
+  test("level at rest on the surface and again once in the reef", () => {
+    expect(plungeAt(0, r)).toEqual({ pitch: 0, dip: 0 });
+    expect(plungeAt(at(1, 0.1), r)).toEqual({ pitch: 0, dip: 0 });
+  });
+
+  test("nose down and below the path mid-dive, steepest halfway", () => {
+    const mid = plungeAt(at(0, 0.5), r);
+    expect(mid.pitch).toBeCloseTo(-0.55, 5);
+    expect(mid.dip).toBeCloseTo(-0.12, 5);
+    expect(plungeAt(at(0, 0.25), r).pitch).toBeGreaterThan(mid.pitch);
+    expect(plungeAt(at(0, 0.25), r).pitch).toBeLessThan(0);
   });
 });
