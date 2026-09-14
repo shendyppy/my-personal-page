@@ -70,6 +70,30 @@ async function main() {
         order: 1,
       },
       {
+        company: "80&Company/OCT-PATH",
+        companyLogo: "/assets/img/content/80&company-logo.webp",
+        title: "Brain Manager (Project Manager & Fullstack Engineer)",
+        location: "Jakarta, Indonesia",
+        period: "November 2025 - August 2026",
+        current: false,
+        description:
+          "Lead strategic planning, execution, and delivery of multi-layered digital products while contributing directly to system architecture, development, and DevOps.",
+        responsibilities: [
+          "Managed end-to-end delivery across multiple workstreams including business flow design, workflow automation, and technical architecture.",
+          "Built full-stack features involving PDF automation, assessment engines, secure authentication flows, and content platforms.",
+          "Contributed to DevOps processes including environment setup, CI/CD, deployment, and performance optimization.",
+          "Acted as both project manager and technical contributor, ensuring balance between execution speed and product quality.",
+        ],
+        projects: [
+          "EB-PLT – Pharmacist Administration Platform (Released)",
+          "Various workflow automation and internal tools",
+        ],
+        techStack:
+          "Next.js, shadcn UI, Tailwind CSS, TypeScript, Prisma, PostgreSQL (Neon), Gotenberg, Vercel Blob, Zod, GitHub Projects (Agile Management - ticketing, roadmap, milestones), CI/CD (Vercel), Error Logging (Sentry)",
+        employmentType: "Freelance",
+        order: 2,
+      },
+      {
         company: "PT. Mahardika Solusi Teknologi (IDE Asia)",
         companyLogo: "/assets/img/content/ide-logo.webp",
         title: "Front End Developer",
