@@ -33,10 +33,6 @@
   --chart-3: #6b7280;
   --chart-4: #ef4444;
   --chart-5: #1e1e21;
-  --aurora-1: #d946ef;
-  --aurora-2: #8b5cf6;
-  --aurora-3: #06b6d4;
-  --aurora-4: #f59e0b;
   --radius: 0.5rem;
   --sidebar: #1e293b;
   --sidebar-foreground: #f3f4f6;
@@ -76,10 +72,6 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --color-aurora-1: var(--aurora-1);
-  --color-aurora-2: var(--aurora-2);
-  --color-aurora-3: var(--aurora-3);
-  --color-aurora-4: var(--aurora-4);
   --color-subtle: var(--subtle);
   --color-surface: var(--surface);
   --radius-sm: calc(var(--radius) - 4px);
@@ -197,25 +189,9 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-blink,
   .animate-rise,
-  .animate-fade-up,
-  .animate-gradient-x {
+  .animate-fade-up {
     animation: none !important;
   }
-}
-
-@keyframes gradient-x {
-  0%,
-  100% {
-    background-position: 15% 50%;
-  }
-  50% {
-    background-position: 95% 50%;
-  }
-}
-
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 4s ease infinite;
 }
 
 ::-webkit-scrollbar { width: 0.3em; height: 0.3em; }
@@ -651,8 +627,31 @@ body { background: #083352; transition: background-color 900ms ease; }
 }
 .seafloor-cue { display: none; }
 @media (hover: hover) and (min-width: 1024px) { .seafloor-cue { display: block; } }
-/* Short screens: the CV preview is 200px of a stage that has none to spare;
-   the card keeps its title and download. */
+/* The CV record: a preview window that scrolls the page and warms to colour
+   on hover, then its rows and a bracketed download across the foot. */
+.cv-preview { position: relative; height: 170px; overflow: hidden; border-bottom: 1px solid var(--border); }
+.cv-preview-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: grayscale(1) brightness(0.75);
+  transition: transform 1600ms ease-in-out, filter 500ms ease;
+}
+.cv-record:hover .cv-preview-img { transform: translateY(calc(-100% + 170px)); filter: none; }
+.cv-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  color: var(--foreground);
+  transition: color 200ms, background-color 200ms;
+}
+.cv-download:hover, .cv-download:focus-visible { color: var(--accent); background: color-mix(in oklab, var(--accent) 8%, transparent); }
+@media (prefers-reduced-motion: reduce) { .cv-preview-img { transition: none; } }
+/* Short screens: the CV preview is 170px of a stage that has none to spare;
+   the record keeps its rows and download. */
 @media (max-height: 700px) {
   .seafloor [data-cv-preview] { display: none; }
 }

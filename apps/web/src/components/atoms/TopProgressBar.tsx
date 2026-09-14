@@ -2,12 +2,11 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
 
 /**
- * App Router-native top loading bar — NProgress in spirit, but built on
- * Framer Motion + pathname detection so we get brand-gradient styling
- * (accent → primary) and reduced-motion support out of the box.
+ * App Router-native top loading bar — NProgress in spirit: pathname detection
+ * plus a CSS-transitioned scaleX, with brand-gradient styling (accent →
+ * primary). Reduced motion drops the transition.
  *
  * Why pathname detection (and not Next.js `useLinkStatus`):
  * `useLinkStatus` is a per-Link hook — it must be a child of <Link> and
@@ -84,28 +83,17 @@ const Bar = () => {
     }, 220);
   }, [pathname, searchParams]);
 
+  const climb = progress === 100 ? 180 : progress > 50 ? 600 : 250;
   return (
-    <AnimatePresence>
-      {visible ? (
-        <motion.div
-          key="top-progress-bar"
-          className="fixed top-0 left-0 right-0 z-[9999] h-[3px] origin-left bg-gradient-to-r from-accent to-primary shadow-[0_0_10px_rgba(99,102,241,0.6)]"
-          initial={{ scaleX: 0, opacity: 0 }}
-          animate={{
-            scaleX: progress / 100,
-            opacity: 1,
-          }}
-          exit={{ opacity: 0 }}
-          transition={{
-            scaleX: {
-              duration: progress === 100 ? 0.18 : progress > 50 ? 0.6 : 0.25,
-              ease: progress === 100 ? "easeOut" : "easeOut",
-            },
-            opacity: { duration: 0.25 },
-          }}
-        />
-      ) : null}
-    </AnimatePresence>
+    <div
+      aria-hidden
+      className="pointer-events-none fixed top-0 left-0 right-0 z-[9999] h-[3px] origin-left bg-gradient-to-r from-accent to-primary shadow-[0_0_10px_rgba(99,102,241,0.6)] motion-reduce:transition-none"
+      style={{
+        transform: `scaleX(${progress / 100})`,
+        opacity: visible ? 1 : 0,
+        transition: `transform ${climb}ms ease-out, opacity 250ms ease-out`,
+      }}
+    />
   );
 };
 

@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 
 import { ChapterHead } from "@/components/atoms/ChapterHead";
-import { CvDownloadCard } from "@/components/molecules/CvDownloadCard";
+import { CvRecord } from "@/components/molecules/CvRecord";
 import { ChapterFrame } from "@/components/organisms/ChapterFrame";
 import { EXTERNAL_LINKS, SITE_CONFIG } from "@/constants/config";
 import { CHAPTERS, DIVE_COPY, sectionId } from "@/constants/dive";
@@ -41,7 +41,7 @@ export const SeafloorChapter = ({ cv }: SeafloorChapterProps) => (
       <div className="seafloor-band">
         {cv && (
           <div className="seafloor-cv" data-reveal>
-            <CvDownloadCard cvInfo={cv} />
+            <CvRecord cv={cv} />
           </div>
         )}
 
