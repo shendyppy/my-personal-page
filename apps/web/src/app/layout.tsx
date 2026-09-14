@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Syne, Space_Grotesk, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
+import { ClickBubbles } from "@/components/atoms/ClickBubbles";
 import { TopProgressBar } from "@/components/atoms/TopProgressBar";
 import { EXTERNAL_LINKS, SITE_CONFIG } from "@/constants/config";
 import "./globals.css";
@@ -142,6 +143,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
         <TopProgressBar />
+        <ClickBubbles />
         {children}
         <Analytics />
       </body>
