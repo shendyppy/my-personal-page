@@ -1390,7 +1390,7 @@ async function main() {
   await prisma.cvInfo.create({
     data: {
       title: "Curriculum Vitae",
-      previewImage: "/assets/Screenshot_CV.webp",
+      previewImage: "/assets/Screenshot_CV_Latest.webp",
       // Canonical clean filename — no date suffix. The downloaded file name
       // follows this path's basename (see AboutSection `download` attr).
       downloadPath: "/assets/CV_Shendy Putra Perdana Yohansah.pdf",
