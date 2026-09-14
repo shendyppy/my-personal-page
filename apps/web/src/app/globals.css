@@ -581,6 +581,8 @@
 .hud-rail-line { width: 22px; height: 1px; background: currentColor; }
 .hud-rail-item.is-active .hud-rail-name,
 .hud-rail-item.is-active .hud-rail-line { opacity: 1; }
+/* Numbers only below xl: the active label would need 136px of every stage. */
+@media (max-width: 1279px) { .hud-rail-name, .hud-rail-line { display: none; } }
 
 .chapter {
   position: relative;
@@ -597,7 +599,21 @@
   display: grid;
   align-content: center;
 }
-@media (min-width: 768px) { .stage { padding-inline: 2.5rem; } }
+/* From md up the HUD rail is fixed over the right of every stage — it covered
+   the surface and twilight record panels, the reef porthole and the sonar
+   readout. --rail-clear is the extra right padding that keeps content off it.
+   Below xl the rail drops to its numbers (see .hud-rail-name) and needs ~2rem;
+   paying the full label's 136px there cost a quarter of a 1024 stage and ran
+   the descent log and landscape heroes past 100svh. From xl the label shows
+   and is cleared in full; past 1400px the stage's centring margin pays part
+   of it, so the clearance shrinks and is gone by 1672px. */
+@media (min-width: 768px) {
+  :root { --rail-clear: 2rem; }
+  .stage { padding-inline: 2.5rem calc(2.5rem + var(--rail-clear)); }
+}
+@media (min-width: 1280px) {
+  :root { --rail-clear: max(0px, calc(8.5rem - (100vw - 1400px) / 2)); }
+}
 .chapter-head {
   margin: 0 0 1.25rem;
   font-family: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
@@ -799,11 +815,10 @@ body { background: #083352; transition: background-color 900ms ease; }
   .log-entry--left p, .log-entry--left h3 { margin-left: auto; }
   .log-entry--right { grid-column: 2; }
 }
-/* The HUD rail is fixed over the stage's right edge from md up, and its active
-   label ("DESCENT —— 04") reaches ~150px in from the viewport edge. Symmetric
-   padding keeps the right column clear of it and the line still centred. */
+/* The stage already pads its right side clear of the HUD rail; matching it on
+   the left keeps the pressure line on the viewport centre, where the sub rides. */
 @media (min-width: 768px) {
-  .descent { padding-inline: clamp(4rem, 13vw, 9rem); }
+  .descent { padding-left: var(--rail-clear); }
 }
 /* Tick labels need a gutter wider than a label ("2600 M", ~48px) each side. */
 @media (min-width: 1024px) {
