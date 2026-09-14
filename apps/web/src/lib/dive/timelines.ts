@@ -7,7 +7,6 @@ export type TimelineBuilder = (
   section: HTMLElement
 ) => void;
 
-
 export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
   surface: (tl, q) => {
     // ScrollTrigger normalises the whole timeline across the section, so these
@@ -53,11 +52,10 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
     // The spacer pins the total at 1, so every number below reads directly as
     // a fraction of the chapter's scroll (see the reef note: `tl.duration()`
     // only sets timeScale, which ScrollTrigger's totalProgress never sees).
-    // The record is fully legible from 30% to 80% — a bio needs dwell, and
-    // this chapter does not snap, so the hold is all the reader gets.
-    tl.from(reveal, { y: 32, opacity: 0, duration: 0.2, stagger: 0.02 }, 0)
-      .to(reveal, { y: -24, opacity: 0, duration: 0.15, stagger: 0.01 }, 0.8)
-      .to({}, { duration: 1 }, 0);
+    // Fully legible from 30% on, and it stays: the pin is only half a viewport,
+    // and fading out at 80% left the stage blank for the whole viewport it
+    // then scrolls away over. The copy leaves with its stage instead.
+    tl.from(reveal, { y: 32, opacity: 0, duration: 0.2, stagger: 0.02 }, 0).to({}, { duration: 1 }, 0);
   },
   descent: (tl, q) => {
     const entries = q("[data-beat]") as HTMLElement[];
@@ -76,10 +74,10 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
   midnight: (tl, q) => {
     // Blips animate on the button, not the <li>: CSS centres each <li> on its
     // point with translate(-50%, -50%), which a GSAP scale there would replace.
-    // Spacer pins the total at 1 (see reef): drawn in by 45%, up until 80%.
+    // Spacer pins the total at 1 (see reef): drawn in by 45%, then it stays up
+    // and scrolls away with its stage, for the reason given under twilight.
     tl.from(q("[data-ring]"), { scale: 0.6, opacity: 0, transformOrigin: "50% 50%", duration: 0.2, stagger: 0.03 }, 0)
       .from(q(".blip"), { scale: 0, opacity: 0, duration: 0.15, stagger: 0.03 }, 0.15)
-      .to(q(".sonar"), { opacity: 0, y: -24, duration: 0.2 }, 0.8)
       .to({}, { duration: 1 }, 0);
   },
   seafloor: (tl, q) => {

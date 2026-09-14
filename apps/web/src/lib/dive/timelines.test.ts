@@ -164,15 +164,17 @@ describe("TIMELINES.twilight", () => {
     expect(o).toEqual([...o].sort((a, b) => b - a));
   });
 
-  test("the reveals are held out at the chapter start and gone by its end", () => {
+  test("the reveals are held out at the chapter start and still up at its end", () => {
+    // The pin is half a viewport; the stage then scrolls away for a whole one.
+    // Fading out before that left the reader a blank screen, so nothing exits.
     const { tl, reveals } = buildTwilight(6);
     tl.progress(0.5); // scrub off 0 first so setting it back forces a render
     tl.progress(0);
     expect(opacities(reveals)).toEqual(Array(6).fill(0));
     expect(ys(reveals)).toEqual(Array(6).fill(32));
     tl.progress(1);
-    expect(opacities(reveals)).toEqual(Array(6).fill(0));
-    expect(ys(reveals)).toEqual(Array(6).fill(-24));
+    expect(opacities(reveals)).toEqual(Array(6).fill(1));
+    expect(ys(reveals)).toEqual(Array(6).fill(0));
   });
 
   test("a chapter with a single reveal still holds it across the same window", () => {
@@ -304,10 +306,11 @@ describe("TIMELINES.midnight", () => {
     items.forEach((li) => expect(li.style.transform).toBe(""));
   });
 
-  test("the chart lifts away at the end of the chapter", () => {
-    const { tl, sonar } = buildMidnight(6, 6);
+  test("the chart is still up at the end of the chapter and leaves with its stage", () => {
+    const { tl, sonar, blips } = buildMidnight(6, 6);
     tl.progress(1);
-    expect(Number(gsap.getProperty(sonar, "opacity"))).toBe(0);
+    expect(Number(gsap.getProperty(sonar, "opacity"))).toBe(1);
+    expect(opacities(blips)).toEqual(Array(6).fill(1));
   });
 });
 
