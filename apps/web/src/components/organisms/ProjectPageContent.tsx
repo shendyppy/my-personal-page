@@ -6,9 +6,8 @@ import Link from "next/link";
 
 import { ImageModal } from "@/components/ui/image-modal";
 import { GrainOverlay } from "@/components/atoms/GrainOverlay";
-import { TerminalLogo } from "@/components/atoms/TerminalLogo";
+import { DiveHud } from "@/components/organisms/DiveHud";
 import { ProjectPagination } from "@/components/organisms/ProjectPagination";
-import { EXTERNAL_LINKS } from "@/constants/config";
 import type { ProjectDetail } from "@/types";
 import type { ProjectListItem } from "@/server/queries/projects";
 
@@ -44,29 +43,10 @@ export const ProjectPageContent = ({
     <div className="relative min-h-screen">
       <GrainOverlay />
 
-      {/* Topbar — terminal logo kept identical to the landing nav. */}
-      <nav className="fixed left-0 right-0 top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-md">
-        <div className="mx-auto flex h-[68px] max-w-[1400px] items-center justify-between px-6 md:px-10">
-          <TerminalLogo href="/" />
-          <div className="flex items-center gap-7 font-mono text-xs tracking-[0.08em]">
-            <Link
-              href="/#projects"
-              className="text-foreground transition-colors hover:text-accent"
-            >
-              ← ALL WORK
-            </Link>
-            <a
-              href={`mailto:${EXTERNAL_LINKS.email}`}
-              className="rounded-full bg-foreground px-4 py-2 font-bold text-background transition-all duration-200 hover:scale-105 hover:bg-accent hover:text-accent-foreground"
-            >
-              LET&apos;S TALK
-            </a>
-          </div>
-        </div>
-      </nav>
+      <DiveHud mode="surface" />
 
       {/* Hero */}
-      <header className="mx-auto box-border max-w-[1400px] px-6 pt-[170px] md:px-10">
+      <header className="mx-auto box-border max-w-[1400px] px-6 pt-[120px] md:px-10">
         <div className="flex items-center gap-3.5 overflow-hidden font-mono text-xs tracking-[0.12em] text-muted-foreground">
           <span className="animate-rise text-accent [animation-delay:0.1s]">
             CASE STUDY

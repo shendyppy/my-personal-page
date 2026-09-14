@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import { sectionId } from "@/constants/dive";
 import type { ProjectListItem } from "@/server/queries/projects";
 
 type Direction = "prev" | "next";
@@ -89,7 +90,7 @@ const ProjectNavCard = ({
 
 const AllWorkCard = () => (
   <Link
-    href="/#projects"
+    href={`/#${sectionId("reef")}`}
     className="group flex flex-col items-start justify-between gap-8 bg-card p-7 transition-colors duration-500 hover:bg-surface md:p-9"
   >
     <span className="font-mono text-[11px] tracking-[0.14em] text-muted-foreground">
