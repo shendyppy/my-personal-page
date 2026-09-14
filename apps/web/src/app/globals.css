@@ -93,6 +93,14 @@
   --font-subheading: var(--font-syne), "Syne", sans-serif;
 }
 
+/* The two mono label tiers used across the HUD: meta labels and quieter cues. */
+@utility hud-label {
+  @apply font-mono text-[11px] tracking-[0.14em];
+}
+@utility hud-cue {
+  @apply font-mono text-[10px] tracking-[0.16em];
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -199,7 +207,7 @@
 ::-webkit-scrollbar-thumb { background: rgba(242, 240, 234, 0.18); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(242, 240, 234, 0.32); }
 
-/* ---- Click bubbles (atoms/ClickBubbles) ----
+/* ---- Click bubbles (effects/ClickBubbles) ----
    A burst is a zero-size point at the pointer: a HUD sonar ring widens and
    fades while bubbles — glassy rims with a highlight, like the scene's — rise
    and wobble out of it. Above every layer (the log dialog is 60), never

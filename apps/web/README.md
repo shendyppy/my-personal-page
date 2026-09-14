@@ -23,14 +23,17 @@ apps/web/
 │   │   ├── layout.tsx        # Root layout
 │   │   └── page.tsx          # Home page
 │   ├── components/
-│   │   ├── ui/              # Base UI components (Button, Card, etc.)
+│   │   ├── ui/              # Base UI components (Button, ImageModal)
+│   │   ├── atoms/           # Leaf primitives
+│   │   ├── effects/         # Global visual effects (grain, click bubbles, progress bar)
 │   │   ├── molecules/       # Small composite components
 │   │   ├── organisms/       # Large composite components
+│   │   ├── templates/       # Whole-page layouts outside the landing journey
 │   │   ├── sections/dive/   # One server component per chapter (Surface … Seafloor)
 │   │   └── three/dive/      # R3F scene pieces (water, sub, particles, floor)
 │   ├── lib/dive/            # Pure journey maths (depth, pose, lanes, timelines)
 │   ├── server/queries/      # Server-only data access
-│   └── types/               # TypeScript definitions
+│   └── constants/           # Site config, chapter registry, enum labels
 ├── prisma/
 │   └── schema.prisma        # Database schema
 └── public/

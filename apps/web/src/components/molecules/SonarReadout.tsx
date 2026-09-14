@@ -1,9 +1,10 @@
 import type { CSSProperties } from "react";
 import Image from "next/image";
 
-import { RecordPanel } from "@/components/molecules/RecordPanel";
+import { RecordPanel } from "@/components/atoms/RecordPanel";
 import { DIVE_COPY } from "@/constants/dive";
-import type { Skill, SkillCategory } from "@/types";
+import { SKILL_CATEGORY_LABEL } from "@/constants/labels";
+import type { Skill, SkillCategory } from "@/server/queries/skills";
 
 export type ToolGroup = { category: SkillCategory; label: string; tools: Skill[] };
 
@@ -29,7 +30,7 @@ export const SonarReadout = ({ group }: { group: ToolGroup | null }) => (
         <RecordPanel
           title="OBJECT READOUT"
           rows={[
-            { label: "OBJECT", value: group.category },
+            { label: "OBJECT", value: SKILL_CATEGORY_LABEL[group.category] },
             { label: "CLASS", value: group.label },
             {
               label: "STACK",
@@ -60,7 +61,7 @@ export const SonarReadout = ({ group }: { group: ToolGroup | null }) => (
           <span className="mx-2">{DIVE_COPY.sonarCue}</span>
           <span className="animate-blink text-accent">]</span>
         </p>
-        <p className="m-0 mt-3 font-mono text-[10px] tracking-[0.16em] text-muted-foreground">{DIVE_COPY.sonarIdle}</p>
+        <p className="m-0 mt-3 hud-cue text-muted-foreground">{DIVE_COPY.sonarIdle}</p>
       </div>
     )}
   </div>

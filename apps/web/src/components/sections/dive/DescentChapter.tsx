@@ -1,7 +1,7 @@
 import { ChapterHead } from "@/components/atoms/ChapterHead";
-import { DescentLogEntry } from "@/components/molecules/DescentLogEntry";
+import { DescentLogEntry } from "@/components/organisms/DescentLogEntry";
 import { ChapterFrame } from "@/components/organisms/ChapterFrame";
-import { CHAPTERS } from "@/constants/dive";
+import { chapterById } from "@/constants/dive";
 import type { ExperienceDto } from "@/server/queries/experiences";
 
 type DescentChapterProps = {
@@ -11,7 +11,7 @@ type DescentChapterProps = {
   depth: { start: number; end: number };
 };
 
-const chapter = CHAPTERS[3];
+const chapter = chapterById("descent");
 const TICK_M = 200;
 
 /** Every multiple of 200 m inside [start, end]. */

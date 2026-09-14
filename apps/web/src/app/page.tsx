@@ -6,7 +6,7 @@ export const revalidate = 3600;
 import { DiveHud } from "@/components/organisms/DiveHud";
 import { DiveScene } from "@/components/organisms/DiveScene";
 import { DiveShell } from "@/components/organisms/DiveShell";
-import { GrainOverlay } from "@/components/atoms/GrainOverlay";
+import { GrainOverlay } from "@/components/effects/GrainOverlay";
 import { DescentChapter } from "@/components/sections/dive/DescentChapter";
 import { MidnightChapter } from "@/components/sections/dive/MidnightChapter";
 import { ReefChapter } from "@/components/sections/dive/ReefChapter";
@@ -30,7 +30,7 @@ export default async function Home() {
   const beats = CHAPTERS.map((c) =>
     c.id === "reef" ? Math.max(1, projects.length) : c.id === "descent" ? Math.max(1, experiences.length) : c.beats
   );
-  const descent = chapterRanges(beats)[3];
+  const descent = chapterRanges(beats)[CHAPTERS.findIndex((c) => c.id === "descent")];
   return (
     <>
       <GrainOverlay />

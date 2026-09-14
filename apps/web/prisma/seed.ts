@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type Prisma } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
 
@@ -66,7 +66,7 @@ async function main() {
         ],
         techStack:
           "React.js, Redux, Axios, Ant Design, Firebase, Vite.js, JavaScript, TypeScript",
-        employmentType: "Full Time",
+        employmentType: "FullTime",
         order: 1,
       },
       {
@@ -1031,7 +1031,7 @@ async function main() {
 
   // ============ SKILLS ============
   console.log("🛠️  Seeding skills...");
-  const skills = [
+  const skills: Prisma.SkillCreateManyInput[] = [
     {
       name: "TypeScript",
       level: 90,
@@ -1182,14 +1182,14 @@ async function main() {
     {
       name: "GitHub Projects",
       level: 60,
-      category: "Project Management",
+      category: "ProjectManagement",
       logo: "/assets/img/content/github-project.webp",
       order: 19,
     },
     {
       name: "Jira",
       level: 80,
-      category: "Project Management",
+      category: "ProjectManagement",
       logo: "/assets/img/content/jira.webp",
       order: 20,
     },
@@ -1305,18 +1305,12 @@ async function main() {
     {
       name: "Trello",
       level: 70,
-      category: "Project Management",
+      category: "ProjectManagement",
       logo: "https://cdn.simpleicons.org/trello",
       order: 36,
     },
   ];
-  await prisma.skill.createMany({
-    data: skills.map((skill) => ({
-      ...skill,
-      model: skill.name,
-      color: "#000000",
-    })),
-  });
+  await prisma.skill.createMany({ data: skills });
 
   // ============ TECH STACK ============
   console.log("💻 Seeding tech stack...");

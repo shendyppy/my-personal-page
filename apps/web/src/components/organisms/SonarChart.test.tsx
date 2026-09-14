@@ -48,6 +48,18 @@ describe("SonarChart", () => {
     expect(blip("Frontend")).toHaveAttribute("aria-pressed", "false");
   });
 
+  test("the readout shows an enum category by its label, never the raw enum name", () => {
+    const pm: ToolGroup = {
+      category: "ProjectManagement",
+      label: "Project Management",
+      tools: [{ name: "Jira", level: 4, category: "ProjectManagement", logo: "" }],
+    };
+    const { container } = render(<SonarChart groups={[pm]} />);
+    hover(blip("Project Management"));
+    expect(readout(container)).not.toHaveTextContent("ProjectManagement");
+    expect(within(readout(container)).getAllByText("Project Management")).toHaveLength(2);
+  });
+
   test("focus selects a blip too, so the chart works from the keyboard", () => {
     const { container } = render(<SonarChart groups={groups} />);
     fireEvent.focus(blip("Frontend"));

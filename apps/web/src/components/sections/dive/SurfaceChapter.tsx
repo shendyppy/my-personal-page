@@ -1,14 +1,14 @@
 import { ChapterHead } from "@/components/atoms/ChapterHead";
 import { ScrollCue } from "@/components/atoms/ScrollCue";
-import { RecordPanel } from "@/components/molecules/RecordPanel";
+import { RecordPanel } from "@/components/atoms/RecordPanel";
 import { ChapterFrame } from "@/components/organisms/ChapterFrame";
-import { CHAPTERS, DIVE_COPY } from "@/constants/dive";
+import { chapterById, DIVE_COPY } from "@/constants/dive";
 import { earliestYear } from "@/lib/dive/career";
 import type { ExperienceDto } from "@/server/queries/experiences";
 
 type SurfaceChapterProps = { projectCount: number; experiences: ExperienceDto[] };
 
-const chapter = CHAPTERS[0];
+const chapter = chapterById("surface");
 
 /** Hero. The H1 is static server HTML (LCP). */
 export const SurfaceChapter = ({ projectCount, experiences }: SurfaceChapterProps) => {
@@ -47,7 +47,7 @@ export const SurfaceChapter = ({ projectCount, experiences }: SurfaceChapterProp
 
         <div className="surface-lane hidden lg:flex lg:self-stretch">
           <div data-sub-anchor="lane" aria-hidden className="grow" />
-          <p className="lane-cue m-0 font-mono text-[10px] tracking-[0.16em] text-muted-foreground" data-reveal>
+          <p className="lane-cue m-0 hud-cue text-muted-foreground" data-reveal>
             {DIVE_COPY.dragCueShort}
           </p>
         </div>

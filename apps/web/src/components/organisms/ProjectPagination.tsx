@@ -70,7 +70,7 @@ const ProjectNavCard = ({
       </div>
 
       <div className="flex flex-1 flex-col justify-between gap-8 p-7 md:p-9">
-        <span className="font-mono text-[11px] tracking-[0.14em] text-accent">
+        <span className="hud-label text-accent">
           {isPrev ? "← PREVIOUS" : "NEXT UP →"}
         </span>
         <div>
@@ -93,7 +93,7 @@ const AllWorkCard = () => (
     href={`/#${sectionId("reef")}`}
     className="group flex flex-col items-start justify-between gap-8 bg-card p-7 transition-colors duration-500 hover:bg-surface md:p-9"
   >
-    <span className="font-mono text-[11px] tracking-[0.14em] text-muted-foreground">
+    <span className="hud-label text-muted-foreground">
       ALL WORK
     </span>
     <span className="font-heading text-[clamp(22px,2.4vw,34px)] font-bold leading-[1.1] tracking-[-0.02em] text-subtle transition-colors duration-300 group-hover:text-accent">

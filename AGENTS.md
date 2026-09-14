@@ -84,8 +84,8 @@ If you need to invoke something not listed, add a script to `apps/web/package.js
 2. **Server Components by default.** Add `"use client"` only when the file actually uses hooks, browser APIs, or event handlers. Co-locate client logic in the smallest possible leaf component.
 3. **No raw `useEffect` for data fetching.** Fetch in the RSC through `server/queries/*` and pass the data down as props. See `apps/web/AGENTS.md` → "Data layer".
 4. **Images are always WebP and always `next/image`.** No `<img>`, no PNG/JPG checked into `public/`. Run `npm run images:optimize` after adding new assets.
-5. **Atomic design boundary discipline.** A `molecule` may import `atoms/` and `ui/` only. An `organism` may import everything below it. A `section` is an organism that owns layout for a page region. Never import sideways.
-6. **Type-safe content.** All content types live in `apps/web/src/types/index.ts` and mirror Prisma models. If you change `schema.prisma`, run `npm run db:generate` and update `types/index.ts` in the same PR.
+5. **Atomic design boundary discipline.** A `molecule` may import `atoms/` and `ui/` only. An `organism` may import everything below it. A `section` owns layout for a landing-page region; a `template` owns layout for a whole non-landing page. Never import sideways.
+6. **Type-safe content.** Each content type is exported next to the query that returns it (`apps/web/src/server/queries/<domain>.ts`), trimmed to what the UI renders. Fixed value sets are Prisma `enum`s, with display labels in `constants/labels.ts`. If you change `schema.prisma`, run `npm run db:generate` and update the query types in the same PR.
 7. **Don't break the seed.** `prisma/seed.ts` is the source of truth for development content. If you add a new model or field, extend the seed.
 8. **No commented-out code in commits.** Delete it; git history remembers.
 9. **Dark-only.** No light palette, no theme toggle. New colours go into `:root` in `globals.css`.
@@ -98,7 +98,7 @@ If you need to invoke something not listed, add a script to `apps/web/package.js
 | ----------------------------- | ----------------------------------------------------------- |
 | Visual / layout               | `apps/web/src/app/globals.css` + `components/sections/dive/*` |
 | Scroll story                  | `components/organisms/DiveShell.tsx` + `lib/dive/timelines.ts` |
-| A new content type            | `apps/web/prisma/schema.prisma` + `src/types/index.ts`      |
+| A new content type            | `apps/web/prisma/schema.prisma` + `src/server/queries/*`    |
 | Data fetching                 | `apps/web/AGENTS.md` → "Data layer"                         |
 | Colors                        | `:root` tokens in `apps/web/src/app/globals.css`             |
 | 3D scene                      | `components/organisms/DiveScene.impl.tsx` + `components/three/dive/*` |

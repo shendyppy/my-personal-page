@@ -2,15 +2,15 @@ import type { CSSProperties } from "react";
 import Image from "next/image";
 
 import { ChapterHead } from "@/components/atoms/ChapterHead";
-import { RecordPanel } from "@/components/molecules/RecordPanel";
+import { RecordPanel } from "@/components/atoms/RecordPanel";
 import { ChapterFrame } from "@/components/organisms/ChapterFrame";
 import { SITE_CONFIG } from "@/constants/config";
-import { CHAPTERS, DIVE_COPY } from "@/constants/dive";
+import { chapterById, DIVE_COPY } from "@/constants/dive";
 import type { AboutBundle } from "@/server/queries/about";
 
 type TwilightChapterProps = { about: AboutBundle };
 
-const chapter = CHAPTERS[2];
+const chapter = chapterById("twilight");
 
 /** First sentence, then the remainder. `[text, ""]` when there is no boundary. */
 const splitLead = (text: string) => {

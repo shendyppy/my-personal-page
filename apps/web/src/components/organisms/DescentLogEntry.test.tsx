@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
-import { DescentLogEntry } from "@/components/molecules/DescentLogEntry";
+import { DescentLogEntry } from "@/components/organisms/DescentLogEntry";
 import type { ExperienceDto } from "@/server/queries/experiences";
 
 const experience = (over: Partial<ExperienceDto> = {}): ExperienceDto => ({
@@ -15,7 +15,7 @@ const experience = (over: Partial<ExperienceDto> = {}): ExperienceDto => ({
   responsibilities: [],
   projects: [],
   techStack: "React.js",
-  employmentType: "Full Time",
+  employmentType: "FullTime",
   isPublished: true,
   order: 1,
   ...over,

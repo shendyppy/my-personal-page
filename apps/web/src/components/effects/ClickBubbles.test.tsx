@@ -1,6 +1,6 @@
 import { fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { ClickBubbles } from "@/components/atoms/ClickBubbles";
+import { ClickBubbles } from "@/components/effects/ClickBubbles";
 
 describe("ClickBubbles", () => {
   afterEach(() => vi.useRealTimers());

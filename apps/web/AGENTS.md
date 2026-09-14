@@ -12,22 +12,24 @@ src/
 │   ├── projects/[slug]/       # dynamic project detail pages (surface HUD)
 │   ├── error.tsx, not-found.tsx, layout.tsx, page.tsx, globals.css
 ├── components/                # atomic design — strict layering
-│   ├── atoms/                 # leaf primitives (ChapterHead, ScrollCue, TerminalLogo, …)
-│   ├── molecules/             # small composites (RecordPanel, DiveSiteRecord, SonarReadout, …)
-│   ├── organisms/             # DiveShell, ChapterFrame, DiveHud, DiveScene, SonarChart, …
+│   ├── atoms/                 # leaf primitives (ChapterHead, RecordPanel, ScrollCue, TerminalLogo, …)
+│   ├── molecules/             # small composites (DiveSiteRecord, SonarReadout, LogDetail, …)
+│   ├── organisms/             # DiveShell, ChapterFrame, DiveHud, DiveScene, SonarChart, DescentLogEntry, ProjectHighlights, …
 │   ├── sections/dive/         # one server component per chapter (Surface … Seafloor)
+│   ├── templates/             # whole-page layouts outside the journey (ProjectPageContent)
+│   ├── effects/               # page-wide visual effects, not UI primitives (GrainOverlay, ClickBubbles, TopProgressBar)
 │   ├── three/dive/            # R3F leaf components — imported only by DiveScene and SubEscort
-│   └── ui/                    # shadcn-derived primitives (Button, Card, ImageModal) — prefer wrapping
-├── server/queries/            # server-only data access, one file per content domain
+│   └── ui/                    # shadcn-derived primitives (Button, ImageModal) — prefer wrapping
+├── server/queries/            # server-only data access + the types it returns, one file per content domain
 ├── hooks/                     # client hooks (useDive, useWibClock)
 ├── lib/                       # utilities (prisma, utils.ts)
 │   └── dive/                  # pure journey maths: depth, pose, lanes, water, sonar, spin, scatter, timelines
-├── constants/                 # site config + dive.ts (chapter registry, copy, fallback poses)
-└── types/                     # all TypeScript types — mirrors Prisma models
+└── constants/                 # site config, dive.ts (chapter registry, copy, fallback poses), labels.ts (enum display labels)
 ```
 
 > **Atomic layering rule:** imports flow downward only.
-> `sections` → `organisms` → `molecules` → `atoms` ↔ `ui`. A `molecule` importing another `molecule` is a smell — extract a shared atom instead.
+> `templates` / `sections` → `organisms` → `molecules` → `atoms` ↔ `ui`. A `molecule` importing another `molecule` is a smell — move the shared piece down to `atoms/`, or lift the importer to `organisms/`.
+> Look chapters up with `chapterById("reef")`, never `CHAPTERS[n]`.
 
 ---
 
@@ -36,7 +38,9 @@ src/
 `app/page.tsx` is an async server component: it calls the `server/queries/*` functions in one `Promise.all` and hands the results to the chapter sections as props. Chapters stay server components; only the interactive leaves (`ChapterFrame`, `SonarChart`, the HUD, the scene) are client.
 
 - There are no API routes and no client data cache: every page is server-rendered with ISR (`revalidate = 3600`). Add a route handler only when something outside the pages needs the data.
-- Queries fetch only what the chapters render (e.g. `getAbout` skips social links and loves).
+- Queries fetch only what the chapters render (e.g. `getAbout` skips social links and loves), and return UI-ready shapes: mapping (nulls → `""`, Json parsing) happens in the query, not in the route. Components import those types with `import type` from `@/server/queries/*`; the import is erased, so `server-only` never reaches the client.
+- Fixed value sets (`SkillCategory`, `EmploymentType`) are Prisma enums. Enum names are identifiers (`FullTime`), so render them through `constants/labels.ts`, never raw.
+- Mono label sizes are the `hud-label` (11px) and `hud-cue` (10px) utilities in `globals.css`; use them instead of re-typing `font-mono text-[..] tracking-[..]`.
 - **Don't** add `useEffect(() => { fetch() }, [])` patterns.
 
 ---

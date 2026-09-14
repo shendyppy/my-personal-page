@@ -15,7 +15,7 @@ const experience = (period: string): ExperienceDto => ({
   responsibilities: [],
   projects: [],
   techStack: "",
-  employmentType: "Full-time",
+  employmentType: "FullTime",
   isPublished: true,
   order: 0,
 });

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
-import { RecordPanel } from "@/components/molecules/RecordPanel";
+import { RecordPanel } from "@/components/atoms/RecordPanel";
 
 describe("RecordPanel", () => {
   test("renders the title and the code when given", () => {

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import { MidnightChapter } from "@/components/sections/dive/MidnightChapter";
-import type { Skill, SkillCategory } from "@/types";
+import type { Skill, SkillCategory } from "@/server/queries/skills";
 
 const skill = (name: string, category: SkillCategory): Skill => ({ name, level: 3, category, logo: "" });
 
@@ -22,7 +22,7 @@ describe("MidnightChapter", () => {
     render(
       <MidnightChapter
         skills={[
-          skill("Jira", "Project Management"),
+          skill("Jira", "ProjectManagement"),
           skill("Postgres", "Database"),
           skill("React", "Frontend"),
           skill("Claude", "AI"),

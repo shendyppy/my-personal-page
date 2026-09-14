@@ -4,12 +4,12 @@ import { ChapterHead } from "@/components/atoms/ChapterHead";
 import { CvRecord } from "@/components/molecules/CvRecord";
 import { ChapterFrame } from "@/components/organisms/ChapterFrame";
 import { EXTERNAL_LINKS, SITE_CONFIG } from "@/constants/config";
-import { CHAPTERS, DIVE_COPY, sectionId } from "@/constants/dive";
+import { chapterById, DIVE_COPY, sectionId } from "@/constants/dive";
 import type { CvInfoDto } from "@/server/queries/about";
 
 type SeafloorChapterProps = { cv: CvInfoDto | null };
 
-const chapter = CHAPTERS[5];
+const chapter = chapterById("seafloor");
 
 const CHANNELS = [
   { code: "CH-01", label: "GITHUB", href: EXTERNAL_LINKS.github },
@@ -47,7 +47,7 @@ export const SeafloorChapter = ({ cv }: SeafloorChapterProps) => (
 
         <div className="seafloor-lane">
           <div data-sub-anchor="lane" aria-hidden className="grow" />
-          <p className="seafloor-cue m-0 font-mono text-[10px] tracking-[0.16em] text-muted-foreground" data-reveal>
+          <p className="seafloor-cue m-0 hud-cue text-muted-foreground" data-reveal>
             {DIVE_COPY.dragCue}
           </p>
         </div>

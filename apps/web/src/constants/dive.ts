@@ -32,6 +32,9 @@ export const CHAPTERS: readonly Chapter[] = [
   { id: "seafloor", index: 5, name: "SEAFLOOR", label: "SURFACE LINK", category: "CONTACT", beats: 1 },
 ];
 
+/** Look a chapter up by id, so reordering `CHAPTERS` cannot silently hand a section the wrong entry. */
+export const chapterById = (id: ChapterId) => CHAPTERS.find((c) => c.id === id)!;
+
 export const sectionId = (id: ChapterId) => `dive-${id}`;
 
 export const DIVE_COPY = {

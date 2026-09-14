@@ -11,7 +11,7 @@ export const DiveSiteRecord = ({ project, index }: DiveSiteRecordProps) => (
   // screen once per handover instead of racing around it.
   <div className={index % 2 === 0 ? "site site--flip" : "site"} data-beat={index - 1}>
     <div className="site-record" data-site-record>
-      <div className="flex items-center justify-between font-mono text-[11px] tracking-[0.14em] text-muted-foreground">
+      <div className="flex items-center justify-between hud-label text-muted-foreground">
         <span className="text-accent">SITE-{String(index).padStart(2, "0")}</span>
         {project.year && <span>{project.year}</span>}
       </div>

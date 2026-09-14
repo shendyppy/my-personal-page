@@ -1,4 +1,5 @@
 import "server-only";
+import type { EmploymentType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export type ExperienceDto = {
@@ -13,7 +14,7 @@ export type ExperienceDto = {
   responsibilities: string[];
   projects: string[];
   techStack: string;
-  employmentType: string;
+  employmentType: EmploymentType;
   isPublished: boolean;
   order: number;
 };
