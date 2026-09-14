@@ -391,12 +391,27 @@ body { background: #083352; transition: background-color 900ms ease; }
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-@media (max-height: 960px) {
-  .twilight-learning { -webkit-line-clamp: 3; line-clamp: 3; }
+/* The learning line never truncates: where it would not fit it becomes a
+   teleprompter window --learn-lines tall, its copy crawling up and looping.
+   The echo copy (plus a line of gap) makes the loop seamless. */
+.learning-echo { display: none; }
+@media (max-height: 960px), (max-width: 639px) {
+  .twilight-learning {
+    --learn-lines: 3;
+    height: calc(var(--learn-lines) * 1.8em);
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+  }
+  .learning-crawl { animation: learning-crawl var(--crawl-dur, 40s) linear infinite; }
+  .learning-crawl > p { padding-block: 0.9em; }
+  .learning-echo { display: block; }
+  .twilight-learning:hover .learning-crawl,
+  .twilight-learning:active .learning-crawl { animation-play-state: paused; }
 }
+@keyframes learning-crawl { to { transform: translateY(-50%); } }
 @media (max-height: 800px), (max-width: 639px) {
-  .twilight-body:not(.twilight-learning) { -webkit-line-clamp: 4; line-clamp: 4; }
-  .twilight-learning { -webkit-line-clamp: 2; line-clamp: 2; }
+  .twilight-body { -webkit-line-clamp: 4; line-clamp: 4; }
+  .twilight-learning { --learn-lines: 2; }
 }
 /* Short viewports. Same problem as the reef, one chapter further down: the
    stage is 100svh while pinned, so anything taller is painted over the HUD and
@@ -414,8 +429,13 @@ body { background: #083352; transition: background-color 900ms ease; }
    it is one sentence, and truncating it mid-word is worse than small type. */
 @media (max-height: 720px) and (max-width: 1279px) {
   .twilight-grid { row-gap: 1rem; }
-  .twilight-body:not(.twilight-learning) { -webkit-line-clamp: 2; line-clamp: 2; }
-  .twilight-learning { -webkit-line-clamp: 1; line-clamp: 1; }
+  .twilight-body { -webkit-line-clamp: 2; line-clamp: 2; }
+  .twilight-learning { margin-top: 0.75rem; }
+}
+/* Short phones: the crawl window is a line taller than the old one-line
+   clamp, so the portrait gives the room back. */
+@media (max-height: 700px) and (max-width: 639px) {
+  .twilight-grid .porthole { width: 48px; height: 48px; }
 }
 /* Landscape phones: the record sits in a ~250px column where its values wrap
    to ~300px on their own. The porthole repeats the DIVER row as a picture, so
@@ -767,5 +787,8 @@ body { background: #083352; transition: background-color 900ms ease; }
      the timeline `from`s away from it. It does need its clamp lifted: with the
      pin gone the stage grows to fit, so there is no reason to withhold copy. */
   .twilight-body, .log-description { display: block; -webkit-line-clamp: none; line-clamp: none; }
+  .twilight-learning { height: auto; mask-image: none; }
+  .learning-crawl { animation: none; }
+  .learning-echo { display: none; }
   .blip-dot::after { animation: none; }
 }

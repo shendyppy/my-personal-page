@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 
 import { ChapterHead } from "@/components/atoms/ChapterHead";
@@ -76,9 +77,24 @@ export const TwilightChapter = ({ about }: TwilightChapterProps) => {
             ]}
           />
           {learning && (
-            <p className="twilight-body twilight-learning mt-6 font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground" data-reveal>
-              <span className="text-accent">CURRENTLY LEARNING</span> — {learning}
-            </p>
+            // Where the stage is too short for the whole line it becomes a
+            // slow teleprompter instead of an ellipsis: the copy crawls up
+            // through a masked window and loops (the echo makes the loop
+            // seamless), pausing while hovered or touched. See globals.css.
+            <div
+              className="twilight-learning mt-6 font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground"
+              style={{ "--crawl-dur": `${Math.max(18, Math.round(learning.length / 6))}s` } as CSSProperties}
+              data-reveal
+            >
+              <div className="learning-crawl">
+                <p className="m-0">
+                  <span className="text-accent">CURRENTLY LEARNING</span> — {learning}
+                </p>
+                <p className="learning-echo m-0" aria-hidden>
+                  <span className="text-accent">CURRENTLY LEARNING</span> — {learning}
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>
