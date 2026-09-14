@@ -189,3 +189,67 @@ describe("TIMELINES.twilight", () => {
     expect(tl.duration()).toBe(0);
   });
 });
+
+/** A descent stage with `n` log entries and the pressure-line marker. */
+const buildDescent = (n: number) => {
+  const section = document.createElement("section");
+  section.innerHTML =
+    `<div class="pressure-line"><span data-depth-marker></span></div><ol>` +
+    Array.from({ length: n }, (_, i) => `<li class="log-entry" data-beat="${i}"></li>`).join("") +
+    `</ol>`;
+  const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
+  TIMELINES.descent(tl, gsap.utils.selector(section), section);
+  return {
+    tl,
+    entries: [...section.querySelectorAll<HTMLElement>("[data-beat]")],
+    marker: section.querySelector<HTMLElement>("[data-depth-marker]")!,
+  };
+};
+
+describe("TIMELINES.descent", () => {
+  test("stretches the timeline to one unit per entry", () => {
+    expect(buildDescent(3).tl.duration()).toBe(3);
+    expect(buildDescent(1).tl.duration()).toBe(1);
+  });
+
+  test("the marker travels the whole line in step with the chapter's scroll", () => {
+    // Ticks are placed at their depth's share of the line, so the marker has to
+    // be linear in progress for it to pass each tick at the depth the HUD reads.
+    const { tl, marker } = buildDescent(3);
+    for (const p of [0.25, 0.5, 1]) {
+      tl.progress(p);
+      expect(parseFloat(marker.style.top), `at ${p}`).toBeCloseTo(p * 100, 5);
+    }
+    tl.progress(0);
+    expect(parseFloat(marker.style.top)).toBeCloseTo(0, 5);
+  });
+
+  test("an entry is hidden until the marker reaches its beat", () => {
+    const { tl, entries } = buildDescent(3);
+    tl.progress(0.5); // scrub off 0 first so setting it back forces a render
+    tl.progress(0);
+    expect(opacities(entries)).toEqual([0, 0, 0]);
+    tl.time(1.05);
+    expect(opacities(entries)[1]).toBe(0);
+    expect(opacities(entries)[2]).toBe(0);
+  });
+
+  test("the current entry is fully legible through its beat; passed entries dim to 55%", () => {
+    const { tl, entries } = buildDescent(3);
+    tl.time(1.8);
+    expect(opacities(entries)).toEqual([0.55, 1, 0]);
+    expect(ys(entries)[1]).toBeCloseTo(0, 5);
+  });
+
+  test("the last entry never dims and every entry is on the log at the end", () => {
+    const { tl, entries } = buildDescent(3);
+    tl.progress(1);
+    expect(opacities(entries)).toEqual([0.55, 0.55, 1]);
+  });
+
+  test("adds nothing at all when there are no entries", () => {
+    const { tl } = buildDescent(0);
+    expect(tl.getChildren()).toHaveLength(0);
+    expect(tl.duration()).toBe(0);
+  });
+});

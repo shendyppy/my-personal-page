@@ -755,6 +755,84 @@ body { background: #083352; transition: background-color 900ms ease; }
   }
 }
 
+/* ---- Descent: career log ---- */
+.descent { position: relative; display: grid; grid-template-columns: 1fr; }
+.pressure-line { position: absolute; top: 0; bottom: 0; left: 8px; width: 1px; background: var(--border); }
+/* translateY(-50%) centres each on its point, so 0% and 100% sit on the ends. */
+.pressure-line [data-depth-marker] {
+  position: absolute; left: -4px; top: 0; width: 9px; height: 9px; border-radius: 9999px;
+  transform: translateY(-50%);
+  background: var(--accent); box-shadow: 0 0 12px var(--accent);
+}
+.depth-tick {
+  position: absolute; left: -3px; width: 7px; height: 1px; background: var(--muted-foreground);
+  /* Label hidden until there is a gutter wide enough for it (lg). */
+  font-size: 0; color: transparent;
+}
+.log { margin: 0; padding: 0 0 0 2rem; list-style: none; display: grid; gap: 2.5rem; }
+.log-entry { opacity: 0; min-width: 0; overflow-wrap: anywhere; }
+/* Short viewports: the stage is a hard 100svh while pinned, and three stacked
+   entries with full descriptions are ~720px — 360x640 overflowed by 85px.
+   Spec 6.4 asks for a one-line description anyway; the tall layouts that have
+   the room keep the whole sentence. */
+@media (max-height: 720px) {
+  .log { gap: 1.25rem; }
+  .log-description {
+    margin-top: 0.5rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    overflow: hidden;
+  }
+}
+/* Two columns either side of a centred line, staggered: each entry spans two
+   rows and starts one row after the previous, so an entry on one side sits
+   level with the gap between two on the other. Stacked rows instead left
+   every other half of the stage empty and ran past 720px. Landscape phones
+   take it too — short and wide is exactly where stacking cannot fit. */
+@media (min-width: 1024px), (max-height: 720px) and (min-width: 640px) {
+  .pressure-line { left: 50%; }
+  .log { padding: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 4rem; row-gap: 0; }
+  .log-entry { grid-row: var(--row) / span 2; padding-block: 0.75rem; }
+  .log-entry--left { grid-column: 1; text-align: right; }
+  .log-entry--left p, .log-entry--left h3 { margin-left: auto; }
+  .log-entry--right { grid-column: 2; }
+}
+/* The HUD rail is fixed over the stage's right edge from md up, and its active
+   label ("DESCENT —— 04") reaches ~150px in from the viewport edge. Symmetric
+   padding keeps the right column clear of it and the line still centred. */
+@media (min-width: 768px) {
+  .descent { padding-inline: clamp(4rem, 13vw, 9rem); }
+}
+/* Tick labels need a gutter wider than a label ("2600 M", ~48px) each side. */
+@media (min-width: 1024px) {
+  .log { column-gap: 8rem; }
+  .depth-tick {
+    display: flex; align-items: center; padding-left: 12px; white-space: nowrap;
+    font-family: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
+    font-size: 9px; letter-spacing: 0.14em; color: var(--muted-foreground);
+    line-height: 1; background: linear-gradient(var(--muted-foreground), var(--muted-foreground)) left center / 7px 1px no-repeat;
+    width: auto; height: 9px; transform: translateY(-50%);
+  }
+}
+/* Landscape phones: ~330px of stage and ~250px columns once the rail is
+   cleared. Staggering alone still ran past it at 844x390 and pushed the
+   chapter head off the top, so every line gets a budget: the badge — least
+   information per pixel — goes, the title keeps two lines, the rest one. */
+@media (max-height: 480px) and (min-width: 640px) {
+  .log-entry > span { display: none; }
+  .log-entry h3 {
+    font-size: 16px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+  .log-period, .log-company { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
 /* Reduced motion, kept LAST in the file on purpose. These rules undo the
    at-rest state that the pinned timelines animate away from, and they do it at
    the same specificity as the rules they override — so cascade order is the
@@ -771,5 +849,5 @@ body { background: #083352; transition: background-color 900ms ease; }
   /* Twilight needs no opacity reset — its at-rest state is visible HTML and
      the timeline `from`s away from it. It does need its clamp lifted: with the
      pin gone the stage grows to fit, so there is no reason to withhold copy. */
-  .twilight-body { display: block; -webkit-line-clamp: none; line-clamp: none; }
+  .twilight-body, .log-description { display: block; -webkit-line-clamp: none; line-clamp: none; }
 }

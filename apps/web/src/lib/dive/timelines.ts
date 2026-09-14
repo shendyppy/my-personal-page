@@ -60,7 +60,20 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
       .to(reveal, { y: -24, opacity: 0, duration: 0.15, stagger: 0.01 }, 0.8)
       .to({}, { duration: 1 }, 0);
   },
-  descent: noop,
+  descent: (tl, q) => {
+    const entries = q("[data-beat]") as HTMLElement[];
+    const n = entries.length;
+    if (n === 0) return;
+    // Percent, not a measured px height: the line's height changes on resize
+    // and this timeline is only built once.
+    tl.fromTo(q("[data-depth-marker]"), { top: "0%" }, { top: "100%", duration: n }, 0);
+    entries.forEach((el, i) => {
+      tl.fromTo(el, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35 }, i + 0.1);
+      if (i < n - 1) tl.to(el, { opacity: 0.55, duration: 0.3 }, i + 1.1);
+    });
+    // One unit per entry, via a spacer for the reason given under reef.
+    tl.to({}, { duration: n }, 0);
+  },
   midnight: noop,
   seafloor: noop,
 };
