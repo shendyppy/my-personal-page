@@ -48,12 +48,24 @@ export const ChapterFrame = ({ id, beats, snap, children }: ChapterFrameProps) =
               trigger: section,
               start,
               end,
-              scrub: true,
+              // A second of catch-up instead of locking to the scrollbar, so a
+              // flick of the wheel eases the timeline along rather than jerking it.
+              scrub: 1,
               pin: pin && stage,
               pinSpacing: false,
               // ScrollTrigger only reads `snap` at creation time; assigning
               // trigger.vars.snap afterwards is silently ignored.
-              ...(snap ? { snap: { snapTo: 1 / beats, duration: 0.3, directional: true } } : {}),
+              ...(snap
+                ? {
+                    snap: {
+                      snapTo: 1 / beats,
+                      duration: { min: 0.5, max: 1.1 },
+                      delay: 0.15,
+                      ease: "power2.inOut",
+                      directional: true,
+                    },
+                  }
+                : {}),
             },
           });
           TIMELINES[id](tl, gsap.utils.selector(section));

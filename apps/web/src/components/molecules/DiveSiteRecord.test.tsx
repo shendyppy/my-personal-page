@@ -68,17 +68,16 @@ describe("DiveSiteRecord", () => {
     );
   });
 
-  test("the image uses the project title as its alt text", () => {
+  test("renders no screenshot: images belong to the project page", () => {
     render(<DiveSiteRecord project={project()} index={1} />);
-    expect(screen.getByRole("img", { name: "UOB Infinity - Banking Platform" })).toBeInTheDocument();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
   test("the wrapper carries data-beat equal to index - 1", () => {
     const { container } = render(<DiveSiteRecord project={project()} index={4} />);
     const wrapper = container.querySelector(".site");
     expect(wrapper).toHaveAttribute("data-beat", "3");
-    // The timeline hooks hang off this wrapper; both must be inside it.
+    // The timeline hooks hang off this wrapper.
     expect(wrapper?.querySelector("[data-site-record]")).not.toBeNull();
-    expect(wrapper?.querySelector("[data-site-image]")).not.toBeNull();
   });
 });

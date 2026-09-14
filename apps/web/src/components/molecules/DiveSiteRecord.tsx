@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
@@ -6,7 +5,7 @@ import type { ProjectListItem } from "@/server/queries/projects";
 
 type DiveSiteRecordProps = { project: ProjectListItem; index: number };
 
-/** One project as a dive-site record: text column + porthole screenshot. */
+/** One project as a dive-site record. Screenshots live on the project page. */
 export const DiveSiteRecord = ({ project, index }: DiveSiteRecordProps) => (
   <div className="site" data-beat={index - 1}>
     <div className="site-record" data-site-record>
@@ -36,15 +35,6 @@ export const DiveSiteRecord = ({ project, index }: DiveSiteRecordProps) => (
       >
         OPEN SITE LOG <ArrowUpRight className="size-4" />
       </Link>
-    </div>
-    <div className="site-image" data-site-image>
-      <Image
-        src={project.image}
-        alt={project.title}
-        fill
-        sizes="(max-width: 1024px) 100vw, 55vw"
-        className="object-cover"
-      />
     </div>
   </div>
 );

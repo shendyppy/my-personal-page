@@ -17,16 +17,16 @@ describe("poseAt", () => {
     expect(poseAt(1, r)).toEqual(SUB_POSES.seafloor);
   });
 
-  test("the sub holds its lane while the chapter is read and moves only in the last 0.6 beat", () => {
-    // Reef is 5 beats: it holds until 4.4 beats in (t = 0.88).
+  test("the sub holds its lane while the chapter is read and moves only in the last beat", () => {
+    // Reef is 5 beats: it holds until 4 beats in (t = 0.8).
     expect(poseAt(at(1, 0.5), r)).toEqual(SUB_POSES.reef);
-    expect(poseAt(at(1, 0.87), r)).toEqual(SUB_POSES.reef);
-    const moving = poseAt(at(1, 0.94), r);
+    expect(poseAt(at(1, 0.79), r)).toEqual(SUB_POSES.reef);
+    const moving = poseAt(at(1, 0.9), r);
     expect(moving.x).not.toBeCloseTo(SUB_POSES.reef.x, 5);
     expect(poseAt(at(1, 0.9999), r).x).toBeCloseTo(SUB_POSES.twilight.x, 2);
   });
 
-  test("a one-beat chapter spends its last 0.6 beat moving on", () => {
+  test("a one-beat chapter spends its whole beat moving on", () => {
     const mid = poseAt(at(0, 0.7), r);
     const lo = Math.min(SUB_POSES.surface.x, SUB_POSES.reef.x);
     const hi = Math.max(SUB_POSES.surface.x, SUB_POSES.reef.x);
@@ -42,7 +42,7 @@ describe("poseAt", () => {
 
   test("the transition flies from the current lane to the next lane", () => {
     const lanes = { reef: { x: 0.5, y: 0, w: 0.2, h: 0.2 }, twilight: { x: -0.5, y: 0, w: 0.2, h: 0.2 } };
-    expect(poseAt(at(1, 0.94), r, lanes).x).toBeCloseTo(0, 1);
+    expect(poseAt(at(1, 0.9), r, lanes).x).toBeCloseTo(0, 1);
   });
 
   test("a travel lane descends in step with the chapter, like the descent marker", () => {
@@ -50,7 +50,7 @@ describe("poseAt", () => {
     expect(poseAt(at(3, 0), r, lanes).y).toBeCloseTo(0.8);
     expect(poseAt(at(3, 0.25), r, lanes).y).toBeCloseTo(0.4);
     expect(poseAt(at(3, 0.5), r, lanes).y).toBeCloseTo(0);
-    // Descent is 3 beats, so it holds until t = 0.8 and is still on the line there.
-    expect(poseAt(at(3, 0.8), r, lanes)).toMatchObject({ x: 0, y: expect.closeTo(-0.48, 5) });
+    // Descent is 3 beats, so it holds until t = 2/3 and is still on the line there.
+    expect(poseAt(at(3, 0.6), r, lanes)).toMatchObject({ x: 0, y: expect.closeTo(-0.16, 5) });
   });
 });

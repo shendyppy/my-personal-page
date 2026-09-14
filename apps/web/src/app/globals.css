@@ -346,46 +346,27 @@ body { background: #083352; transition: background-color 900ms ease; }
 
 /* ---- Reef: dive sites ---- */
 .reef-stack { position: relative; display: grid; }
-/* Every site shares one grid cell so the chapter cross-fades in place. */
-.site { grid-area: 1 / 1; display: grid; gap: 2rem; align-items: center; opacity: 0; }
-.site[data-beat="0"] { opacity: 1; }
-/* Single column: the porthole leads, the record reads underneath (spec 6.2). */
-.site > .site-image { order: -1; }
-/* An `fr` track never shrinks past its content's min-content width, which is
-   how the surface hero overflowed. minmax(0, …) lets both tracks give. */
-@media (min-width: 1024px) {
-  /* record | the sub's lane | porthole — .reef-lane mirrors the middle track. */
-  .site { grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 5fr); gap: var(--site-gap); }
-  .site > .site-record { grid-column: 1; }
-  .site > .site-image { order: 0; grid-column: 3; }
-}
+/* Every site shares one grid cell so the chapter cross-fades in place. Hidden
+   sites are visibility: hidden too, not just transparent: stacked in one cell,
+   the last site in the DOM sat on top of the others and took every click. */
+.site { grid-area: 1 / 1; display: grid; gap: 2rem; align-items: center; opacity: 0; visibility: hidden; }
+.site[data-beat="0"] { opacity: 1; visibility: visible; }
 .site-record { min-width: 0; overflow-wrap: anywhere; }
-.site-image {
-  position: relative;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border-radius: 28px;
-  border: 1px solid var(--border);
+/* No screenshots here any more (they live on the project page): the record
+   takes the left and the sub gets the open water on the right. Landscape
+   phones and small landscape tablets take the split too — short and wide. */
+:root { --site-gap: 3.5rem; }
+@media (min-width: 1024px), (max-height: 720px) and (min-width: 640px) {
+  .site { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); column-gap: var(--site-gap); }
 }
-@media (min-width: 1024px) { .site-image { aspect-ratio: 4 / 3; } }
-/* Short viewports. The stage is a hard 100svh while the chapter is pinned, so
-   a site taller than it is clipped rather than scrolled — and the CTA is the
-   last thing in the record, so it is the first thing to go. Trim the vertical
-   budget instead of the layout; the full description is on the project page.
-   Measured worst case (320x568) was 676px of content in a 568px stage. */
+@media (max-height: 720px) and (min-width: 640px) and (max-width: 1023px) {
+  :root { --site-gap: 2rem; }
+}
+/* Short viewports: the stage is a hard 100svh while pinned, so the record
+   trims its vertical budget; the full description is on the project page. */
 @media (max-height: 720px) {
   .stage { padding-block: calc(var(--hud-h) + 0.5rem) 0.75rem; }
   .chapter-head { margin-bottom: 0.75rem; }
-  /* row-gap only: a 1366x650 laptop matches this AND the desktop 5/7 split, and
-     shrinking the shared `gap` there would drop the column gutter from 56px to
-     16px and run the description into the porthole. Only height is short. */
-  .site { row-gap: 1rem; }
-  /* Landscape phones are short AND wide, so the porthole is sized by a full
-     content width it has no vertical room for: at 844x390 a 16/9 ratio alone is
-     430px inside a ~330px stage, and neither .chapter nor .stage clips, so it
-     paints over the HUD and the next chapter. With aspect-ratio set, a
-     max-height shrinks the box rather than letterboxing it. */
-  .site-image { aspect-ratio: 16 / 9; max-height: 40svh; }
   .site-record p {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -393,15 +374,6 @@ body { background: #083352; transition: background-color 900ms ease; }
     line-clamp: 3;
     overflow: hidden;
   }
-}
-/* Landscape phones and small landscape tablets: short, but with width to
-   spare. Stacking here cannot fit — at 844x390 the stacked site is ~500px in a
-   390px stage even with the porthole capped — so spend the width instead and
-   put the record beside the porthole. The record takes the wider track because
-   text is what needs the room; the porthole is already height-capped above. */
-@media (max-height: 720px) and (min-width: 640px) and (max-width: 1023px) {
-  .site { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: 2rem; }
-  .site > .site-image { order: 0; }
 }
 
 /* ---- Twilight: diver record ---- */
@@ -728,17 +700,15 @@ body { background: #083352; transition: background-color 900ms ease; }
   .seafloor-lane-phone { display: none; }
 }
 @media (min-width: 768px) { .stage-lane { right: calc(2.5rem + var(--rail-clear)); width: 22%; } }
-:root { --site-gap: 3.5rem; }
-.reef-lane { display: none; }
-@media (min-width: 1024px) {
-  .reef-stack { position: relative; }
+/* The site grid's second track (6fr | 5fr). */
+.reef-lane { display: none; position: absolute; top: 0; bottom: 0; }
+@media (min-width: 1024px), (max-height: 720px) and (min-width: 640px) {
   .reef-lane {
     display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc((100% - 2 * var(--site-gap)) * 5 / 13 + var(--site-gap));
-    width: calc((100% - 2 * var(--site-gap)) * 3 / 13);
+    /* 72% of the track, centred: the whole column made the sub the loudest
+       thing in the chapter. */
+    left: calc((100% - var(--site-gap)) * 6 / 11 + var(--site-gap) + (100% - var(--site-gap)) * 5 / 11 * 0.14);
+    width: calc((100% - var(--site-gap)) * 5 / 11 * 0.72);
   }
 }
 .surface-lane, .seafloor-lane { flex-direction: column; }
@@ -778,7 +748,7 @@ body { background: #083352; transition: background-color 900ms ease; }
   .chapter { height: auto; }
   .stage { height: auto; min-height: 100svh; }
   .reef-stack { gap: 4rem; }
-  .site { grid-area: auto; opacity: 1; }
+  .site { grid-area: auto; opacity: 1; visibility: visible; }
   .log-entry { opacity: 1; }
   /* Twilight needs no opacity reset — its at-rest state is visible HTML and
      the timeline `from`s away from it. It does need its clamp lifted: with the

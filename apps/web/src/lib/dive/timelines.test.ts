@@ -8,7 +8,7 @@ const stage = (n: number) => {
   section.innerHTML = Array.from(
     { length: n },
     (_, i) =>
-      `<div class="site" data-beat="${i}"><div data-site-record></div><div data-site-image></div></div>`
+      `<div class="site" data-beat="${i}"><div data-site-record></div></div>`
   ).join("");
   return section;
 };
@@ -62,6 +62,19 @@ describe("TIMELINES.reef", () => {
     }
   });
 
+  test("only the site on screen can be clicked: hidden sites are visibility: hidden", () => {
+    // All sites share one grid cell. Transparent-but-visible sites stacked
+    // above the current one took its clicks, so only the last site worked.
+    const n = 4;
+    const { tl, sites } = build(n);
+    for (let i = 1; i < n; i += 1) {
+      tl.progress(i / n);
+      sites.forEach((s, j) => {
+        expect(s.style.visibility, `site ${j} at beat ${i}`).toBe(j === i ? "inherit" : "hidden");
+      });
+    }
+  });
+
   test("the cross-fade between two beats never blanks the stage", () => {
     const n = 3;
     const { tl, sites } = build(n);
@@ -84,30 +97,26 @@ describe("TIMELINES.reef", () => {
     const { tl, sites } = build(3);
     const tweens = tweensFor(tl, sites[0]) as gsap.core.Tween[];
     expect(tweens).toHaveLength(1);
-    expect(tweens[0].vars.opacity).toBe(0);
+    expect(tweens[0].vars.autoAlpha).toBe(0);
     expect(tweens[0].startTime()).toBe(0.8);
   });
 
   test("a middle site is fully in by its beat and exits late in it", () => {
     const { tl, sites } = build(3);
     const tweens = tweensFor(tl, sites[1]) as gsap.core.Tween[];
-    expect(tweens.map((t) => [t.startTime(), t.vars.opacity])).toEqual([
+    expect(tweens.map((t) => [t.startTime(), t.vars.autoAlpha])).toEqual([
       [0.7, 1],
       [1.8, 0],
     ]);
     const record = sites[1].querySelector("[data-site-record]")!;
     expect((tweensFor(tl, record) as gsap.core.Tween[]).map((t) => t.vars.y)).toEqual([0, -40]);
-    const image = sites[1].querySelector("[data-site-image]")!;
-    const imageTweens = tweensFor(tl, image) as gsap.core.Tween[];
-    expect(imageTweens).toHaveLength(1);
-    expect(imageTweens[0].vars.scale).toBe(1);
   });
 
   test("the last site only enters — nothing follows it to exit for", () => {
     const { tl, sites } = build(3);
     const tweens = tweensFor(tl, sites[2]) as gsap.core.Tween[];
     expect(tweens).toHaveLength(1);
-    expect(tweens[0].vars.opacity).toBe(1);
+    expect(tweens[0].vars.autoAlpha).toBe(1);
     expect(tweens[0].startTime()).toBe(1.7);
   });
 
@@ -141,8 +150,9 @@ describe("TIMELINES.twilight", () => {
   test("the record is fully legible across the whole hold, not for one instant", () => {
     // The point of the chapter: a bio needs dwell, and twilight does not snap,
     // so the hold is all the reader gets. Tween start times cannot see this.
+    // Six reveals land by 45% (0.3 each, 0.03 apart) and stay to the end.
     const { tl, reveals } = buildTwilight(6);
-    for (let p = 0.3; p <= 0.8001; p += 0.05) {
+    for (let p = 0.45; p <= 1.0001; p += 0.05) {
       tl.progress(p);
       opacities(reveals).forEach((o, i) => {
         expect(o, `reveal ${i} at ${p.toFixed(2)}`).toBeCloseTo(1, 5);
@@ -155,7 +165,7 @@ describe("TIMELINES.twilight", () => {
 
   test("the reveal staggers in rather than arriving as one block", () => {
     const { tl, reveals } = buildTwilight(6);
-    tl.progress(0.21);
+    tl.progress(0.31);
     const o = opacities(reveals);
     expect(o[0]).toBeCloseTo(1, 5);
     expect(o[5]).toBeLessThan(1);
@@ -179,7 +189,7 @@ describe("TIMELINES.twilight", () => {
 
   test("a chapter with a single reveal still holds it across the same window", () => {
     const { tl, reveals } = buildTwilight(1);
-    tl.progress(0.2);
+    tl.progress(0.3);
     expect(opacities(reveals)).toEqual([1]);
     tl.progress(0.8);
     expect(opacities(reveals)).toEqual([1]);

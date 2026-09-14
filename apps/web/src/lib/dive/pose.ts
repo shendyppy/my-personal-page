@@ -2,16 +2,16 @@ import { CHAPTERS, SUB_POSES, type ChapterId, type Lane, type Pose } from "@/con
 import { localProgress, type Range } from "./depth";
 
 /** How much of a chapter's end the sub spends flying to the next lane. */
-const MOVE_BEATS = 0.6;
+const MOVE_BEATS = 1;
 
-const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
 /**
  * The sub's pose at global progress `p`. It holds the current chapter's lane
  * while that chapter is read — a travel lane descends through all of it — and flies
- * to the next lane over the chapter's last 0.6 beat. Measured lanes override
+ * to the next lane over the chapter's last beat. Measured lanes override
  * the fallback position and size; rotZ and lamp always come from SUB_POSES.
  */
 export function poseAt(p: number, ranges: Range[], lanes: Partial<Record<ChapterId, Lane>> = {}): Pose {

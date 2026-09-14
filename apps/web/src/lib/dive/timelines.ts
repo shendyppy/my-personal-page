@@ -18,7 +18,6 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
     if (n === 0) return;
     sites.forEach((site, i) => {
       const record = site.querySelector("[data-site-record]");
-      const image = site.querySelector("[data-site-image]");
       const at = i; // one timeline unit per beat
       if (i > 0) {
         // Site i must be fully in AT time i, not starting to arrive there:
@@ -26,12 +25,13 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
         // [i - 0.3, i] also overlaps the previous site's exit at [i - 0.2, i],
         // which is what makes it a cross-fade rather than a cut.
         const enter = at - 0.3;
-        tl.fromTo(site, { opacity: 0 }, { opacity: 1, duration: 0.3 }, enter)
-          .fromTo(record, { y: 40 }, { y: 0, duration: 0.3 }, enter)
-          .fromTo(image, { scale: 1.06 }, { scale: 1, duration: 0.3 }, enter);
+        // autoAlpha, not opacity: a hidden site must also be visibility:
+        // hidden, or the sites stacked above it in the cell swallow its clicks.
+        tl.fromTo(site, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, enter)
+          .fromTo(record, { y: 40 }, { y: 0, duration: 0.3 }, enter);
       }
       if (i < n - 1) {
-        tl.to(site, { opacity: 0, duration: 0.2 }, at + 0.8)
+        tl.to(site, { autoAlpha: 0, duration: 0.2 }, at + 0.8)
           .to(record, { y: -40, duration: 0.2 }, at + 0.8);
       }
     });
@@ -51,7 +51,7 @@ export const TIMELINES: Record<ChapterId, TimelineBuilder> = {
     // Fully legible from 30% on, and it stays: the pin is only half a viewport,
     // and fading out at 80% left the stage blank for the whole viewport it
     // then scrolls away over. The copy leaves with its stage instead.
-    tl.from(reveal, { y: 32, opacity: 0, duration: 0.2, stagger: 0.02 }, 0).to({}, { duration: 1 }, 0);
+    tl.from(reveal, { y: 32, opacity: 0, duration: 0.3, stagger: 0.03 }, 0).to({}, { duration: 1 }, 0);
   },
   descent: (tl, q) => {
     const entries = q("[data-beat]") as HTMLElement[];

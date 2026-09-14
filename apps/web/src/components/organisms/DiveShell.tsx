@@ -14,6 +14,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 type DiveShellProps = { beats: number[]; children: ReactNode };
 
+/** Slow at both ends: chapter jumps glide instead of lurching. */
+const glide = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const JUMP = { duration: 2.2, easing: glide };
+
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /**
@@ -55,7 +59,7 @@ export const DiveShell = ({ beats, children }: DiveShellProps) => {
     if (!reduced()) {
       // `anchors`: in-page `#dive-*` links (the seafloor's BACK TO SURFACE)
       // scroll smoothly instead of jumping under Lenis.
-      lenis = new Lenis({ lerp: 0.1, smoothWheel: true, syncTouch: false, anchors: true });
+      lenis = new Lenis({ lerp: 0.07, smoothWheel: true, syncTouch: false, anchors: JUMP });
       lenis.on("scroll", ScrollTrigger.update);
       raf = (t) => lenis?.raf(t * 1000);
       gsap.ticker.add(raf);
@@ -78,7 +82,7 @@ export const DiveShell = ({ beats, children }: DiveShellProps) => {
 
     scroller.install((id: ChapterId) => {
       const target = `#${sectionId(id)}`;
-      if (lenis) lenis.scrollTo(target, { duration: 1.2 });
+      if (lenis) lenis.scrollTo(target, JUMP);
       else document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
     });
 

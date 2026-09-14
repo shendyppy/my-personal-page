@@ -27,6 +27,8 @@ const PITCH = 0.1;
 /** The model's on-screen footprint at scale 1 in that view (world units). */
 const MODEL_W = 2.9;
 const MODEL_H = 1.5;
+/** Damping rate (1/s) for the sub easing toward its pose. */
+const EASE = 2.5;
 
 /** Hull profile, tail (-y) to nose (+y), revolved and laid along +x. */
 const HULL_PROFILE = [
@@ -67,6 +69,8 @@ export const Submersible = () => {
   const props = useRef<THREE.Group[]>([]);
   const pointer = useRef({ x: 0, y: 0 });
   const lastProgress = useRef(0);
+  /** Damped on-screen pose; null until the first frame snaps it into place. */
+  const eased = useRef<{ x: number; y: number; s: number } | null>(null);
   const targets = useMemo(() => [new THREE.Object3D(), new THREE.Object3D()], []);
   const [spin] = useState(createSpin);
 
@@ -136,8 +140,20 @@ export const Submersible = () => {
     pointer.current.y += (p.y - pointer.current.y) * Math.min(1, dt * 3);
     const t = clock.elapsedTime;
     spinStep(spin, dt);
-    const scale = Math.min((pose.w * view.width) / MODEL_W, (pose.h * view.height) / MODEL_H);
-    g.position.set((pose.x * view.width) / 2, (pose.y * view.height) / 2 + Math.sin(t * 0.8) * 0.06 * scale, 0);
+    const target = {
+      x: (pose.x * view.width) / 2,
+      y: (pose.y * view.height) / 2,
+      s: Math.min((pose.w * view.width) / MODEL_W, (pose.h * view.height) / MODEL_H),
+    };
+    // Glide toward the pose instead of locking to it, so a fast scroll, a
+    // snap or a lane re-measure never makes the sub jump.
+    const e = eased.current ?? { ...target };
+    e.x = THREE.MathUtils.damp(e.x, target.x, EASE, dt);
+    e.y = THREE.MathUtils.damp(e.y, target.y, EASE, dt);
+    e.s = THREE.MathUtils.damp(e.s, target.s, EASE, dt);
+    eased.current = e;
+    const scale = e.s;
+    g.position.set(e.x, e.y + Math.sin(t * 0.8) * 0.06 * scale, 0);
     g.rotation.set(
       PITCH + pointer.current.y * -0.07 + spin.rx,
       YAW + pointer.current.x * 0.07 + spin.ry,
