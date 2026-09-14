@@ -4,13 +4,16 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-import { dive } from "@/lib/dive/depth";
+import { dive, localProgress } from "@/lib/dive/depth";
 import { lanes } from "@/lib/dive/lanes";
 import { poseAt } from "@/lib/dive/pose";
 import { scatter } from "@/lib/dive/scatter";
 
 const PUFF = 80;
 const ORIGIN = new THREE.Vector3();
+/** Seafloor-chapter progress over which the floor rises and fades in. */
+const FLOOR_FROM = 0.5;
+const FLOOR_TO = 0.95;
 /** Touch-down progress, and how far back up the dive must climb to re-arm the puff. */
 const LAND_AT = 0.985;
 const REARM_BELOW = 0.94;
@@ -23,6 +26,7 @@ const REARM_BELOW = 0.94;
  */
 export const Seafloor = () => {
   const mesh = useRef<THREE.Mesh>(null);
+  const floorMat = useRef<THREE.MeshStandardMaterial>(null);
   const puff = useRef<THREE.Points>(null);
   const landed = useRef(false);
   const puffT = useRef(0);
@@ -45,12 +49,17 @@ export const Seafloor = () => {
   useFrame(({ camera, viewport }, dt) => {
     const s = dive.get();
     const p = s.progress;
-    const vis = Math.min(1, Math.max(0, (p - 0.9) / 0.06));
+    // Keyed to the seafloor chapter itself, not a global progress: at p > 0.9
+    // the floor (and the lamps' pool of light on it) appeared while midnight
+    // was still on screen. Now it only fades up as the dive reaches the bottom.
+    const { id, t: local } = localProgress(p, s.ranges);
+    const vis = id === "seafloor" ? THREE.MathUtils.smoothstep(local, FLOOR_FROM, FLOOR_TO) : 0;
     if (mesh.current) {
-      mesh.current.visible = vis > 0.01;
+      mesh.current.visible = vis > 0.001;
       // Rises only far enough to show a horizon in the bottom third, under the band.
       mesh.current.position.y = -3.4 + vis * 0.7;
     }
+    if (floorMat.current) floorMat.current.opacity = vis;
 
     const pf = puff.current;
     if (!pf) return;
@@ -79,7 +88,7 @@ export const Seafloor = () => {
   return (
     <>
       <mesh ref={mesh} geometry={geo} rotation={[-Math.PI / 2.4, 0, 0]} position={[0, -3.4, -1]} visible={false}>
-        <meshStandardMaterial color="#0b1a22" roughness={1} metalness={0} />
+        <meshStandardMaterial ref={floorMat} color="#0b1a22" roughness={1} metalness={0} transparent opacity={0} />
       </mesh>
       <points ref={puff} visible={false} frustumCulled={false}>
         <bufferGeometry>
