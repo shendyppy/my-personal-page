@@ -1392,13 +1392,13 @@ async function main() {
         key: "professional_bio",
         title: "Professional Dreamer",
         content:
-          "I began my career as a civil engineer, but curiosity soon pulled me into tech (during the pandemic I challenged myself to switch paths by joining a coding bootcamp). Growing up as a gamer — and still one today — I was always fascinated by how those worlds were built. Realizing that a few lines of code could bring something interactive to life was game-changing. Since then, I've been all-in on front-end craft: experimenting with 3D on the web, and polishing interfaces that feel playful and intuitive.",
+          "Civil engineer turned software engineer. A pandemic bootcamp got me into code; a lifelong love of games keeps me there — building interfaces that feel playful, and pushing 3D on the web.",
       },
       {
         key: "current_learning",
         title: "Currently Learning",
         content:
-          "Recently, I've been revisiting the backend, DevOps, and even dipping my toes into LLMs — learning my way through Node.js, Nest.js, ORMs, Python, and the world of CI/CD and deployment. I'm still early on this path, but my aim is clear: to eventually feel just as comfortable building systems behind the scenes as I do shaping the UI up front.",
+          "Backend and DevOps (Node.js, Nest.js, Python, CI/CD) plus a first dive into LLMs. The goal: as at home behind the scenes as on the UI.",
       },
     ],
   });
