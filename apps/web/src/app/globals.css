@@ -309,18 +309,22 @@
 }
 /* From md up the HUD rail is fixed over the right of every stage — it covered
    the surface and twilight record panels, the reef porthole and the sonar
-   readout. --rail-clear is the extra right padding that keeps content off it.
+   readout. --rail-clear is the extra padding that keeps content off it, paid
+   on both sides so every chapter stays centred on the viewport (right-only,
+   each layout sat half the clearance left of centre).
    Below xl the rail drops to its numbers (see .hud-rail-name) and needs ~2rem;
    paying the full label's 136px there cost a quarter of a 1024 stage and ran
    the descent log and landscape heroes past 100svh. From xl the label shows
    and is cleared in full; past 1400px the stage's centring margin pays part
-   of it, so the clearance shrinks and is gone by 1672px. */
+   of it, so the clearance shrinks and is gone by 1672px. Below 1400px there is
+   no margin to pay it, so it holds at 8.5rem — the unclamped formula grew it to
+   196px at 1280 and pushed every centred layout 98px left of centre. */
 @media (min-width: 768px) {
   :root { --rail-clear: 2rem; }
-  .stage { padding-inline: 2.5rem calc(2.5rem + var(--rail-clear)); }
+  .stage { padding-inline: calc(2.5rem + var(--rail-clear)); }
 }
 @media (min-width: 1280px) {
-  :root { --rail-clear: max(0px, calc(8.5rem - (100vw - 1400px) / 2)); }
+  :root { --rail-clear: clamp(0px, calc(8.5rem - (100vw - 1400px) / 2), 8.5rem); }
 }
 .chapter-head {
   margin: 0 0 1.25rem;
@@ -436,36 +440,37 @@ body { background: #083352; transition: background-color 900ms ease; }
    1280x720 to 1440x900 — ten lines of 47px lead alone were 505px. The lead
    now tops out at 40px on a 32ch measure (seven lines), and the clamps below
    withhold secondary copy by height, learning line first. */
+/* The copy has since been cut to a headline-length lead (39), a one-sentence
+   body and a short learning line, so the phone floor rises from 20px, where
+   the lead read no bigger than the 16px body under it. */
 .twilight-lead {
   max-width: 32ch;
-  font-size: clamp(20px, min(2.6vw, 4svh), 40px);
+  font-size: clamp(26px, min(2.6vw, 4svh), 40px);
 }
 .twilight-body {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-/* The learning line never truncates: where it would not fit it becomes a
-   teleprompter window --learn-lines tall, its copy crawling up and looping.
-   The echo copy (plus a line of gap) makes the loop seamless. */
+/* The learning line never truncates. It reads in full where the stage has the
+   height; where it does not, LearningLine measures the shortfall and sets
+   data-crawl with a --learn-h window of exactly the room left, and the copy
+   crawls up through it and loops. The echo copy (plus a line of gap) makes the
+   loop seamless. */
 .learning-echo { display: none; }
-@media (max-height: 960px), (max-width: 639px) {
-  .twilight-learning {
-    --learn-lines: 3;
-    height: calc(var(--learn-lines) * 1.8em);
-    overflow: hidden;
-    mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
-  }
-  .learning-crawl { animation: learning-crawl var(--crawl-dur, 40s) linear infinite; }
-  .learning-crawl > p { padding-block: 0.9em; }
-  .learning-echo { display: block; }
-  .twilight-learning:hover .learning-crawl,
-  .twilight-learning:active .learning-crawl { animation-play-state: paused; }
+.twilight-learning[data-crawl] {
+  height: var(--learn-h);
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
 }
+[data-crawl] .learning-crawl { animation: learning-crawl var(--crawl-dur, 40s) linear infinite; }
+[data-crawl] .learning-crawl > p { padding-block: 0.9em; }
+[data-crawl] .learning-echo { display: block; }
+[data-crawl]:hover .learning-crawl,
+[data-crawl]:active .learning-crawl { animation-play-state: paused; }
 @keyframes learning-crawl { to { transform: translateY(-50%); } }
 @media (max-height: 800px), (max-width: 639px) {
   .twilight-body { -webkit-line-clamp: 4; line-clamp: 4; }
-  .twilight-learning { --learn-lines: 2; }
 }
 /* Short viewports. Same problem as the reef, one chapter further down: the
    stage is 100svh while pinned, so anything taller is painted over the HUD and
@@ -515,14 +520,14 @@ body { background: #083352; transition: background-color 900ms ease; }
     background: var(--accent); box-shadow: 0 0 8px var(--accent);
     animation: blink 1.6s steps(1, end) infinite;
   }
-  .twilight-learning {
-    height: auto; padding-block: 0.5rem;
-    border-block: 1px solid var(--border);
+  .twilight-learning { padding-block: 0.5rem; border-block: 1px solid var(--border); }
+  .twilight-learning[data-crawl] {
+    height: auto;
     mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
   }
   .learning-lead { display: none; }
-  .learning-crawl { display: flex; width: max-content; animation-name: learning-ticker; }
-  .learning-crawl > p { padding-block: 0; padding-inline-end: 3rem; white-space: nowrap; }
+  [data-crawl] .learning-crawl { display: flex; width: max-content; animation-name: learning-ticker; }
+  [data-crawl] .learning-crawl > p { padding-block: 0; padding-inline-end: 3rem; white-space: nowrap; }
 }
 @keyframes learning-ticker { to { transform: translateX(-50%); } }
 /* Landscape phones: the record sits in a ~250px column where its values wrap
@@ -531,6 +536,9 @@ body { background: #083352; transition: background-color 900ms ease; }
 @media (max-height: 480px) {
   .twilight-grid .porthole { display: none; }
   .twilight-grid .record-panel { margin-top: 0; }
+  /* Half the label-to-value gap gives the values a line back each (DIVER,
+     INSTRUMENTS) — the column lost 32px to the rail clearance on its left. */
+  .twilight-grid .record-row { gap: 12px; }
 }
 /* Landscape phones and small landscape tablets: short, with width to spare.
    Stacking cannot fit at 844x390 — the single column is ~700px in a 330px
@@ -586,11 +594,6 @@ body { background: #083352; transition: background-color 900ms ease; }
   .log-entry--left { grid-column: 1; text-align: right; }
   .log-entry--left p, .log-entry--left h3 { margin-left: auto; }
   .log-entry--right { grid-column: 2; }
-}
-/* The stage already pads its right side clear of the HUD rail; matching it on
-   the left keeps the pressure line on the viewport centre, where the sub rides. */
-@media (min-width: 768px) {
-  .descent { padding-left: var(--rail-clear); }
 }
 /* Tick labels need a gutter wider than a label ("2600 M", ~48px) each side. */
 @media (min-width: 1024px) {
@@ -772,14 +775,25 @@ body { background: #083352; transition: background-color 900ms ease; }
 @media (min-width: 1024px), (max-height: 720px) and (min-width: 640px) {
   .sonar {
     /* Width term: the readout keeps its 360px; at 1024 a height-only size
-       took 632px and squeezed the readout to one chip per line. */
-    --sonar-size: min(640px, calc(100svh - var(--hud-h) - 6rem), calc(100vw - 38rem));
+       took 632px and squeezed the readout to one chip per line. It pays both
+       rail clearances, the stage padding (5rem), the readout and the widest
+       gap (5rem) plus --label-room: at 1280 a 640px scope ran 60px past the
+       stage and clipped its left labels. */
+    --sonar-size: min(640px, calc(100svh - var(--hud-h) - 6rem), calc(100vw - 32rem - var(--label-room) - 2 * var(--rail-clear, 0px)));
     grid-template-columns: auto minmax(0, 360px);
     align-items: center;
     justify-content: center;
     column-gap: clamp(2rem, 5vw, 5rem);
   }
   .sonar-readout { min-height: 0; align-content: center; }
+}
+/* The outward left label hangs ~135px past its dot. From xl the rail clearance
+   on the left covers it; below xl (1024x768, a 960x540 TV browser) it ran to
+   the screen edge, so the scope gives up 4rem, 2rem of air each side. Short
+   landscape phones point the label inward instead (above) and keep the size. */
+:root { --label-room: 0.5rem; }
+@media (min-width: 640px) and (max-width: 1279px) and (min-height: 481px) {
+  :root { --label-room: 4rem; }
 }
 @media (prefers-reduced-motion: reduce) { .sonar-sweep { animation: none; } }
 
@@ -912,12 +926,17 @@ body { background: #083352; transition: background-color 900ms ease; }
    ~330px of stage. The hero stacked headline, copy, cue and record into
    ~700px and pushed its headline under the HUD at 844x390; the reef's
    three-line title and its tags ran ~40px over. */
-@media (max-height: 480px) and (min-width: 640px) {
+/* The hero's split reaches up to small landscape tablets and 960x540 TV
+   browsers too: stacked there, it ran 115px past the stage and pushed the
+   headline under the HUD. */
+@media (max-height: 480px) and (min-width: 640px), (max-height: 720px) and (min-width: 640px) and (max-width: 1023px) {
   .surface-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.75rem 2rem; }
   .surface-grid > :first-child { grid-column: 1 / -1; }
   .surface-title { font-size: clamp(28px, 11svh, 56px); }
   .surface-copy { font-size: 14px; line-height: 1.55; }
   .surface-grid [data-reveal] + button, .surface-grid button[data-reveal] { margin-top: 0.75rem; }
+}
+@media (max-height: 480px) and (min-width: 640px) {
   .site-record h3 { font-size: 22px; margin-top: 0.5rem; }
   .site-record ul { display: none; }
   .site-record a { margin-top: 0.75rem; }
@@ -961,7 +980,7 @@ body { background: #083352; transition: background-color 900ms ease; }
 /* At rest the sea surface is 45% up the screen (lib/dive/water SURFACE_LINE):
    a box centred on that line on the right, where the phone hero is empty. */
 .surface-lane-phone { position: absolute; top: calc(55% - 2.25rem); right: 1.5rem; width: 40%; height: 4.5rem; }
-@media (min-width: 1024px), (max-height: 480px) { .surface-lane-phone { display: none; } }
+@media (min-width: 1024px), (max-height: 480px), (max-height: 720px) and (min-width: 640px) { .surface-lane-phone { display: none; } }
 /* Short phones: the copy runs down to the waterline, so the sub rides smaller. */
 @media (max-height: 700px) { .surface-lane-phone { top: calc(55% - 1.5rem); height: 3rem; width: 30%; } }
 .lane-cue { display: none; text-align: center; }
@@ -1028,10 +1047,6 @@ body { background: #083352; transition: background-color 900ms ease; }
      the timeline `from`s away from it. It does need its clamp lifted: with the
      pin gone the stage grows to fit, so there is no reason to withhold copy. */
   .twilight-body, .log-description { display: block; -webkit-line-clamp: none; line-clamp: none; }
-  .twilight-learning { height: auto; mask-image: none; }
-  .learning-crawl { animation: none; display: block; width: auto; }
-  .learning-crawl > p { white-space: normal; }
-  .learning-echo { display: none; }
   .learning-tag::before { animation: none; }
   .log-sheet, .log-sheet-backdrop, .log-detail-toggle, .log-detail-plus { transition: none; animation: none; }
   .log-detail-ping::after { animation: none; }

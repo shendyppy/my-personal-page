@@ -1,8 +1,8 @@
-import type { CSSProperties } from "react";
 import Image from "next/image";
 
 import { ChapterHead } from "@/components/atoms/ChapterHead";
 import { RecordPanel } from "@/components/atoms/RecordPanel";
+import { LearningLine } from "@/components/molecules/LearningLine";
 import { ChapterFrame } from "@/components/organisms/ChapterFrame";
 import { SITE_CONFIG } from "@/constants/config";
 import { chapterById, DIVE_COPY } from "@/constants/dive";
@@ -76,35 +76,7 @@ export const TwilightChapter = ({ about }: TwilightChapterProps) => {
               { label: "BASE", value: DIVE_COPY.base },
             ]}
           />
-          {learning && (
-            // Where the stage is too short for the whole line it becomes a
-            // slow teleprompter instead of an ellipsis: the copy crawls up
-            // through a masked window and loops (the echo makes the loop
-            // seamless), pausing while hovered or touched. Phones get a
-            // one-line ticker under a fixed label instead. See globals.css.
-            <div className="mt-6" data-reveal>
-              <p className="learning-tag">CURRENTLY LEARNING</p>
-              <div
-                className="twilight-learning font-mono text-xs leading-[1.8] tracking-[0.06em] text-muted-foreground"
-                style={{ "--crawl-dur": `${Math.max(18, Math.round(learning.length / 6))}s` } as CSSProperties}
-              >
-                <div className="learning-crawl">
-                  <p className="m-0">
-                    <span className="learning-lead">
-                      <span className="text-accent">CURRENTLY LEARNING</span> —{" "}
-                    </span>
-                    {learning}
-                  </p>
-                  <p className="learning-echo m-0" aria-hidden>
-                    <span className="learning-lead">
-                      <span className="text-accent">CURRENTLY LEARNING</span> —{" "}
-                    </span>
-                    {learning}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          {learning && <LearningLine text={learning} />}
         </div>
       </div>
     </ChapterFrame>
