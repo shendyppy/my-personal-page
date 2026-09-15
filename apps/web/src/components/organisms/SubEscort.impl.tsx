@@ -30,7 +30,8 @@ export const SubEscortImpl = () => {
     <Canvas
       eventSource={document.body}
       eventPrefix="client"
-      dpr={[1, 1.5]}
+      // A 220px box: full 2x sharpness costs next to nothing here.
+      dpr={[1, 2]}
       camera={{ position: [0, 0, 8], fov: 40 }}
       gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
     >
