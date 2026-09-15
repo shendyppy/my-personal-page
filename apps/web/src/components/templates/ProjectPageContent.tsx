@@ -82,18 +82,19 @@ export const ProjectPageContent = ({
         )}
       </header>
 
-      {/* Hero image */}
+      {/* Hero image. Never wider than its own pixels or taller than most of
+          the screen: some banners are 614px wide and one is a 860x1864
+          portrait, and stretched to the 1320px column they went soft and
+          ran several screens tall. */}
       <div className="mx-auto mt-16 box-border max-w-[1400px] px-6 md:px-10">
-        <div className="overflow-hidden rounded-3xl border border-border">
-          <Image
-            src={project.image}
-            alt={project.title}
-            width={1400}
-            height={800}
-            className="block h-auto w-full"
-            priority
-          />
-        </div>
+        <Image
+          src={project.image}
+          alt={project.title}
+          width={1400}
+          height={800}
+          className="mx-auto block h-auto max-h-[min(64svh,640px)] w-auto max-w-full rounded-3xl border border-border"
+          priority
+        />
       </div>
 
       {/* Story */}
